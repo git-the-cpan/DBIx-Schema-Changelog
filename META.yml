@@ -13,7 +13,7 @@ build_requires:
 configure_requires:
   Module::Build: '0.38'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.142060'
+generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.143240'
 license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -22,58 +22,76 @@ name: DBIx-Schema-Changelog
 provides:
   DBIx::Schema::Changelog:
     file: lib/DBIx/Schema/Changelog.pm
-    version: v0.0.0_2
+    version: v0.1.0
   DBIx::Schema::Changelog::Action:
     file: lib/DBIx/Schema/Changelog/Action.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Column:
     file: lib/DBIx/Schema/Changelog/Action/Column.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Constraint:
     file: lib/DBIx/Schema/Changelog/Action/Constraint.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Default:
     file: lib/DBIx/Schema/Changelog/Action/Default.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Index:
     file: lib/DBIx/Schema/Changelog/Action/Index.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Sequence:
     file: lib/DBIx/Schema/Changelog/Action/Sequence.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Sql:
     file: lib/DBIx/Schema/Changelog/Action/Sql.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::Table:
     file: lib/DBIx/Schema/Changelog/Action/Table.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Action::View:
     file: lib/DBIx/Schema/Changelog/Action/View.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Changeset:
     file: lib/DBIx/Schema/Changelog/Changeset.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Command:
     file: lib/DBIx/Schema/Changelog/Command.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Command::Base:
     file: lib/DBIx/Schema/Changelog/Command/Base.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Command::Changeset:
     file: lib/DBIx/Schema/Changelog/Command/Changeset.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Command::Driver:
     file: lib/DBIx/Schema/Changelog/Command/Driver.pm
-    version: '0.0001'
+    version: v0.1.0
   DBIx::Schema::Changelog::Command::File:
     file: lib/DBIx/Schema/Changelog/Command/File.pm
-    version: v0.0.0_1
+    version: v0.1.0
   DBIx::Schema::Changelog::Core::ExceptionMessages:
     file: lib/DBIx/Schema/Changelog/Core/ExceptionMessages.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Driver:
     file: lib/DBIx/Schema/Changelog/Driver.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Driver::Pg:
     file: lib/DBIx/Schema/Changelog/Driver/Pg.pm
-    version: v0.0.0_1
+    version: v0.1.0
   DBIx::Schema::Changelog::Driver::SQLite:
     file: lib/DBIx/Schema/Changelog/Driver/SQLite.pm
-    version: v0.0.0_1
+    version: v0.1.0
   DBIx::Schema::Changelog::File:
     file: lib/DBIx/Schema/Changelog/File.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::File::JSON:
     file: lib/DBIx/Schema/Changelog/File/JSON.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::File::Yaml:
     file: lib/DBIx/Schema/Changelog/File/Yaml.pm
+    version: v0.1.0
   DBIx::Schema::Changelog::Manual:
     file: lib/DBIx/Schema/Changelog/Manual.pm
-    version: v0.0.0_2
+    version: v0.1.0
 requires:
   DBD::SQLite: '1.4'
   DBI: '1.632'
@@ -96,11 +114,11 @@ requires:
   Storable: '2.49'
   Text::Trim: '1.02'
   Time::Piece: '1.27'
-  TryCatch: '1.003002'
   YAML: '1.13'
   YAML::XS: '0.55'
   strict: '0'
   warnings: '0'
 resources:
-  license: http://www.perlfoundation.org/artistic_license_2_0
-version: v0.0.0_2
+  license: http://opensource.org/licenses/artistic-license-2.0.php
+  repository: https://github.com/mziescha/DBIx-Schema-Changelog
+version: v0.1.0

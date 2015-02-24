@@ -33,6 +33,8 @@ DBIx::Schema::Changelog::Command->run;
 
 =head1 OPTIONS
 
+=over 4
+
 	Commands:
 	-md --makedriver  : Will create a module for a new driver
 	-mf --makefile    : Will create a module for a new file parser
@@ -55,7 +57,9 @@ DBIx::Schema::Changelog::Command->run;
 
 =head1 SEE ALSO
 
-=head2 L<DBIx::Admin::CreateTable >
+=over 4
+
+=head2 L<DBIx::Admin::CreateTable>
 
 The package from which the idea originated.
 

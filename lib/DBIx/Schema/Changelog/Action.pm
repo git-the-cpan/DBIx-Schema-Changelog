@@ -4,10 +4,17 @@ package DBIx::Schema::Changelog::Action;
 
 DBIx::Schema::Changelog::Action - Abstract action class.
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings FATAL => 'all';
+use Data::Dumper;
 use Moose::Role;
 
 has driver => ( is => 'ro', );
@@ -22,8 +29,14 @@ requires 'drop';
 
 sub _replace_spare {
     my ( $string, $options ) = @_;
+    print Dumper($string, $options);
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
+}
+
+sub _do {
+    my ( $self, $sql ) = @_;
+    $self->dbh()->do($sql) or die "Can't handle sql: \n\t$sql\n $!";
 }
 
 =head1 AUTHOR
@@ -73,4 +86,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of DBIx::Schema::Changelog::Action
+1;    # End of DBIx::Schema::Changelog::Action

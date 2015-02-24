@@ -1,4 +1,4 @@
-use Test::More tests => 37;
+use Test::More tests => 35;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -16,9 +16,6 @@ use_ok 'JSON::Parse';
 
 require_ok( 'DBI' );
 use_ok 'DBI';
-
-require_ok( 'TryCatch' );
-use_ok 'TryCatch';
 
 require_ok( 'Hash::MD5' );
 use_ok 'Hash::MD5';

@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Driver::Pg;
 
 DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog::Driver::SQLite!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -19,15 +25,15 @@ has commands => (
     isa     => 'HashRef[Str]',
     default => sub {
         return {
-            create_table => q~CREATE TABLE {0} ( {1} ) WITH ( OIDS=FALSE )~,
-            drop_table   => q~DROP TABLE {0}~,
-            alter_table  => q~ALTER TABLE {0}~,
-            drop_column  => q~DROP COLUMN {0}~,
-            add_column   => q~ADD COLUMN~,
-            create_view  => 'CREATE VIEW {0} AS {1}',
-            drop_view    => 'DROP VIEW {0}',
-            create_sequence =>
-q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE 9223372036854775807 START 1 CACHE 1~,
+            create_table     => q~CREATE TABLE {0} ( {1} ) WITH ( OIDS=FALSE )~,
+            drop_table       => q~DROP TABLE {0}~,
+            alter_table      => q~ALTER TABLE {0}~,
+            drop_column      => q~DROP COLUMN {0}~,
+            add_column       => q~ADD COLUMN {0}~,
+            create_view      => 'CREATE VIEW {0} AS {1}',
+            drop_view        => 'DROP VIEW {0}',
+            drop_view        => 'CREATE INDEX idx_{0} ON {1} USING {2} ({3})',
+            create_sequence  => q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE 9223372036854775807 START 1 CACHE 1~,
             nextval_sequence => q~nextval('{0}'::regclass)~,
         };
     }
@@ -38,10 +44,11 @@ has defaults => (
     isa     => 'HashRef[Str]',
     default => sub {
         return {
-            current    => 'now()',
-            inc        => 'sequence',
-            not_null   => 'NOT NULL',
-            primarykey => 'primary key',
+            current     => 'now()',
+            inc         => 'sequence',
+            not_null    => 'NOT NULL',
+            primarykey  => 'primary key',
+            boolean_str => 1,
         };
     }
 );
@@ -126,19 +133,6 @@ has types => (
 
 sub _min_version { '9.1' }
 
-=head1 VERSION
-
-Version 0.0.0_001
-
-=cut
-
-our $VERSION = '0.0.0_001';
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 SUBROUTINES/METHODS
 
 =head2 create_changelog_table
@@ -147,8 +141,7 @@ if you don't export anything, such as for a purely object-oriented module.
 
 sub create_changelog_table {
     my ( $self, $dbh, $name ) = @_;
-    my $sth =
-      $dbh->prepare("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+    my $sth = $dbh->prepare("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
     if ( $sth->execute() or die "Some error $!" ) {
         foreach ( $sth->fetchrow_array() ) { return undef if ( $_ =~ /^$name$/ ); }
     }
@@ -187,28 +180,12 @@ sub generate_foreign_key {
 "CONSTRAINT $fk_name FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable} ($foreignkeyvalues->{refcolumn}) MATCH $match ON DELETE NO ACTION ON UPDATE NO ACTION";
 }
 
-=head2 create_index
-
-=cut
-
-sub create_index {
-    my ( $self, $params ) = @_;
-    my $ret =
-        "CREATE INDEX idx_"
-      . ( ( defined $params->{name} ) ? $params->{name} : time() )
-      . " ON $params->{taple} USING $params->{using} ("
-      . join( ", ", $params->{column} ) . ');';
-    print Dumper($ret);
-    return $ret;
-}
-
 =head2 add_column
 
 =cut
 
 sub add_column {
     my ( $self, $tableName, $column ) = @_;
-    return 'ALTER TABLE ' . $tableName . ' ADD COLUMN ' . $column . ';';
 }
 
 no Moose;

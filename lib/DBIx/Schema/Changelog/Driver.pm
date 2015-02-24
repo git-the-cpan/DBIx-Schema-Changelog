@@ -1,5 +1,17 @@
 package DBIx::Schema::Changelog::Driver;
 
+=head1 NAME
+
+DBIx::Schema::Changelog::Driver - Abstract driver class.
+
+=head1 VERSION
+
+Version 0.1.0
+
+=cut
+
+our $VERSION = '0.1.0';
+
 use strict;
 use warnings FATAL => 'all';
 use Moose::Role;
@@ -132,21 +144,31 @@ has origin_types => (
     }
 );
 
+=head1 SUBROUTINES/METHODS
+
+=head2 create_changelog_table
+
+=cut
+
 requires 'create_changelog_table';
+
+=head2 generate_unique
+
+=cut
 
 requires 'generate_unique';
 
+=head2 generate_foreign_key
+
+=cut
+
 requires 'generate_foreign_key';
 
-requires 'create_index';
+=head2 add_column
+
+=cut
 
 requires 'add_column';
-
-=head1 NAME
-
-DBIx::Schema::Changelog::Driver - Abstract driver class.
-
-=head1 SUBROUTINES/METHODS
 
 =head2 check_version
 

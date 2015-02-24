@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Driver::SQLite;
 
 DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog::Driver::SQLite!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use 5.14.0;
 use strict;
@@ -20,9 +26,9 @@ has commands => (
     default => sub {
         return {
             create_table => 'CREATE TABLE {0} ( {1} )',
-            drop_table   => 'DROP TABLE',
-            alter_table  => 'ALTER TABLE',
-            add_column   => 'ADD COLUMN',
+            drop_table   => 'DROP TABLE {0}',
+            alter_table  => 'ALTER TABLE {0}',
+            add_column   => 'ADD COLUMN {0}',
             create_view  => 'CREATE VIEW {0} AS {1}',
             drop_view    => 'DROP VIEW {0}',
         };
@@ -63,14 +69,6 @@ has types => (
 
 sub _min_version { '3.7' }
 
-=head1 VERSION
-
-Version 0.0.0_001
-
-=cut
-
-our $VERSION = '0.0.0_001';
-
 =head1 SUBROUTINES/METHODS
 
 =head2 create_changelog_table
@@ -106,16 +104,6 @@ sub generate_foreign_key {
     my ( $self, $basecol, $foreignkeyvalues ) = @_;
     return
 "FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable}($foreignkeyvalues->{refcolumn})";
-}
-
-=head2 create_index
-
-=cut
-
-sub create_index {
-    my ( $self, $dbh, $name, $params ) = @_;
-    print STDERR __PACKAGE__, " (", __LINE__, ") Create index is not supported!  ", $/;
-    return undef;
 }
 
 =head2 create_index

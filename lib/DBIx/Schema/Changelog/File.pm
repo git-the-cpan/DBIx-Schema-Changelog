@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::File;
 
 DBIx::Schema::Changelog::File - Abstract file class.
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings FATAL => 'all';

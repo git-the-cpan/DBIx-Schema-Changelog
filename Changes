@@ -1,5 +1,7 @@
 Revision history for DBIx-Schema-Changelog
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+#========================================================================
+# Version 0.1.0  Date: 2015/02/24 (Mario Zieschang, Thomas Mueller)
+#========================================================================
 
+* First version, released on an unsuspecting world.

@@ -1,18 +1,26 @@
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$DBIx::Schema::Changelog::Manual::VERSION = '0.0.0_002';
+
+=head1 VERSION
+
+Version 0.1.0
+
+=cut
+
+our $VERSION = '0.1.0';
+
 __END__
 
 =pod
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
+	DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
 
 =head1 DESCRIPTION
 
- Continuous Database Migration
- Package to databases in sync with the development of the application to keep.
+	Continuous Database Migration
+	Package to databases in sync with the development of the application to keep.
 
 =encoding utf8
 

@@ -4,21 +4,27 @@ package DBIx::Schema::Changelog::Changeset;
 
 DBIx::Schema::Changelog::Changeset - Handles action types.
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
 use Data::Dumper;
 use Moose;
 use Method::Signatures::Simple;
+use MooseX::HasDefaults::RO;
 use DBIx::Schema::Changelog::Action::Sql;
 
-has driver       => ( is => 'ro', );
-has dbh          => ( is => 'ro', );
-has table_action => ( is => 'ro', isa => 'DBIx::Schema::Changelog::Action::Table', );
+has driver       => ();
+has dbh          => ();
+has table_action => ( isa => 'DBIx::Schema::Changelog::Action::Table', );
 
 has sql_action => (
-    is      => 'ro',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
@@ -30,7 +36,6 @@ has sql_action => (
 );
 
 has index_action => (
-    is      => 'ro',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
@@ -42,7 +47,6 @@ has index_action => (
 );
 
 has view_action => (
-    is      => 'ro',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {

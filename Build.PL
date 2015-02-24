@@ -24,7 +24,6 @@ Module::Build->new(
         'JSON::Parse'                  => 0.31,
         'Pod::Usage'                   => 0,
         'DBI'                          => 1.632,
-        'TryCatch'                     => 1.003002,
         'Hash::MD5'                    => 0.05,
         'Iterator::Simple'             => 0.06,
         'YAML::XS'                     => 0.55,
@@ -45,11 +44,9 @@ Module::Build->new(
         'DBD::SQLite'                  => 1.4,
         'File::Spec'                   => 0,
     },
-    resources => {
-        repository => {
-            type => 'git',
-            url  => 'https://github.com/mziescha/DBIx-Schema-Changelog.git',
-            web  => 'https://github.com/mziescha/DBIx-Schema-Changelog',
-        },
-    }
+    meta_merge => {
+        resources => {
+            repository => 'https://github.com/mziescha/DBIx-Schema-Changelog',
+        }
+    },
 )->create_build_script();

@@ -2,14 +2,19 @@ package DBIx::Schema::Changelog::Action::Column;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Action::Column
+DBIx::Schema::Changelog::Action::Column - Action handler for table columns
+
+=head1 VERSION
+
+Version 0.1.0
 
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
 use Data::Dumper;
-use TryCatch;
 use Text::Trim;
 use Moose;
 use Method::Signatures::Simple;
@@ -46,8 +51,11 @@ has errors => (
 
 sub add {
     my ( $self, $table, $col ) = @_;
+
     my $type     = $self->driver()->type($col);
-    my $defaults = $self->driver()->defaults();
+    my $defaults = $self->driver()->defaults;
+    my $commands = $self->driver()->commands;
+    #
     die $self->errors()->message( 'no_default_value', [ $col->{name}, $table ] )
       if ( ( $col->{notnull} || defined $col->{primarykey} )
         && ( !defined $col->{default} && !defined $col->{foreign} ) );
@@ -56,7 +64,11 @@ sub add {
     my $primarykey = ( defined $col->{primarykey} ) ? $defaults->{primarykey} : '';
     $col->{table} = $table;
     my $default = $self->default()->add($col);
-    return qq~$col->{name} $type $not_null $primarykey $default~;
+    return qq~$col->{name} $type $not_null $primarykey $default~ if ( $col->{create_table} );
+
+    my $sql = _replace_spare( $commands->{alter_table}, [$table] )
+      . _replace_spare( $commands->{add_column}, [qq~$col->{name} $type $not_null $primarykey $default~] );
+    return $self->_do($sql);
 }
 
 =head2 alter
@@ -75,9 +87,9 @@ sub drop {
     my ( $self, $table, $params ) = @_;
     my $defaults = $self->driver()->defaults();
     foreach ( @{ $params->{dropcolumn} } ) {
-        my $sql = $self->_replace_spare( $defaults->{alter_table}, [$table] );
-        $sql .= ' ' . $self->_replace_spare( $defaults->{drop_column}, [ $_->{name} ] );
-        $self->dbh()->do($sql) or die "Can't handle sql $!";
+        my $sql = _replace_spare( $defaults->{alter_table}, [$table] );
+        $sql .= ' ' . _replace_spare( $defaults->{drop_column}, [ $_->{name} ] );
+        $self->_do($sql);
     }
 
 }
@@ -88,7 +100,8 @@ sub drop {
 
 sub run_constraints {
     my ( $self, $table, $constraints ) = @_;
-    $self->dbh()->do( $self->driver()->add_constraint( $table, $_ ) ) foreach (@$constraints);
+    $self->_do( $self->driver()->add_constraint( $table, $_ ) ) foreach (@$constraints);
+
 }
 
 no Moose;

@@ -4,6 +4,14 @@ package DBIx::Schema::Changelog;
 
     DBIx::Schema::Changelog - (ALPHA QUALITY) Continuous Database Migration
 
+=head1 VERSION
+
+Version 0.1.0
+
+=cut
+
+our $VERSION = '0.1.0';
+
 =head1 DESCRIPTION
 
     C<DBIx::Schema::Changelog> is a pure Perl module.
@@ -25,6 +33,7 @@ use DBIx::Schema::Changelog::Action::Index;
 use DBIx::Schema::Changelog::Action::Constraint;
 
 use Moose;
+use MooseX::HasDefaults::RO;
 use MooseX::Types::Moose qw(ArrayRef Str Defined);
 use MooseX::Types::LoadableClass qw(LoadableClass);
 use Method::Signatures::Simple;
@@ -32,7 +41,6 @@ use Method::Signatures::Simple;
 use Hash::MD5 qw(sum_hash);
 
 has table_action => (
-    is      => 'rw',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
@@ -44,7 +52,6 @@ has table_action => (
 );
 
 has changeset => (
-    is      => 'rw',
     lazy    => 1,
     isa     => 'DBIx::Schema::Changelog::Changeset',
     default => method {
@@ -57,14 +64,12 @@ has changeset => (
 );
 
 has db_changelog_table => (
-    is      => 'ro',
     isa     => Str,
     default => 'databasechangelog'
 );
 
 has insert_dblog => (
     isa     => 'DBI::st',
-    is      => 'ro',
     lazy    => 1,
     default => method {
         $self->dbh()
@@ -76,18 +81,15 @@ has insert_dblog => (
 
 has file_type => (
     isa     => Str,
-    is      => 'ro',
     default => 'Yaml'
 );
 
 has db_driver => (
     isa     => Str,
-    is      => 'ro',
     default => 'SQLite'
 );
 
 has loader_class => (
-    is      => 'ro',
     isa     => LoadableClass,
     lazy    => 1,
     default => method {
@@ -96,14 +98,12 @@ has loader_class => (
 );
 
 has loader => (
-    is      => 'ro',
     does    => 'DBIx::Schema::Changelog::File',
     lazy    => 1,
     default => method { $self->loader_class()->new(); }
 );
 
 has driver_class => (
-    is      => 'ro',
     isa     => LoadableClass,
     lazy    => 1,
     default => method {
@@ -112,25 +112,15 @@ has driver_class => (
 );
 
 has driver => (
-    is      => 'ro',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Driver',
     default => method { $self->driver_class()->new(); }
 );
 
 has dbh => (
-    is => 'ro',
     isa => 'DBI::db',
     required => 1,
 );
-
-=head1 VERSION
-
-Version 0.0.0_001
-
-=cut
-
-our $VERSION = '0.0.0_002';
 
 sub _parse_log {
     my ( $self, $file ) = @_;
@@ -169,7 +159,11 @@ sub BUILD {
       ->add( $self->driver()->create_changelog_table( $self->dbh(), $self->db_changelog_table() ) );
 }
 
-=head2 read_log
+=head1 SUBROUTINES/METHODS
+
+=head2 read
+
+    Read main changelog file and sub changelog files
 
 =cut
 
@@ -202,12 +196,6 @@ __PACKAGE__->meta->make_immutable;
     
     my $dbh = DBI->connect( "dbi:Pg:dbname=database;host=127.0.0.1", "user", "password" );
     DBIx::Schema::Changelog->new( dbh => $dbh, db_driver => 'Pg' )->read( $FindBin::Bin . '/../changelog' );
-
-Assumptions:
-
-=over 4
-
-=back
 
 =head1 Motivation
 

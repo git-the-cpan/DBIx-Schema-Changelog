@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Action::View;
 
 DBIx::Schema::Changelog::Action::View - Handles view actions
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -22,7 +28,7 @@ sub add {
     my ( $self, $params ) = @_;
     my $commands = $self->driver()->commands;
     my $sql = _replace_spare( $commands->{create_view}, [ $params->{name}, $params->{as} ] );
-    $self->dbh()->do($sql) or die "Can't handle sql: $sql $!";
+    $self->_do($sql);
 }
 
 =head2 alter
@@ -43,7 +49,7 @@ sub drop {
     my ( $self, $params ) = @_;
     my $commands = $self->driver()->commands;
     my $sql = _replace_spare( $commands->{drop_view}, [ $params->{name} ] );
-    $self->dbh()->do($sql) or die "Can't handle sql: $sql $!";
+    $self->_do($sql);
 
 }
 

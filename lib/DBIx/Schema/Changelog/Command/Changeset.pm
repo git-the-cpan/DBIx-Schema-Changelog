@@ -4,16 +4,22 @@ package DBIx::Schema::Changelog::Command::Changeset;
 
 DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project from template for DBIx::Schema::Changelog!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
-use Time::Piece;
 use Data::Dumper;
 use Moose;
 use File::Path qw( mkpath );
 use MooseX::Types::Moose qw(Str);
+use MooseX::HasDefaults::RO;
 use MooseX::Types::LoadableClass qw(LoadableClass);
 use Method::Signatures::Simple;
 
@@ -21,18 +27,10 @@ with 'DBIx::Schema::Changelog::Command::Base';
 
 has dir => (
     isa      => Str,
-    is       => 'ro',
     required => 1,
 );
 
-has type => (
-    isa     => Str,
-    is      => 'rw',
-    default => 'Yaml'
-);
-
 has loader_class => (
-    is      => 'ro',
     isa     => LoadableClass,
     lazy    => 1,
     default => method {

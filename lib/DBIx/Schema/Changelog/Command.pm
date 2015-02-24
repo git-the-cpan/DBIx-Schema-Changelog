@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Command;
 
 DBIx::Schema::Changelog::Command - Commandline Modul for DBIx::Schema::Changelog
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -104,6 +110,8 @@ __END__
 
 =head1 OPTIONS
 
+=over 4
+
     Commands:
     -md --makedriver  : Will create a module for a new driver
     -mf --makefile    : Will create a module for a new file parser
@@ -126,7 +134,9 @@ __END__
 
 =head1 SEE ALSO
 
-=head2 L<Module::Starter >
+=over 4
+
+=head2 L<Module::Starter>
 
 The package from which the idea originated.
 

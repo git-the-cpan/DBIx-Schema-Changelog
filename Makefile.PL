@@ -21,7 +21,6 @@ WriteMakefile(
         'JSON::Parse'                  => 0.31,
         'Pod::Usage'                   => 0,
         'DBI'                          => 1.632,
-        'TryCatch'                     => 1.003002,
         'Hash::MD5'                    => 0.05,
         'Iterator::Simple'             => 0.06,
         'YAML::XS'                     => 0.55,
@@ -47,13 +46,16 @@ WriteMakefile(
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
     },
-    dist      => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean     => { FILES    => 'DBIx-Schema-Changelog-*' },
-    resources => {
-        repository => {
-            type => 'git',
-            url  => 'https://github.com/mziescha/DBIx-Schema-Changelog.git',
-            web  => 'https://github.com/mziescha/DBIx-Schema-Changelog',
-        },
-    }
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/mziescha/DBIx-Schema-Changelog.git',
+                web  => 'https://github.com/mziescha/DBIx-Schema-Changelog',
+            },
+        }
+    },
+    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean => { FILES    => 'DBIx-Schema-Changelog-*' },
 );

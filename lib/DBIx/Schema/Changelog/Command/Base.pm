@@ -4,10 +4,17 @@ package DBIx::Schema::Changelog::Command::Base;
 
 DBIx::Schema::Changelog::Command::Base - Abstract file class.
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings FATAL => 'all';
+use Time::Piece;
 use Moose::Role;
 
 has year => (

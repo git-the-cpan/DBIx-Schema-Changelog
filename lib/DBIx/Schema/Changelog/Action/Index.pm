@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Action::Index;
 
 DBIx::Schema::Changelog::Action::Index
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -20,8 +26,21 @@ with 'DBIx::Schema::Changelog::Action';
 
 sub add {
     my ( $self, $params ) = @_;
-    my $sql = $self->driver()->create_index( $params );
-    $self->dbh()->do($sql) or die "Can't handle sql: $sql $!" if(defined $sql);
+    my $commands = $self->driver()->commands;
+
+    unless ( $commands->{create_index} ) {
+        print STDERR __PACKAGE__, " (", __LINE__, ") Create index is not supported!  ", $/;
+        return;
+    }
+
+    my $sql = _replace_spare(
+        $commands->{create_index},
+        [
+            ( ( defined $params->{name} ) ? $params->{name} : time() ), $params->{taple},
+            $params->{using}, join( ", ", $params->{column} )
+        ]
+    );
+    $self->_do($sql);
 }
 
 =head2 alter

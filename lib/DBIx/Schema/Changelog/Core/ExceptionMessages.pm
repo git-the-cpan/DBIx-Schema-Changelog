@@ -4,6 +4,14 @@ package DBIx::Schema::Changelog::Core::ExceptionMessages;
 
 DBIx::Schema::Changelog::Core::EceptionMessages - list of eception messages
 
+=head1 VERSION
+
+Version 0.1.0
+
+=cut
+
+our $VERSION = '0.1.0';
+
 =head1 DESCRIPTION
 
 =cut
@@ -26,14 +34,13 @@ has message => (
 =head2 replace_spare
 
 =cut
+
 sub message {
     my ($self, $msg, $options ) = @_;
     my $string = $self->message()->{$msg};
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
 }
-
-=cut
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

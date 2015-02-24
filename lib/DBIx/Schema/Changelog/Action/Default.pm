@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Action::Default;
 
 DBIx::Schema::Changelog::Action::Default - Handle default values for table columns
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -30,27 +36,24 @@ has sequence => (
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add - Execute sql statements can lead very likely to incompatibilities.
-
-	Need help:  If pg driver iss selected and collumn type iss boolen then dafault value 1 is wrong.
-				Must be '1', probably a parser, for future driver.
+=head2 add 
+    
+    Generate and define default values for column
 
 =cut
 
 sub add {
     my ( $self, $params ) = @_;
-    my $ret = q~~;
+    my $ret      = q~~;
+    my $defaults = $self->driver()->defaults();
     if ( defined $params->{default} && $params->{default} eq 'inc' ) {
-        $ret =
-          $self->sequence()
-          ->add( { default => $params->{default}, table => $params->{table}, name => $params->{name} } );
+        $ret = $self->sequence()->add( { default => $params->{default}, table => $params->{table}, name => $params->{name} } );
     }
     elsif ( defined $params->{default} && $params->{default} eq 'current' ) {
-        $ret = 'DEFAULT ' . $self->driver()->defaults()->{current}
-          if ( $params->{default} eq 'current' );
+        $ret = 'DEFAULT ' . $defaults->{current} if ( $params->{default} eq 'current' );
     }
     else {
-        $ret = ( defined $params->{default} ) ? "DEFAULT $params->{default}" : '';
+        $ret = ( defined $params->{default} ) ? ( $defaults->{boolean_str} ) ? "DEFAULT '$params->{default}'" : "DEFAULT $params->{default}" : '';
     }
     return $ret;
 }

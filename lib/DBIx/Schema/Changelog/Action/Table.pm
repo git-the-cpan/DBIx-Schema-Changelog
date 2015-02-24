@@ -2,9 +2,15 @@ package DBIx::Schema::Changelog::Action::Table;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Action::Table
+DBIx::Schema::Changelog::Action::TableAction handler for tables
+
+=head1 VERSION
+
+Version 0.1.0
 
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -13,7 +19,6 @@ use Moose;
 use MooseX::Types::Moose qw(HashRef);
 use DBIx::Schema::Changelog::Action::Column;
 use DBIx::Schema::Changelog::Action::Constraint;
-use DBIx::Schema::Changelog::Action::Column;
 use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Action';
@@ -64,20 +69,20 @@ sub add {
     my $constraints = [];
     foreach my $col ( @{ $params->{columns} } ) {
         unless ( $col->{tpl} ) {
+            $col->{create_table} = 1;
             push( @columns, $self->column_action()->add( $params->{name}, $col, $constraints ) );
             $self->constraint_action()->add( $params->{name}, $col, $constraints );
             next;
         }
         foreach ( @{ $self->templates()->{ $col->{tpl} } } ) {
+            $_->{create_table} = 1;
             push( @columns, $self->column_action()->add( $params->{name}, $_, $constraints ) );
             $self->constraint_action()->add( $params->{name}, $_, $constraints );
         }
     }
     push( @columns, @$constraints );
-    print Dumper( \@columns );
-    my $sql =
-      _replace_spare( $commands->{create_table}, [ $params->{name}, join( ",\n\t", @columns ) ] );
-    $self->dbh()->do($sql) or die "Can't handle sql: $sql";
+    my $sql = _replace_spare( $commands->{create_table}, [ $params->{name}, join( ",\n\t", @columns ) ] );
+    $self->_do($sql);
 
 }
 
@@ -89,17 +94,14 @@ sub alter {
     my ( $self, $params ) = @_;
     return unless $params->{name};
     if ( defined $params->{addcolumn} ) {
-        $self->dbh()
-          ->do( $self->driver()
-              ->add_column( $params->{name}, $self->column_action()->add( $params->{name}, $_ ) ) )
+        $self->driver()->add_column( $params->{name}, $self->column_action()->add( $params->{name}, $_ ) )
           foreach @{ $params->{addcolumn} };
     }
     elsif ( defined $params->{altercolumn} )   { $self->column_action()->alter($params); }
     elsif ( defined $params->{dropcolumn} )    { $self->column_action()->drop($params); }
     elsif ( defined $params->{addconstraint} ) { $self->constraint_action()->add($params); }
     else {
-        die __PACKAGE__
-          . " Key to alter table not found or implemented.\n Probaply it is misspelled.";
+        die __PACKAGE__ . " Key to alter table not found or implemented.\n Probaply it is misspelled.";
     }
 }
 
@@ -110,8 +112,9 @@ sub alter {
 sub drop {
     my ( $self, $params ) = @_;
     my $defaults = $self->driver()->defaults();
-    my $sql = $self->_replace_spare( $defaults->{drop_table}, [ $params->{name} ] );
-    $self->dbh()->do($sql) or die "Can't handle sql $!";
+    print Dumper($params);
+    my $sql = _replace_spare( $defaults->{drop_table}, [ $params->{name} ] );
+    $self->_do($sql);
 }
 
 =head2 load_templates - load pre defined column templates
@@ -122,8 +125,7 @@ sub load_templates {
     my ( $self, $templates ) = @_;
     foreach my $key ( sort { $a cmp $b } keys %$templates ) {
         my $tmpTemplate = [];
-        push( @$tmpTemplate, ( ( defined $_->{tpl} ) ? @{ $templates->{ $_->{tpl} } } : $_ ) )
-          foreach ( @{ $templates->{$key} } );
+        push( @$tmpTemplate, ( ( defined $_->{tpl} ) ? @{ $templates->{ $_->{tpl} } } : $_ ) ) foreach ( @{ $templates->{$key} } );
         $templates->{$key} = $tmpTemplate;
     }
     $self->templates($templates);

@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::File::Yaml;
 
 DBIx::Schema::Changelog::File::Yaml - Module for DBIx::Schema::Changelog::File to load changeset from YAML files.
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use 5.14.0;
 use strict;

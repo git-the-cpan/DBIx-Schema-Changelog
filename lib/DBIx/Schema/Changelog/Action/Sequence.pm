@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Action::Sequence;
 
 DBIx::Schema::Changelog::Action::Sequence - Action handler for sequences
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -21,16 +27,16 @@ with 'DBIx::Schema::Changelog::Action';
 
 sub add {
     my ( $self, $params ) = @_;
-    return $self->driver()->defaults()->{ $params->{default} } || ''
-      if ( !defined $self->driver()->defaults()->{ $params->{default} }
-        || $self->driver()->defaults()->{ $params->{default} } ne 'sequence' );
+    my $defaults = $self->driver()->defaults();
+    return $defaults->{ $params->{default} } || ''
+      if ( !defined $defaults->{ $params->{default} } || $defaults->{ $params->{default} } ne 'sequence' );
 
     $params->{table} =~ s/"//g;
     $params->{name} =~ s/"//g;
     my $seq = 'seq_' . $params->{table} . '_' . $params->{name};
     my $sql = _replace_spare( $self->driver()->commands()->{create_sequence},
         [ $seq, 1, 1, 9223372036854775807, 1, 1 ] );
-    $self->dbh()->do($sql) or die "Can't create sequence: $sql $!";
+    $self->_do($sql);
     return "DEFAULT nextval('$seq'::regclass)";
 }
 

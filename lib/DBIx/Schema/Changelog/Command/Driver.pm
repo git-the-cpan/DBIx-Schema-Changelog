@@ -3,12 +3,17 @@ package DBIx::Schema::Changelog::Command::Driver;
 
 DBIx::Schema::Changelog::Command::Driver - Create a new driver modul from template for DBIx::Schema::Changelog!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
-use Time::Piece;
 use Data::Dumper;
 use Moose;
 use File::Path qw( mkpath );
@@ -59,7 +64,7 @@ Version 0.0001
 
 =cut
 
-our $VERSION = '0.0001';
+our $VERSION = '0.0.0_001';
 
 =head1 SUBROUTINES/METHODS
 

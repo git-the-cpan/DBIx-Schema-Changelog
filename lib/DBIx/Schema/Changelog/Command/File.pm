@@ -4,12 +4,17 @@ package DBIx::Schema::Changelog::Command::File;
 
 DBIx::Schema::Changelog::Command::File - Create a new file reader modul from template for DBIx::Schema::Changelog!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
-use Time::Piece;
 use Data::Dumper;
 use Moose;
 use File::Path qw( mkpath );

@@ -4,7 +4,13 @@ package DBIx::Schema::Changelog::Action::Sql;
 
 DBIx::Schema::Changelog::Action::Sql - Action for manualy called sql 
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
@@ -14,18 +20,20 @@ with 'DBIx::Schema::Changelog::Action';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add - Execute sql statements can lead very likely to incompatibilities.
+=head2 add
+
+	Execute sql statements can lead very likely to incompatibilities.
 
 =cut
 
 sub add {
     my ( $self, $params ) = @_;
-	print STDERR __PACKAGE__, ' (',__LINE__, '). WARNING: Execute sql statements can lead very likely to incompatibilities.', $/;
-    $self->dbh()->do($params->{as}) or die "Can't handle sql $!";
+    print STDERR __PACKAGE__, ' (', __LINE__,'). WARNING: Execute sql statements can lead very likely to incompatibilities.', $/;
+    $self->_do( $params->{as} );
 }
 
-sub alter {}
-sub drop {}
+sub alter { }
+sub drop  { }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
