@@ -1,0 +1,108 @@
+---
+abstract: 'Forward database update from different configs'
+author:
+  - 'Mario Zieschang <mziescha@cpan.org>'
+build_requires:
+  DBD::SQLite: '0'
+  FindBin: '0'
+  Pod::Coverage::TrustPod: '0.100003'
+  Test::CheckManifest: '0.9'
+  Test::More: '0'
+  Test::Pod: '1.22'
+  Test::Pod::Coverage: '1.08'
+configure_requires:
+  Module::Build: '0.38'
+dynamic_config: 1
+generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.142060'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: DBIx-Schema-Changelog
+provides:
+  DBIx::Schema::Changelog:
+    file: lib/DBIx/Schema/Changelog.pm
+    version: v0.0.0_1
+  DBIx::Schema::Changelog::Action:
+    file: lib/DBIx/Schema/Changelog/Action.pm
+  DBIx::Schema::Changelog::Action::Column:
+    file: lib/DBIx/Schema/Changelog/Action/Column.pm
+  DBIx::Schema::Changelog::Action::Constraint:
+    file: lib/DBIx/Schema/Changelog/Action/Constraint.pm
+  DBIx::Schema::Changelog::Action::Default:
+    file: lib/DBIx/Schema/Changelog/Action/Default.pm
+  DBIx::Schema::Changelog::Action::Index:
+    file: lib/DBIx/Schema/Changelog/Action/Index.pm
+  DBIx::Schema::Changelog::Action::Sequence:
+    file: lib/DBIx/Schema/Changelog/Action/Sequence.pm
+  DBIx::Schema::Changelog::Action::Sql:
+    file: lib/DBIx/Schema/Changelog/Action/Sql.pm
+  DBIx::Schema::Changelog::Action::Table:
+    file: lib/DBIx/Schema/Changelog/Action/Table.pm
+  DBIx::Schema::Changelog::Action::View:
+    file: lib/DBIx/Schema/Changelog/Action/View.pm
+  DBIx::Schema::Changelog::Changeset:
+    file: lib/DBIx/Schema/Changelog/Changeset.pm
+  DBIx::Schema::Changelog::Command:
+    file: lib/DBIx/Schema/Changelog/Command.pm
+  DBIx::Schema::Changelog::Command::Base:
+    file: lib/DBIx/Schema/Changelog/Command/Base.pm
+  DBIx::Schema::Changelog::Command::Changeset:
+    file: lib/DBIx/Schema/Changelog/Command/Changeset.pm
+  DBIx::Schema::Changelog::Command::Driver:
+    file: lib/DBIx/Schema/Changelog/Command/Driver.pm
+    version: '0.0001'
+  DBIx::Schema::Changelog::Command::File:
+    file: lib/DBIx/Schema/Changelog/Command/File.pm
+    version: v0.0.0_1
+  DBIx::Schema::Changelog::Core::ExceptionMessages:
+    file: lib/DBIx/Schema/Changelog/Core/ExceptionMessages.pm
+  DBIx::Schema::Changelog::Driver:
+    file: lib/DBIx/Schema/Changelog/Driver.pm
+  DBIx::Schema::Changelog::Driver::Pg:
+    file: lib/DBIx/Schema/Changelog/Driver/Pg.pm
+    version: v0.0.0_1
+  DBIx::Schema::Changelog::Driver::SQLite:
+    file: lib/DBIx/Schema/Changelog/Driver/SQLite.pm
+    version: v0.0.0_1
+  DBIx::Schema::Changelog::File:
+    file: lib/DBIx/Schema/Changelog/File.pm
+  DBIx::Schema::Changelog::File::JSON:
+    file: lib/DBIx/Schema/Changelog/File/JSON.pm
+  DBIx::Schema::Changelog::File::Yaml:
+    file: lib/DBIx/Schema/Changelog/File/Yaml.pm
+  DBIx::Schema::Changelog::Manual:
+    file: lib/DBIx/Schema/Changelog/Manual.pm
+  Dancer2::Manual:
+    file: lib/DBIx/Schema/Changelog/Manual.pm
+    version: '0.01'
+requires:
+  DBD::SQLite: '1.4'
+  DBI: '1.632'
+  Data::Dumper: '2.151'
+  File::Spec: '0'
+  Getopt::Long: '2.42'
+  Hash::MD5: '0.05'
+  Iterator::Simple: '0.06'
+  JSON::Parse: '0.31'
+  Method::Signatures::Simple: '1.07'
+  Module::Version: '0.12'
+  Moose: '2.1403'
+  MooseX::HasDefaults::RO: '0'
+  MooseX::Types::LoadableClass: '0.013'
+  MooseX::Types::Moose: '0.45'
+  MooseX::Types::Path::Class: '0.06'
+  MooseX::Types::PerlVersion: '0.002'
+  Path::Class: '0.3'
+  Pod::Usage: '0'
+  Storable: '2.49'
+  Text::Trim: '1.02'
+  Time::Piece: '1.27'
+  TryCatch: '1.003002'
+  YAML: '1.13'
+  YAML::XS: '0.55'
+  strict: '0'
+  warnings: '0'
+resources:
+  license: http://www.perlfoundation.org/artistic_license_2_0
+version: v0.0.0_1
