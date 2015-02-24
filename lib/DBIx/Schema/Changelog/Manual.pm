@@ -1,6 +1,6 @@
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$Dancer2::Manual::VERSION = '0.01';
+$DBIx::Schema::Changelog::Manual::VERSION = '0.0.0_002';
 __END__
 
 =pod

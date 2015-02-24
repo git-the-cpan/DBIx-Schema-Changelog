@@ -130,7 +130,7 @@ Version 0.0.0_001
 
 =cut
 
-our $VERSION = '0.0.0_001';
+our $VERSION = '0.0.0_002';
 
 sub _parse_log {
     my ( $self, $file ) = @_;
@@ -253,7 +253,9 @@ There is no default.
 
 =head1 SEE ALSO
 
-=head2 L<DBIx::Admin::CreateTable >
+=head2 L<DBIx::Admin::CreateTable>
+
+=over 4
 
 The package from which the idea originated.
 

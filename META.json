@@ -64,7 +64,7 @@
    "provides" : {
       "DBIx::Schema::Changelog" : {
          "file" : "lib/DBIx/Schema/Changelog.pm",
-         "version" : "v0.0.0_1"
+         "version" : "v0.0.0_2"
       },
       "DBIx::Schema::Changelog::Action" : {
          "file" : "lib/DBIx/Schema/Changelog/Action.pm"
@@ -137,11 +137,8 @@
          "file" : "lib/DBIx/Schema/Changelog/File/Yaml.pm"
       },
       "DBIx::Schema::Changelog::Manual" : {
-         "file" : "lib/DBIx/Schema/Changelog/Manual.pm"
-      },
-      "Dancer2::Manual" : {
          "file" : "lib/DBIx/Schema/Changelog/Manual.pm",
-         "version" : "0.01"
+         "version" : "v0.0.0_2"
       }
    },
    "release_status" : "testing",
@@ -150,5 +147,5 @@
          "http://www.perlfoundation.org/artistic_license_2_0"
       ]
    },
-   "version" : "v0.0.0_1"
+   "version" : "v0.0.0_2"
 }
