@@ -6,13 +6,12 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Moose;
@@ -106,7 +105,7 @@ sub generate_foreign_key {
 "FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable}($foreignkeyvalues->{refcolumn})";
 }
 
-=head2 create_index
+=head2 add_column
 
 =cut
 

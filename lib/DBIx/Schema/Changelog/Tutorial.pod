@@ -1,59 +1,24 @@
-# ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
-package DBIx::Schema::Changelog::Manual;
 
-=head1 VERSION
-
-Version 0.1.0
-
-=cut
-
-our $VERSION = '0.1.0';
-
+package DBIx::Schema::Changelog::Tutorial;
+$DBIx::Schema::Changelog::Tutorial::VERSION = '0.2.0';
 __END__
 
 =pod
 
 =head1 NAME
 
-	DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
+	DBIx::Schema::Changelog::Tutorial - A gentle introduction to DBIx::Schema::Changelog
 
-=head1 DESCRIPTION
+=head1 VERSION
+
+Version 0.2.0
+
+=head1 What is DBIx::Schema::Changelog?
 
 	Continuous Database Migration
 	Package to databases in sync with the development of the application to keep.
 
 =encoding utf8
-
-=head1 INSTALL
-
-Installation of DBIx::Schema::Changelog is simple:
-
-    perl -MCPAN -e 'install DBIx::Schema::Changelog'
-
-Thanks to the magic of cpanminus, if you do not have CPAN.pm configured, or just
-want a quickfire way to get running, the following should work, at least on
-Unix-like systems:
-
-    wget -O - http://cpanmin.us | sudo perl - DBIx::Schema::Changelog
-
-(If you don't have root access, omit the 'sudo', and cpanminus will install
-DBIx::Schema::Changelog and prereqs into C<~/perl5>.)
-
-=head1 MAIN CHANGELOG
-
-=head2 Implemnt Subchangelog files
-
-=head2 Define Template
-
-=head1 SUBCHANGELOG FILES
-
-=head2 Create Table
-
-=head2 Alter Table
-
-=head2 Create Views
-
-=head2 Create Indexes
 
 =head1 AUTHOR
 

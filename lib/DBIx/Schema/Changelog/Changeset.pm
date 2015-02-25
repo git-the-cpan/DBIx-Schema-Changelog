@@ -6,15 +6,14 @@ DBIx::Schema::Changelog::Changeset - Handles action types.
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
-use Data::Dumper;
 use Moose;
 use Method::Signatures::Simple;
 use MooseX::HasDefaults::RO;
@@ -57,6 +56,16 @@ has view_action => (
     },
 );
 
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item handle
+
+    Handles different changeset commands
+
+=cut
+
 sub handle {
     my ( $self, $entries ) = @_;
     foreach (@$entries) {
@@ -85,6 +94,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::Changeset
+
+=back
 
 =head1 AUTHOR
 

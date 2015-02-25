@@ -6,16 +6,14 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
-use Data::Dumper;
 use Moose;
 use File::Path qw( mkpath );
 use MooseX::Types::Moose qw(Str);

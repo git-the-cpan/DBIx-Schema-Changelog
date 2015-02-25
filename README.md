@@ -1,95 +1,51 @@
-package DBIx::Schema::Changelog::File::Yaml;
+DBIx-Schema-Changelog - Continuous Database Migration 
 
-=head1 NAME
+[![Build Status](https://travis-ci.org/mziescha/DBIx-Schema-Changelog.svg?branch=master)](https://travis-ci.org/mziescha/DBIx-Schema-Changelog)
+[![Coverage Status](https://coveralls.io/repos/mziescha/DBIx-Schema-Changelog/badge.svg)](https://coveralls.io/r/mziescha/DBIx-Schema-Changelog)
 
-DBIx::Schema::Changelog::File::Yaml - Module for DBIx::Schema::Changelog::File to load changeset from YAML files.
+A package which allows a continuous development with an application that hold the appropriate database system synchronously.
 
-=head1 VERSION
+MOTIVATION
 
-Version 0.2.0
+When working with several people on a large project that is bound to a database.
+If you there and back the databases have different levels of development.
 
-=cut
+You can keep in sync with SQL statements, but these are then incompatible with other database systems.
 
-our $VERSION = '0.2.0';
+INSTALLATION
 
-use strict;
-use warnings FATAL => 'all';
-use Moose;
-use YAML::XS qw/LoadFile/;
+To install this module, run the following commands:
 
-with 'DBIx::Schema::Changelog::File';
+	perl Makefile.PL
+	make
+	make test
+	make install
 
-has tpl_main => (
-    isa     => 'Str',
-    is      => 'ro',
-    default => q~
----
-templates:
-    tpl_std:
-        - name: id
-          type: integer
-          notnull: 1
-          primarykey: 1
-          default: inc
+SUPPORT AND DOCUMENTATION
 
-changelogs: 
-  - "01"~,
-);
+After installing, you can find documentation for this module with the
+perldoc command.
 
-has tpl_sub => (
-    isa     => 'Str',
-    is      => 'ro',
-    default => q~- id: 001.01-maz
-  author: "Mario Zieschang"
-  entries:
-    - type: createtable
-      name: 'client'
-      columns:
-        - tpl: 'tpl_std'
-~,
-);
+    perldoc DBIx::Schema::Changelog
 
-has ending => (
-    is      => 'ro',
-    isa     => 'Str',
-    default => '.yml',
-);
+You can also look for information at:
 
-=head1 SUBROUTINES/METHODS
+    RT, CPAN's request tracker (report bugs here)
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=DBIx-Schema-Changelog
 
-=over 4
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/DBIx-Schema-Changelog
 
-=item load
+    CPAN Ratings
+        http://cpanratings.perl.org/d/DBIx-Schema-Changelog
 
-    Called to load defined Yaml files
+    Search CPAN
+        http://search.cpan.org/dist/DBIx-Schema-Changelog/
 
-=cut
 
-sub load {
-    my ( $self, $file ) = @_;
+LICENSE AND COPYRIGHT
 
-    $file = $file . $self->ending();
-
-    open my $rfh, '<', $file or die "can't open config file: $file $!";
-    print STDERR __PACKAGE__, ". Read changlog file '$file'. \n";
-
-    return LoadFile($file);
-}
-
-no Moose;
-__PACKAGE__->meta->make_immutable;
-
-1;    # End of DBIx::Schema::Changelog::File
-
-=back
-
-=head1 AUTHOR
-
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2015 Mario Zieschang.
+Copyright (C) 2015 Mario Zieschang
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
@@ -127,4 +83,3 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-=cut

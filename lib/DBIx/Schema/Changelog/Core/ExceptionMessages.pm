@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Core::EceptionMessages - list of eception messages
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 =head1 DESCRIPTION
 
@@ -19,25 +19,27 @@ our $VERSION = '0.1.0';
 use strict;
 use warnings;
 use Moose;
-use MooseX::Types::Moose qw(HashRef, Str);
 
-has message => (
+has messages => (
     is      => 'ro',
     isa     => 'HashRef[Str]',
-    default => {
-        no_default_value => "No default value set for column: {0} in table: {1} "
+    default => sub {
+        return { no_default_value =>
+              q~No default value set for column: {0} in table: {1} ~ };
+
     }
 );
 
 =head1 SUBROUTINES/METHODS
 
-=head2 replace_spare
+=head2 message
+
+	Handles defined message, and replace spare
 
 =cut
-
 sub message {
-    my ($self, $msg, $options ) = @_;
-    my $string = $self->message()->{$msg};
+    my ( $self, $msg, $options ) = @_;
+    my $string = ${ $self->messages()->{$msg} };
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
 }

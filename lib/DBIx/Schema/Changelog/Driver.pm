@@ -6,16 +6,15 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose::Role;
-use Data::Dumper;
 
 use MooseX::Types::PerlVersion qw( PerlVersion );
 use MooseX::Types::Moose qw( Maybe Undef );
@@ -33,9 +32,6 @@ has max_version => (
     coerce  => 1,
     builder => '_max_version',
 );
-
-sub has_max_version { defined shift->max_version }
-sub _max_version    { }
 
 has changelog_table => (
     isa     => 'ArrayRef[Any]',
@@ -146,31 +142,33 @@ has origin_types => (
 
 =head1 SUBROUTINES/METHODS
 
-=head2 create_changelog_table
+=over 4
+
+=item create_changelog_table
 
 =cut
 
 requires 'create_changelog_table';
 
-=head2 generate_unique
+=item generate_unique
 
 =cut
 
 requires 'generate_unique';
 
-=head2 generate_foreign_key
+=item generate_foreign_key
 
 =cut
 
 requires 'generate_foreign_key';
 
-=head2 add_column
+=item add_column
 
 =cut
 
 requires 'add_column';
 
-=head2 check_version
+=item check_version
 
 =cut
 
@@ -187,7 +185,7 @@ sub check_version {
     }
 }
 
-=head2 type
+=item type
 
 =cut
 
@@ -200,7 +198,25 @@ sub type {
     return $ret;
 }
 
+=item has_max_version
+
+    check if max version is set
+
+=cut
+
+sub has_max_version { defined shift->max_version }
+
+=item has_max_version
+
+    builder for max version
+
+=cut
+
+sub _max_version    { }
+
 1;    # End of DBIx::Schema::Changelog::Driver
+
+=back
 
 =head1 AUTHOR
 

@@ -6,11 +6,11 @@ package DBIx::Schema::Changelog;
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 =head1 DESCRIPTION
 
@@ -23,7 +23,6 @@ our $VERSION = '0.1.0';
 
 use strict;
 use warnings;
-use Data::Dumper;
 use DBI;
 use File::Spec;
 use DBIx::Schema::Changelog::Changeset;
@@ -118,7 +117,7 @@ has driver => (
 );
 
 has dbh => (
-    isa => 'DBI::db',
+    isa      => 'DBI::db',
     required => 1,
 );
 
@@ -129,10 +128,13 @@ sub _parse_log {
         next if ( $self->_check_key( $_->{id}, sum_hash($_) ) );
         print STDOUT __PACKAGE__, " Handle changeset: $_->{id}\n";
         my $handle_time = time();
-        $self->changeset()->handle( $_->{entries} ) if ( defined $_->{entries} );
-        $self->insert_dblog()->execute( $_->{id}, $_->{author}, $file, sum_hash($_), $VERSION )
+        $self->changeset()->handle( $_->{entries} )
+          if ( defined $_->{entries} );
+        $self->insert_dblog()
+          ->execute( $_->{id}, $_->{author}, $file, sum_hash($_), $VERSION )
           or die $self->dbh()->errstr;
-        print STDOUT __PACKAGE__, " Changeset: $_->{id} author: $_->{author}  executed.  "
+        print STDOUT __PACKAGE__,
+          " Changeset: $_->{id} author: $_->{author}  executed.  "
           . ( time() - $handle_time ) . " \n";
     }
 }
@@ -141,12 +143,24 @@ sub _check_key {
     my ( $self, $id, $value ) = @_;
     my @resp =
       $self->dbh()
-      ->selectrow_array(
-        "select md5sum, changelog from " . $self->db_changelog_table() . " where id = '$id'" )
+      ->selectrow_array( "select md5sum, changelog from "
+          . $self->db_changelog_table()
+          . " where id = '$id'" )
       or return 0;
-    die "MD5 hash changed for changeset: $id expect $value got $resp[0]" if ( $resp[0] ne $value );
+    die "MD5 hash changed for changeset: $id expect $value got $resp[0]"
+      if ( $resp[0] ne $value );
     return ( @resp >= 1 );
 }
+
+=head1 SUBROUTINES/METHODS
+
+=head2 BUILD
+
+    Run to check driver version with installed db driver.
+
+    Creates changelog table if it's not existing.
+
+=cut
 
 sub BUILD {
     my $self   = shift;
@@ -156,10 +170,10 @@ sub BUILD {
     $self->driver()->check_version( $self->dbh()->get_info(18) );
 
     $self->table_action()
-      ->add( $self->driver()->create_changelog_table( $self->dbh(), $self->db_changelog_table() ) );
+      ->add( $self->driver()
+          ->create_changelog_table( $self->dbh(), $self->db_changelog_table() )
+      );
 }
-
-=head1 SUBROUTINES/METHODS
 
 =head2 read
 
@@ -170,7 +184,9 @@ sub BUILD {
 sub read {
     my ( $self, $folder ) = @_;
 
-    my $main = $self->loader()->load( File::Spec->catfile( $folder, 'changelog' ) );
+    my $main =
+      $self->loader()->load( File::Spec->catfile( $folder, 'changelog' ) );
+
     #first load templates
     $self->table_action()->load_templates( $main->{templates} );
 

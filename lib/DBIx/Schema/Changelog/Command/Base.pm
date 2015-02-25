@@ -6,13 +6,14 @@ DBIx::Schema::Changelog::Command::Base - Abstract file class.
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
+use FindBin;
 use warnings FATAL => 'all';
 use Time::Piece;
 use Moose::Role;
@@ -29,19 +30,18 @@ has year => (
 has makefile => (
 	isa => 'Str',
 	is => 'ro',
-	default => qq~use 5.14.0;
-use strict;
+	default => qq~use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME             => 'DBIx::Schema::Changelog::{0}::{1}',
-    AUTHOR           => {2},
+    AUTHOR           => q{{2} <{3}>},
     VERSION_FROM     => 'lib/DBIx/Schema/Changelog.pm',
     ABSTRACT_FROM    => 'lib/DBIx/Schema/Changelog.pm',
     LICENSE          => 'Artistic_2_0',
     PL_FILES         => {},
-    MIN_PERL_VERSION => 5.14.0,
+    MIN_PERL_VERSION => 5.10.0,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
     },
@@ -49,14 +49,14 @@ WriteMakefile(
         'strict'                     => 1.08,
         'Moose'                      => 2.1403,
         'warnings'                   => 1.23,
-        'DBIx::Schema::Changelog'    => {3},
+        'DBIx::Schema::Changelog'    => {4},
     },
     PREREQ_PM => {
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'DBIx-Schema-Changelog-*' }
+    clean => { FILES => 'DBIx-Schema-Changelog-{0}-*' }
 );~,
 );
 
@@ -69,7 +69,7 @@ Module::Build->new(
 	module_name    => 'DBIx::Schema::Changelog::{0}::{1}',
 	license        => 'artistic_2',
 	dist_abstract  => 'Forward database update from YAML configs',
-	dist_author    => '{2}',
+	dist_author    => '{2} <{3}>',
 	build_requires => {
 		Test::More				=> 0,
 		FindBin 				=> 0,
@@ -85,7 +85,7 @@ Module::Build->new(
         'strict'                     => 1.08,
         'Moose'                      => 2.1403,
         'warnings'                   => 1.23,
-        'DBIx::Schema::Changelog'    => {3},
+        'DBIx::Schema::Changelog'    => {4},
 	}
 )->create_build_script();~,
 );
@@ -175,7 +175,6 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-=cut
 ~,
 );
 
@@ -184,8 +183,11 @@ has changes => (
 	is => 'ro',
 	default => qq~Revision history for DBIx-Schema-Changelog-{0}-{1}
 
-0.01    Date/time
-        Initial changeset.
+#========================================================================
+# Version {2}  Date: {3} ({4})
+#========================================================================
+
+* First version, released on an unsuspecting world.
 ~,
 );
 
@@ -207,7 +209,6 @@ has t_boilerplate => (
     isa => 'Str',
     is => 'ro',
     default => q/#!perl -T
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
@@ -249,7 +250,7 @@ sub module_boilerplate_ok {
 TODO: {
   local $TODO = "Need to replace the boilerplate text";
 
-  not_in_file_ok(README =>
+  not_in_file_ok('README.md' =>
     "The README is used..."       => qr~The README is used~,
     "'version information here'"  => qr~to provide version information~,
   );
@@ -268,7 +269,6 @@ has t_manifest => (
     isa => 'Str',
     is => 'ro',
     default => q~#!perl -T
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
@@ -288,7 +288,6 @@ has t_pod_coverage => (
     isa => 'Str',
     is => 'ro',
     default => q~#!perl -T
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
@@ -322,7 +321,6 @@ has t_pod => (
     isa => 'Str',
     is => 'ro',
     default => q~#!perl -T
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;

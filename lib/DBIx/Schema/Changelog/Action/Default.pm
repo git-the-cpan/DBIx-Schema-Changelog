@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Default - Handle default values for table colum
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -36,7 +36,9 @@ has sequence => (
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add 
+=over 4
+
+=item add 
     
     Generate and define default values for column
 
@@ -47,24 +49,51 @@ sub add {
     my $ret      = q~~;
     my $defaults = $self->driver()->defaults();
     if ( defined $params->{default} && $params->{default} eq 'inc' ) {
-        $ret = $self->sequence()->add( { default => $params->{default}, table => $params->{table}, name => $params->{name} } );
+        $ret = $self->sequence()->add(
+            {
+                default => $params->{default},
+                table   => $params->{table},
+                name    => $params->{name}
+            }
+        );
     }
     elsif ( defined $params->{default} && $params->{default} eq 'current' ) {
-        $ret = 'DEFAULT ' . $defaults->{current} if ( $params->{default} eq 'current' );
+        $ret = 'DEFAULT ' . $defaults->{current}
+          if ( $params->{default} eq 'current' );
     }
     else {
-        $ret = ( defined $params->{default} ) ? ( $defaults->{boolean_str} ) ? "DEFAULT '$params->{default}'" : "DEFAULT $params->{default}" : '';
+        $ret =
+            ( defined $params->{default} )
+          ? ( $defaults->{boolean_str} )
+              ? "DEFAULT '$params->{default}'"
+              : "DEFAULT $params->{default}"
+          : '';
     }
     return $ret;
 }
 
+=item alter 
+    
+Not needed!
+
+=cut
+
 sub alter { }
-sub drop  { }
+
+=item drop 
+    
+Not needed!
+
+=cut
+
+sub drop { }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

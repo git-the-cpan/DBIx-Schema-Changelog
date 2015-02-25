@@ -5,3 +5,25 @@ Revision history for DBIx-Schema-Changelog
 #========================================================================
 
 * First version, released on an unsuspecting world.
+
+#========================================================================
+# Version 0.2.0  Date: 2015/02/25 (Mario Zieschang)
+#========================================================================
+
+== DOCUMENTATION:
+
+	* Running pod tests
+
+	* Add documentation pods
+
+== BUG FIXES:
+
+	* file module maker
+
+	* driver module maker
+
+	* create indizes for driver Pg
+
+== ENHANCEMENT:
+
+	* downgrade min perl version to 5.10

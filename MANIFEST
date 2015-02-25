@@ -12,7 +12,6 @@ lib/DBIx/Schema/Changelog/Changeset.pm
 lib/DBIx/Schema/Changelog/Command.pm
 lib/DBIx/Schema/Changelog/Driver.pm
 lib/DBIx/Schema/Changelog/File.pm
-lib/DBIx/Schema/Changelog/Manual.pm
 lib/DBIx/Schema/Changelog/Action/Column.pm
 lib/DBIx/Schema/Changelog/Action/Constraint.pm
 lib/DBIx/Schema/Changelog/Action/Default.pm
@@ -30,10 +29,18 @@ lib/DBIx/Schema/Changelog/Driver/Pg.pm
 lib/DBIx/Schema/Changelog/Driver/SQLite.pm
 lib/DBIx/Schema/Changelog/File/JSON.pm
 lib/DBIx/Schema/Changelog/File/Yaml.pm
+
+lib/DBIx/Schema/Changelog/Cookbook.pod
+lib/DBIx/Schema/Changelog/Manual.pod
+lib/DBIx/Schema/Changelog/Tutorial.pod
+lib/DBIx/Schema/Changelog/Cookbook/Changeset.pod
+lib/DBIx/Schema/Changelog/Cookbook/Driver.pod
+lib/DBIx/Schema/Changelog/Cookbook/File.pod
+
 Makefile.PL
 Build.PL
 MANIFEST
-README
+README.md
 t/00-load.t
 t/001-create.t
 t/010-changelog.t

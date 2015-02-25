@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Sql - Action for manualy called sql
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -20,7 +20,9 @@ with 'DBIx::Schema::Changelog::Action';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add
+=over 4
+
+=item add
 
 	Execute sql statements can lead very likely to incompatibilities.
 
@@ -32,13 +34,28 @@ sub add {
     $self->_do( $params->{as} );
 }
 
+=item alter
+
+    Not needed!
+
+=cut
+
 sub alter { }
+
+=item drop
+
+    Not needed!
+
+=cut
+
 sub drop  { }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

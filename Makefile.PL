@@ -1,4 +1,4 @@
-use 5.14.0;
+use 5.10.0;
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
@@ -10,7 +10,7 @@ WriteMakefile(
     ABSTRACT_FROM      => 'lib/DBIx/Schema/Changelog.pm',
     LICENSE            => 'artistic_2',
     PL_FILES           => {},
-    MIN_PERL_VERSION   => 5.14.0,
+    MIN_PERL_VERSION   => 5.10.0,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
     },
@@ -21,6 +21,7 @@ WriteMakefile(
         'JSON::Parse'                  => 0.31,
         'Pod::Usage'                   => 0,
         'DBI'                          => 1.632,
+'Data::Dumper' => 2.151,
         'Hash::MD5'                    => 0.05,
         'Iterator::Simple'             => 0.06,
         'YAML::XS'                     => 0.55,
@@ -30,7 +31,6 @@ WriteMakefile(
         'YAML'                         => 1.13,
         'Storable'                     => 2.49,
         'Method::Signatures::Simple'   => 1.07,
-        'Data::Dumper'                 => 2.151,
         'Getopt::Long'                 => 2.42,
         'MooseX::Types::Moose'         => 0.45,
         'Path::Class'                  => 0.3,

@@ -2,15 +2,15 @@ package DBIx::Schema::Changelog::Action::Index;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Action::Index
+DBIx::Schema::Changelog::Action::Index - Action handler for indiezes
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -20,7 +20,11 @@ with 'DBIx::Schema::Changelog::Action';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add
+=over 4
+
+=item add
+ 
+If it's supported new index will be created.
 
 =cut
 
@@ -29,40 +33,43 @@ sub add {
     my $commands = $self->driver()->commands;
 
     unless ( $commands->{create_index} ) {
-        print STDERR __PACKAGE__, " (", __LINE__, ") Create index is not supported!  ", $/;
+        print STDERR __PACKAGE__, " (", __LINE__,
+          ") Create index is not supported!  ", $/;
         return;
     }
 
     my $sql = _replace_spare(
         $commands->{create_index},
         [
-            ( ( defined $params->{name} ) ? $params->{name} : time() ), $params->{taple},
-            $params->{using}, join( ", ", $params->{column} )
+            ( ( defined $params->{name} ) ? $params->{name} : time() ),
+            $params->{taple}, $params->{using}, join( ", ", $params->{column} )
         ]
     );
     $self->_do($sql);
 }
 
-=head2 alter
+=item alter
+
+Not needed!
 
 =cut
 
-sub alter {
+sub alter { }
 
-}
-
-=head2 drop
+=item drop
+    
+Not needed!
 
 =cut
 
-sub drop {
-
-}
+sub drop { }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

@@ -1,5 +1,5 @@
 #!perl -T
-use 5.14.0;
+
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
@@ -11,7 +11,6 @@ unless ( $ENV{RELEASE_TESTING} ) {
     plan( skip_all => "Author tests not required for installation" );
 }
 
-all_pod_coverage_ok({ coverage_class => 'Pod::Coverage::TrustPod' });
 
 # Ensure a recent version of Test::Pod::Coverage
 my $min_tpc = 1.08;
@@ -26,4 +25,4 @@ eval "use Pod::Coverage $min_pc";
 plan skip_all => "Pod::Coverage $min_pc required for testing POD coverage"
     if $@;
 
-all_pod_coverage_ok();
+all_pod_coverage_ok({ coverage_class => 'Pod::Coverage::TrustPod' });

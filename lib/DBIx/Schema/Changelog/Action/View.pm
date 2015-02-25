@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::View - Handles view actions
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -20,18 +20,28 @@ with 'DBIx::Schema::Changelog::Action';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add
+=over 4
+
+=item add
+
+    Add view
 
 =cut
 
 sub add {
     my ( $self, $params ) = @_;
     my $commands = $self->driver()->commands;
+    unless ( $commands->{create_view} ) {
+        print STDERR __PACKAGE__, " (", __LINE__, ") Create view is not supported!  ", $/;
+        return;
+    }
     my $sql = _replace_spare( $commands->{create_view}, [ $params->{name}, $params->{as} ] );
     $self->_do($sql);
 }
 
-=head2 alter
+=item alter
+
+    Drop view and add new one.
 
 =cut
 
@@ -41,7 +51,9 @@ sub alter {
     $self->add($params);
 }
 
-=head2 drop
+=item drop
+
+    Drop defined view.
 
 =cut
 
@@ -57,6 +69,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

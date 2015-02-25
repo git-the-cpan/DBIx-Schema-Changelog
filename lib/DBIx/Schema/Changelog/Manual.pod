@@ -1,87 +1,72 @@
-package DBIx::Schema::Changelog::File::Yaml;
+
+# ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
+package DBIx::Schema::Changelog::Manual;
+$DBIx::Schema::Changelog::Manual::VERSION = '0.2.0';
+__END__
+
+=pod
 
 =head1 NAME
 
-DBIx::Schema::Changelog::File::Yaml - Module for DBIx::Schema::Changelog::File to load changeset from YAML files.
+	DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
 
 =head1 VERSION
 
 Version 0.2.0
 
-=cut
+=head1 DESCRIPTION
 
-our $VERSION = '0.2.0';
+	Continuous Database Migration
+	Package to databases in sync with the development of the application to keep.
 
-use strict;
-use warnings FATAL => 'all';
-use Moose;
-use YAML::XS qw/LoadFile/;
+=encoding utf8
 
-with 'DBIx::Schema::Changelog::File';
+=head1 INSTALL
 
-has tpl_main => (
-    isa     => 'Str',
-    is      => 'ro',
-    default => q~
----
-templates:
-    tpl_std:
-        - name: id
-          type: integer
-          notnull: 1
-          primarykey: 1
-          default: inc
+Installation of DBIx::Schema::Changelog is simple:
 
-changelogs: 
-  - "01"~,
-);
+    perl -MCPAN -e 'install DBIx::Schema::Changelog'
 
-has tpl_sub => (
-    isa     => 'Str',
-    is      => 'ro',
-    default => q~- id: 001.01-maz
-  author: "Mario Zieschang"
-  entries:
-    - type: createtable
-      name: 'client'
-      columns:
-        - tpl: 'tpl_std'
-~,
-);
+Thanks to the magic of cpanminus, if you do not have CPAN.pm configured, or just
+want a quickfire way to get running, the following should work, at least on
+Unix-like systems:
 
-has ending => (
-    is      => 'ro',
-    isa     => 'Str',
-    default => '.yml',
-);
+    wget -O - http://cpanmin.us | sudo perl - DBIx::Schema::Changelog
 
-=head1 SUBROUTINES/METHODS
+(If you don't have root access, omit the 'sudo', and cpanminus will install
+DBIx::Schema::Changelog and prereqs into C<~/perl5>.)
 
-=over 4
+=head1 MAIN CHANGELOG
 
-=item load
+=head2 Implemnt Subchangelog files
 
-    Called to load defined Yaml files
+=head2 Define Template
 
-=cut
+=head1 SUBCHANGELOG ACTIONS
 
-sub load {
-    my ( $self, $file ) = @_;
+=head2 Column
 
-    $file = $file . $self->ending();
+=head2 Constraint
 
-    open my $rfh, '<', $file or die "can't open config file: $file $!";
-    print STDERR __PACKAGE__, ". Read changlog file '$file'. \n";
+=head2 Default
 
-    return LoadFile($file);
-}
+=head2 Index
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
+=head2 Sequence
 
-1;    # End of DBIx::Schema::Changelog::File
+=head2 Sql
 
-=back
+=head2 Table
+
+=head2 View
+
+=head1 SUBCHANGELOG COMMANDS
+
+=head2 Changeset
+
+=head2 Driver
+
+=head2 File
 
 =head1 AUTHOR
 
@@ -126,5 +111,6 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 =cut

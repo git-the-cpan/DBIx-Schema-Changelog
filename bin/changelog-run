@@ -59,7 +59,7 @@ DBIx::Schema::Changelog::Command->run;
 
 =over 4
 
-=head2 L<DBIx::Admin::CreateTable>
+=item L<DBIx::Admin::CreateTable>
 
 The package from which the idea originated.
 

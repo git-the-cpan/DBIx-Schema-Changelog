@@ -6,15 +6,14 @@ DBIx::Schema::Changelog::Action::Column - Action handler for table columns
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
-use Data::Dumper;
 use Text::Trim;
 use Moose;
 use Method::Signatures::Simple;
@@ -45,16 +44,25 @@ has errors => (
 
 =head1 SUBROUTINES/METHODS
 
-=head2 add
+=over 4
+
+=item add
+
+    Prepare column string for create table.
+    Or add new column into table
 
 =cut
 
 sub add {
     my ( $self, $table, $col ) = @_;
+    my $commands = $self->driver()->commands;
+    unless ( $commands->{add_column} ) {
+        print STDERR __PACKAGE__, " (", __LINE__, ") Add column is not supported!  ", $/;
+        return;
+    }
 
     my $type     = $self->driver()->type($col);
     my $defaults = $self->driver()->defaults;
-    my $commands = $self->driver()->commands;
     #
     die $self->errors()->message( 'no_default_value', [ $col->{name}, $table ] )
       if ( ( $col->{notnull} || defined $col->{primarykey} )
@@ -71,7 +79,9 @@ sub add {
     return $self->_do($sql);
 }
 
-=head2 alter
+=item alter
+
+    Not yet implemented
 
 =cut
 
@@ -79,22 +89,34 @@ sub alter {
 
 }
 
-=head2 drop
+=item drop
+
+    If it's supported, it will drop defined column from table.
 
 =cut
 
 sub drop {
     my ( $self, $table, $params ) = @_;
-    my $defaults = $self->driver()->defaults();
+    my $commands = $self->driver()->commands;
+    unless ( $commands->{drop_column} ) {
+        print STDERR __PACKAGE__, " (", __LINE__, ") Create index is not supported!  ", $/;
+        return;
+    }
     foreach ( @{ $params->{dropcolumn} } ) {
-        my $sql = _replace_spare( $defaults->{alter_table}, [$table] );
-        $sql .= ' ' . _replace_spare( $defaults->{drop_column}, [ $_->{name} ] );
+        my $sql = _replace_spare( $commands->{alter_table}, [$table] );
+        $sql .= ' ' . _replace_spare( $commands->{drop_column}, [ $_->{name} ] );
         $self->_do($sql);
     }
 
 }
 
-=head2 run_constraints
+=back
+
+=head1 ADDITIONAL SUBROUTINES/METHODS
+
+=over 4
+
+=item run_constraints
 
 =cut
 
@@ -108,6 +130,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

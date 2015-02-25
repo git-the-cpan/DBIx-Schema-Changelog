@@ -6,16 +6,14 @@ DBIx::Schema::Changelog::Command::File - Create a new file reader modul from tem
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
-use Data::Dumper;
 use Moose;
 use File::Path qw( mkpath );
 
@@ -41,21 +39,21 @@ use Moose;
 with 'DBIx::Schema::Changelog::File';
 
 has tpl_main => (
-	isa => 'Str',
-	is => 'ro',
-	default => '',
+    isa => 'Str',
+    is => 'ro',
+    default => '',
 );
 
 has tpl_sub => (
-	isa => 'Str',
-	is => 'ro',
-	default => '',
+    isa => 'Str',
+    is => 'ro',
+    default => '',
 );
 
 has ending => (
-	is => 'ro',
-	isa => 'Str',
-	default => '.',
+    is => 'ro',
+    isa => 'Str',
+    default => '.',
 );
 
 sub load{}
@@ -129,70 +127,100 @@ sub make {
     die "No author defined!"       unless $config->{author};
     die "No mail address defined!" unless $config->{email};
     die "No new type defined!"     unless $config->{type};
-    my $dir = File::Spec->catfile( $config->{dir}, "DBIx-Schema-Changelog-File-$config->{type}" );
-    mkpath( File::Spec->catfile( $dir, 'lib', 'DBIx', 'Schema', 'Changelog', 'File' ), 0755 );
+    my $dir = File::Spec->catfile( $config->{dir},
+        "DBIx-Schema-Changelog-File-$config->{type}" );
+    mkpath(
+        File::Spec->catfile(
+            $dir, 'lib', 'DBIx', 'Schema', 'Changelog', 'File'
+        ),
+        0755
+    );
     mkpath( File::Spec->catfile( $dir, 't' ), 0755 );
 
     #module
     write_file(
 
         File::Spec->catfile(
-            $dir, 'lib', 'DBIx', 'Schema', 'Changelog', 'File', "$config->{type}.pm"
+            $dir,        'lib',  'DBIx', 'Schema',
+            'Changelog', 'File', "$config->{type}.pm"
         ),
         replace_spare(
             $self->file(),
-            [ $config->{type}, $config->{author}, $config->{email}, $self->year(), '5.14.0' ]
+            [
+                $config->{type},  $config->{author},
+                $config->{email}, $self->year(),
+                '5.10.0'
+            ]
         )
     );
     write_file(
         File::Spec->catfile(
-            $dir, 'lib', 'DBIx', 'Schema', 'Changelog', 'File', "$config->{type}.pm"
+            $dir,        'lib',  'DBIx', 'Schema',
+            'Changelog', 'File', "$config->{type}.pm"
         ),
         replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
+    );
+    write_file(
+        File::Spec->catfile(
+            $dir,        'lib',  'DBIx', 'Schema',
+            'Changelog', 'File', "$config->{type}.pm"
+        ),
+        qq~\n=cut\n~
     );
 
     #auxilary
     write_file(
         File::Spec->catfile( $dir, 'README' ),
         replace_spare(
-            $self->readme(), [ 'File', $config->{type}, $config->{author}, $config->{email} ]
-        )
-    );
-    write_file( File::Spec->catfile( $dir, 'README' ),
-        replace_spare( $self->license(), [ $self->year(), $config->{author} ] ) );
-    write_file(
-        File::Spec->catfile( $dir, 'Makefile.PL' ),
-        replace_spare(
-            $self->makefile(), [ 'File', $config->{type}, $config->{author}, $config->{email} ]
+            $self->readme(),
+            [ 'File', $config->{type}, $config->{author}, $config->{email} ]
         )
     );
     write_file(
-        File::Spec->catfile( $dir, 'Build.PL' ),
+        File::Spec->catfile( $dir, 'README' ),
+        replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
+    );
+    write_file(
+        "$dir/Makefile.PL",
         replace_spare(
-            $self->buildfile(), [ 'File', $config->{type}, $config->{author}, $config->{email} ]
+            $self->makefile(),
+            [
+                'File',           $config->{type}, $config->{author},
+                $config->{email}, $VERSION
+            ]
         )
     );
     write_file(
-        File::Spec->catfile( $dir, 'Changes' ),
+        "$dir/Build.PL",
         replace_spare(
-            $self->changes(), [ 'File', $config->{type}, $config->{author}, $config->{email} ]
+            $self->buildfile(),
+            [
+                'File',           $config->{type}, $config->{author},
+                $config->{email}, $VERSION
+            ]
+        )
+    );
+    write_file(
+        "$dir/Changes",
+        replace_spare(
+            $self->changes(),
+            [
+                'File',      $config->{type},
+                '0.0.0_001', '1970/01/01',
+                $config->{author}
+            ]
         )
     );
 
     #tests
-    write_file( File::Spec->catfile( $dir, 't', '00-load.t' ),
+    write_file( "$dir/t/00-load.t",
         replace_spare( $self->t_load(), [ 'File', $config->{type} ] ) );
-    write_file( File::Spec->catfile( $dir, 't', 'boilerplate.t' ),
+    write_file( "$dir/t/boilerplate.t",
         replace_spare( $self->t_boilerplate(), [ 'File', $config->{type} ] ) );
-    write_file(
-        File::Spec->catfile( $dir, 't', 'manifest.t' ),
-        replace_spare( $self->t_manifest(), [] )
-    );
-    write_file(
-        File::Spec->catfile( $dir, 't', 'pod-coverage.t' ),
-        replace_spare( $self->t_pod_coverage(), [] )
-    );
-    write_file( File::Spec->catfile( $dir, 't', 'pod.t' ), replace_spare( $self->t_pod(), [] ) );
+    write_file( "$dir/t/manifest.t", replace_spare( $self->t_manifest(), [] ) );
+    write_file( "$dir/t/pod-coverage.t",
+        replace_spare( $self->t_pod_coverage(), [] ) );
+    write_file( "$dir/t/pod.t", replace_spare( $self->t_pod(), [] ) );
 }
 
 no Moose;

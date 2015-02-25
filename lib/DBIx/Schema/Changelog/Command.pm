@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command - Commandline Modul for DBIx::Schema::Changelog
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -69,6 +69,13 @@ use DBIx::Schema::Changelog::Command::Changeset;
     }
 }    ############# End of encapsulated class data.      ########################
 
+
+=head2 run
+
+    Is called from the changelog-run in bin directory
+
+=cut
+
 sub run {
     my $self   = shift;
     my %config = ();
@@ -94,6 +101,7 @@ __END__
 
 =head1 SYNOPSIS
 
+=over 4
     ./bin/changelog-run  [commands] [options]
     ...
     # start reading
@@ -107,6 +115,8 @@ __END__
     ...
     # create a new changeset project
     ./bin/changelog-run -c -dir=/path/to/directory
+
+=back
 
 =head1 OPTIONS
 
@@ -136,17 +146,21 @@ __END__
 
 =over 4
 
-=head2 L<Module::Starter>
-
-The package from which the idea originated.
+=item L<Module::Starter>   The package from which the idea originated.
 
 =back
 
 =head1 AUTHOR
 
+=over 4
+
 Mario Zieschang, C<< <mario.zieschang at combase.de> >>
 
+=back
+
 =head1 LICENSE AND COPYRIGHT
+
+=over 1
 
 Copyright 2015 Mario Zieschang.
 
@@ -186,6 +200,6 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+=back
 
 =cut
-

@@ -6,26 +6,69 @@ DBIx::Schema::Changelog::Action - Abstract action class.
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
-use warnings FATAL => 'all';
 use Data::Dumper;
+use warnings FATAL => 'all';
 use Moose::Role;
+
+=head1 ATTRIBUTES
+
+=head2 driver
+
+	Loaded DBIx::Schema::Changelog::Driver module.
+
+=cut
 
 has driver => ( is => 'ro', );
 
+=head2 driver
+
+	Connected dbh object.
+
+=cut
+
 has dbh => ( is => 'ro', );
+
+=head1 SUBROUTINES/METHODS
+
+=head2 add
+
+	Required sub to run add for specific action type.
+
+=cut
 
 requires 'add';
 
+=head2 alter
+
+	Required sub to run alter for specific action type.
+
+=cut
+
 requires 'alter';
 
+=head2 drop
+
+	Required sub to run drop for specific action type.
+
+=cut
+
 requires 'drop';
+
+
+=head1 SUBROUTINES/METHODS (private)
+
+=head2 _replace_spare
+
+	Replace spares which comes from DBIx::Schema::Changelog::Driver module.
+
+=cut
 
 sub _replace_spare {
     my ( $string, $options ) = @_;
@@ -33,6 +76,12 @@ sub _replace_spare {
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
 }
+
+=head2 _do
+
+	Running generated sql statements.
+
+=cut
 
 sub _do {
     my ( $self, $sql ) = @_;

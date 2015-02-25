@@ -6,13 +6,12 @@ DBIx::Schema::Changelog::File::JSON - Module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
-use 5.14.0;
 use strict;
 use warnings FATAL => 'all';
 use Moose;
@@ -54,6 +53,16 @@ has ending => (
 	default => '.json',
 );
 
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item load
+
+    Called to load defined JSON files
+
+=cut
+
 sub load{
 	my ( $self, $file ) = @_;
 
@@ -69,6 +78,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::File::JSON
+
+=back
 
 =head1 AUTHOR
 

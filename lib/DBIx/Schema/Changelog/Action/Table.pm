@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::TableAction handler for tables
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
@@ -23,10 +23,26 @@ use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Action';
 
+=head1 ATTRIBUTES
+
+=over 4
+
+=item templates
+
+    Stored parsed templates from main changelog file.
+
+=cut
+
 has templates => (
     is  => 'rw',
     isa => 'HashRef',
 );
+
+=item constraint_action
+
+    DBIx::Schema::Changelog::Action::Constraint object.
+
+=cut
 
 has constraint_action => (
     is      => 'ro',
@@ -40,6 +56,12 @@ has constraint_action => (
     },
 );
 
+=item column_action
+
+    DBIx::Schema::Changelog::Action::Column object.
+
+=cut
+
 has column_action => (
     is      => 'ro',
     lazy    => 1,
@@ -52,9 +74,15 @@ has column_action => (
     },
 );
 
+=back
+
 =head1 SUBROUTINES/METHODS
 
-=head2 add
+=over 4
+
+=item add
+
+    Create new table.
 
 =cut
 
@@ -86,7 +114,10 @@ sub add {
 
 }
 
-=head2 alter
+=item alter
+
+    Decides type of alter table
+    Run command of alter table
 
 =cut
 
@@ -94,8 +125,7 @@ sub alter {
     my ( $self, $params ) = @_;
     return unless $params->{name};
     if ( defined $params->{addcolumn} ) {
-        $self->driver()->add_column( $params->{name}, $self->column_action()->add( $params->{name}, $_ ) )
-          foreach @{ $params->{addcolumn} };
+        $self->driver()->add_column( $params->{name}, $self->column_action()->add( $params->{name}, $_ ) ) foreach @{ $params->{addcolumn} };
     }
     elsif ( defined $params->{altercolumn} )   { $self->column_action()->alter($params); }
     elsif ( defined $params->{dropcolumn} )    { $self->column_action()->drop($params); }
@@ -105,19 +135,28 @@ sub alter {
     }
 }
 
-=head2 drop
+=item drop
+
+    Drop defined table.
 
 =cut
 
 sub drop {
     my ( $self, $params ) = @_;
     my $defaults = $self->driver()->defaults();
-    print Dumper($params);
     my $sql = _replace_spare( $defaults->{drop_table}, [ $params->{name} ] );
     $self->_do($sql);
 }
 
-=head2 load_templates - load pre defined column templates
+=back
+
+=head1 ADDITIONAL SUBROUTINES/METHODS
+
+=over 4
+
+=item load_templates
+
+    load pre defined column templates
 
 =cut
 
@@ -135,6 +174,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=back
 
 =head1 AUTHOR
 

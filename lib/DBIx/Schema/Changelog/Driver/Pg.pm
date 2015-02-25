@@ -6,15 +6,14 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 use strict;
 use warnings;
-use Data::Dumper;
 use Moose;
 use MooseX::Types::PerlVersion qw( PerlVersion );
 
@@ -25,15 +24,16 @@ has commands => (
     isa     => 'HashRef[Str]',
     default => sub {
         return {
-            create_table     => q~CREATE TABLE {0} ( {1} ) WITH ( OIDS=FALSE )~,
-            drop_table       => q~DROP TABLE {0}~,
-            alter_table      => q~ALTER TABLE {0}~,
-            drop_column      => q~DROP COLUMN {0}~,
-            add_column       => q~ADD COLUMN {0}~,
-            create_view      => 'CREATE VIEW {0} AS {1}',
-            drop_view        => 'DROP VIEW {0}',
-            drop_view        => 'CREATE INDEX idx_{0} ON {1} USING {2} ({3})',
-            create_sequence  => q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE 9223372036854775807 START 1 CACHE 1~,
+            create_table => q~CREATE TABLE {0} ( {1} ) WITH ( OIDS=FALSE )~,
+            drop_table   => q~DROP TABLE {0}~,
+            alter_table  => q~ALTER TABLE {0}~,
+            drop_column  => q~DROP COLUMN {0}~,
+            add_column   => q~ADD COLUMN {0}~,
+            create_view  => 'CREATE VIEW {0} AS {1}',
+            drop_view    => 'DROP VIEW {0}',
+            create_index => 'CREATE INDEX idx_{0} ON {1} USING {2} ({3})',
+            create_sequence =>
+q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE 9223372036854775807 START 1 CACHE 1~,
             nextval_sequence => q~nextval('{0}'::regclass)~,
         };
     }
@@ -141,9 +141,13 @@ sub _min_version { '9.1' }
 
 sub create_changelog_table {
     my ( $self, $dbh, $name ) = @_;
-    my $sth = $dbh->prepare("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+    my $sth = $dbh->prepare(
+"SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
+    );
     if ( $sth->execute() or die "Some error $!" ) {
-        foreach ( $sth->fetchrow_array() ) { return undef if ( $_ =~ /^$name$/ ); }
+        foreach ( $sth->fetchrow_array() ) {
+            return undef if ( $_ =~ /^$name$/ );
+        }
     }
     return {
         name    => $name,
@@ -175,7 +179,10 @@ sub generate_foreign_key {
     $refcolumn =~ s/"//g;
     $basecol_tmp =~ s/"//g;
     my $fk_name = "fk_" . $basecol_tmp . "_" . $reftable . "_" . $refcolumn;
-    my $match = ( defined $foreignkeyvalues->{match} ) ? $foreignkeyvalues->{match} : 'SIMPLE';
+    my $match =
+      ( defined $foreignkeyvalues->{match} )
+      ? $foreignkeyvalues->{match}
+      : 'SIMPLE';
     return
 "CONSTRAINT $fk_name FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable} ($foreignkeyvalues->{refcolumn}) MATCH $match ON DELETE NO ACTION ON UPDATE NO ACTION";
 }
