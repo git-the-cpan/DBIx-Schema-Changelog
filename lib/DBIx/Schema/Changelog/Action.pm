@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action - Abstract action class.
 
 =head1 VERSION
 
-Version 0.2.0
+Version 0.2.1
 
 =cut
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.2.1';
 
 use strict;
 use Data::Dumper;

@@ -27,3 +27,11 @@ Revision history for DBIx-Schema-Changelog
 == ENHANCEMENT:
 
 	* downgrade min perl version to 5.10
+
+#========================================================================
+# Version 0.2.1  Date: 2015/02/25 (Mario Zieschang)
+#========================================================================
+
+== BUG FIXES:
+
+	* Can't locate object method "type" via package "DBIx::Schema::Changelog::Command::Changeset" at ../lib/DBIx/Schema/Changelog/Command/Changeset.pm line 32.

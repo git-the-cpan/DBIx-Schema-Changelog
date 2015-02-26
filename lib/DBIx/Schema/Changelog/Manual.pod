@@ -1,7 +1,7 @@
 
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$DBIx::Schema::Changelog::Manual::VERSION = '0.2.0';
+$DBIx::Schema::Changelog::Manual::VERSION = '0.2.1';
 __END__
 
 =pod
@@ -12,7 +12,7 @@ __END__
 
 =head1 VERSION
 
-Version 0.2.0
+Version 0.2.1
 
 =head1 DESCRIPTION
 

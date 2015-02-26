@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.2.0
+Version 0.2.1
 
 =cut
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.2.1';
 
 use strict;
 use warnings FATAL => 'all';
@@ -28,11 +28,16 @@ has dir => (
     required => 1,
 );
 
+has file_type => (
+    isa     => Str,
+    default => 'Yaml'
+);
+
 has loader_class => (
     isa     => LoadableClass,
     lazy    => 1,
     default => method {
-        'DBIx::Schema::Changelog::File::' . $self->type()
+        'DBIx::Schema::Changelog::File::' . $self->file_type()
     }
 );
 
@@ -50,7 +55,7 @@ has loader => (
 =cut
 
 sub make {
-    my ( $self, $config ) = @_;
+    my ( $self ) = @_;
     mkpath( File::Spec->catfile( $self->dir(), 'changelog' ), 0755 );
     write_file(
         File::Spec->catfile( $self->dir(), 'changelog', 'changelog' ) . $self->loader()->ending(),
