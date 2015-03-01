@@ -6,15 +6,16 @@ DBIx::Schema::Changelog::Action::Sequence - Action handler for sequences
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
 use Moose;
+use Data::Dumper;
 
 with 'DBIx::Schema::Changelog::Action';
 
@@ -31,23 +32,29 @@ with 'DBIx::Schema::Changelog::Action';
 
 sub add {
     my ( $self, $params ) = @_;
-    my $commands = $self->driver()->commands;
+    my $actions  = $self->driver()->actions;
     my $defaults = $self->driver()->defaults();
-    return $defaults->{ $params->{default} } || ''
+    return $defaults->{ $params->{default} }
+      || ''
       if ( !defined $defaults->{ $params->{default} }
         || $defaults->{ $params->{default} } ne 'sequence' );
 
-    unless ( $commands->{create_sequence} ) {
-        print STDERR __PACKAGE__, " (", __LINE__, ") Create sequence is not supported!  ", $/;
+    unless ( $actions->{create_sequence} ) {
+        print STDERR __PACKAGE__, " (", __LINE__,
+          ") Create sequence is not supported!  ", $/;
         return;
     }
     $params->{table} =~ s/"//g;
     $params->{name} =~ s/"//g;
     my $seq = 'seq_' . $params->{table} . '_' . $params->{name};
-    my $sql =
-      _replace_spare( $commands->{create_sequence}, [ $seq, 1, 1, 9223372036854775807, 1, 1 ] );
-    $self->_do($sql);
-    return "DEFAULT nextval('$seq'::regclass)";
+    my $sql = _replace_spare( $actions->{create_sequence},
+        [ $seq, 1, 1, 9223372036854775807, 1, 1 ] );
+    if ( defined $self->dbh() ) {
+        print __PACKAGE__, __LINE__, Dumper($sql);
+        $self->_do($sql);
+        return "DEFAULT nextval('$seq'::regclass)";
+    }
+    return undef;
 }
 
 =item alter
@@ -56,7 +63,7 @@ sub add {
 
 =cut
 
-sub alter {}
+sub alter { }
 
 =item drop
 
@@ -64,7 +71,7 @@ sub alter {}
 
 =cut
 
-sub drop {}
+sub drop { }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

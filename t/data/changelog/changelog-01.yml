@@ -144,3 +144,25 @@
   entries:
     - type: sql
       as:  'SELECT * FROM "user"'
+
+- id: 001.05-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: altertable
+      name: '"user"'
+      addcolumn:
+          - { name: 'drop_test', type: integer }
+    - type: altertable
+      name: '"user"'
+      dropcolumn:
+          - { name: 'drop_test', type: integer }
+
+- id: 001.06-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: createtable
+      name: 'dop_table_test'
+      columns:
+          - tpl: 'tpl_client_ref'
+    - type: droptable
+      name: '"dop_table_test"'

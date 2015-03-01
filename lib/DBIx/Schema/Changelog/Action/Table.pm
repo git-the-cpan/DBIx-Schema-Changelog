@@ -6,17 +6,17 @@ DBIx::Schema::Changelog::Action::TableAction handler for tables
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
 use Data::Dumper;
 use Moose;
-use MooseX::Types::Moose qw(HashRef);
+use MooseX::Types::Moose qw(HashRef Str);
 use DBIx::Schema::Changelog::Action::Column;
 use DBIx::Schema::Changelog::Action::Constraint;
 use Method::Signatures::Simple;
@@ -29,7 +29,7 @@ with 'DBIx::Schema::Changelog::Action';
 
 =item templates
 
-    Stored parsed templates from main changelog file.
+Stored parsed templates from main changelog file.
 
 =cut
 
@@ -40,7 +40,7 @@ has templates => (
 
 =item constraint_action
 
-    DBIx::Schema::Changelog::Action::Constraint object.
+DBIx::Schema::Changelog::Action::Constraint object.
 
 =cut
 
@@ -58,7 +58,7 @@ has constraint_action => (
 
 =item column_action
 
-    DBIx::Schema::Changelog::Action::Column object.
+DBIx::Schema::Changelog::Action::Column object.
 
 =cut
 
@@ -74,6 +74,22 @@ has column_action => (
     },
 );
 
+=item prefix
+
+Configurable prefix for table names.
+
+=cut
+
+has prefix => ( isa => Str, is => 'rw', default => '' );
+
+=item postfix
+
+Configurable postfix for table names.
+
+=cut
+
+has postfix => ( isa => Str, is => 'rw', default => '' );
+
 =back
 
 =head1 SUBROUTINES/METHODS
@@ -82,14 +98,15 @@ has column_action => (
 
 =item add
 
-    Create new table.
+Create new table.
 
 =cut
 
 sub add {
     my ( $self, $params ) = @_;
     return unless $params->{name};
-    my $commands = $self->driver()->commands;
+    my $name     = $self->prefix() . $params->{name} . $self->postfix();
+    my $actions  = $self->driver()->actions;
     my $defaults = $self->driver()->defaults;
     my $types    = $self->driver()->types;
 
@@ -97,54 +114,69 @@ sub add {
     my $constraints = [];
     foreach my $col ( @{ $params->{columns} } ) {
         unless ( $col->{tpl} ) {
+            $col->{table}        = $params->{name};
             $col->{create_table} = 1;
-            push( @columns, $self->column_action()->add( $params->{name}, $col, $constraints ) );
-            $self->constraint_action()->add( $params->{name}, $col, $constraints );
+            push( @columns, $self->column_action()->add( $col, $constraints ) );
             next;
         }
         foreach ( @{ $self->templates()->{ $col->{tpl} } } ) {
+            $_->{table}        = $params->{name};
             $_->{create_table} = 1;
-            push( @columns, $self->column_action()->add( $params->{name}, $_, $constraints ) );
-            $self->constraint_action()->add( $params->{name}, $_, $constraints );
+            push( @columns, $self->column_action()->add( $_, $constraints ) );
         }
     }
     push( @columns, @$constraints );
-    my $sql = _replace_spare( $commands->{create_table}, [ $params->{name}, join( ",\n\t", @columns ) ] );
+    my $sql = _replace_spare( $actions->{create_table},
+        [ $name, join( ",\n\t", @columns ) ] );
     $self->_do($sql);
 
 }
 
 =item alter
 
-    Decides type of alter table
-    Run command of alter table
+Decides type of alter table
+Run command of alter table
 
 =cut
 
 sub alter {
     my ( $self, $params ) = @_;
     return unless $params->{name};
+    my $actions = $self->driver()->actions;
     if ( defined $params->{addcolumn} ) {
-        $self->driver()->add_column( $params->{name}, $self->column_action()->add( $params->{name}, $_ ) ) foreach @{ $params->{addcolumn} };
+        foreach ( @{ $params->{addcolumn} } ) {
+            $_->{table} = $params->{name};
+            my $sql =
+              _replace_spare( $actions->{alter_table}, [ $params->{name} ] );
+            my $col = $self->column_action()->add($_);
+            $self->_do( $sql . $col );
+        }
     }
-    elsif ( defined $params->{altercolumn} )   { $self->column_action()->alter($params); }
-    elsif ( defined $params->{dropcolumn} )    { $self->column_action()->drop($params); }
-    elsif ( defined $params->{addconstraint} ) { $self->constraint_action()->add($params); }
+    elsif ( defined $params->{altercolumn} ) {
+        $self->column_action()->alter($params);
+    }
+    elsif ( defined $params->{dropcolumn} ) {
+        $self->column_action()->drop($params);
+    }
+    elsif ( defined $params->{addconstraint} ) {
+        $self->constraint_action()->add($params);
+    }
     else {
-        die __PACKAGE__ . " Key to alter table not found or implemented.\n Probaply it is misspelled.";
+        die __PACKAGE__
+          . " Key to alter table not found or implemented.\n Probaply it is misspelled.";
     }
 }
 
 =item drop
 
-    Drop defined table.
+Drop defined table.
 
 =cut
 
 sub drop {
     my ( $self, $params ) = @_;
-    my $defaults = $self->driver()->defaults();
-    my $sql = _replace_spare( $defaults->{drop_table}, [ $params->{name} ] );
+    my $actions = $self->driver()->actions();
+    my $sql = _replace_spare( $actions->{drop_table}, [ $params->{name} ] );
     $self->_do($sql);
 }
 
@@ -156,7 +188,7 @@ sub drop {
 
 =item load_templates
 
-    load pre defined column templates
+load pre defined column templates
 
 =cut
 
@@ -164,7 +196,9 @@ sub load_templates {
     my ( $self, $templates ) = @_;
     foreach my $key ( sort { $a cmp $b } keys %$templates ) {
         my $tmpTemplate = [];
-        push( @$tmpTemplate, ( ( defined $_->{tpl} ) ? @{ $templates->{ $_->{tpl} } } : $_ ) ) foreach ( @{ $templates->{$key} } );
+        push( @$tmpTemplate,
+            ( ( defined $_->{tpl} ) ? @{ $templates->{ $_->{tpl} } } : $_ ) )
+          foreach ( @{ $templates->{$key} } );
         $templates->{$key} = $tmpTemplate;
     }
     $self->templates($templates);

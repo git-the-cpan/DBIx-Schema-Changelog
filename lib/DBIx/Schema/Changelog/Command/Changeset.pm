@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -55,15 +55,17 @@ has loader => (
 =cut
 
 sub make {
-    my ( $self ) = @_;
+    my ($self) = @_;
     mkpath( File::Spec->catfile( $self->dir(), 'changelog' ), 0755 );
-    write_file(
-        File::Spec->catfile( $self->dir(), 'changelog', 'changelog' ) . $self->loader()->ending(),
-        replace_spare( $self->loader()->tpl_main(), [] ) );
-    write_file(
+    _write_file(
+        File::Spec->catfile( $self->dir(), 'changelog', 'changelog' )
+          . $self->loader()->ending(),
+        _replace_spare( $self->loader()->tpl_main(), [] )
+    );
+    _write_file(
         File::Spec->catfile( $self->dir(), 'changelog', 'changelog-01' )
           . $self->loader()->ending(),
-        replace_spare( $self->loader()->tpl_sub(), [] )
+        _replace_spare( $self->loader()->tpl_sub(), [] )
     );
 }
 

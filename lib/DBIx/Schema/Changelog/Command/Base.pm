@@ -6,39 +6,38 @@ DBIx::Schema::Changelog::Command::Base - Abstract file class.
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
-use FindBin;
 use warnings FATAL => 'all';
 use Time::Piece;
 use Moose::Role;
 
 has year => (
-    isa => 'Int',
-    is => 'ro',
-    default => sub{ 
+    isa     => 'Int',
+    is      => 'ro',
+    default => sub {
         my $t = Time::Piece->new();
         return $t->year;
     }
 );
 
 has makefile => (
-	isa => 'Str',
-	is => 'ro',
-	default => qq~use strict;
+    isa     => 'Str',
+    is      => 'ro',
+    default => q~use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME             => 'DBIx::Schema::Changelog::{0}::{1}',
     AUTHOR           => q{{2} <{3}>},
-    VERSION_FROM     => 'lib/DBIx/Schema/Changelog.pm',
-    ABSTRACT_FROM    => 'lib/DBIx/Schema/Changelog.pm',
+    VERSION_FROM     => 'lib/DBIx/Schema/Changelog/{0}/{1}.pm',
+    ABSTRACT_FROM    => 'lib/DBIx/Schema/Changelog/{0}/{1}.pm',
     LICENSE          => 'Artistic_2_0',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.10.0,
@@ -49,51 +48,38 @@ WriteMakefile(
         'strict'                     => 1.08,
         'Moose'                      => 2.1403,
         'warnings'                   => 1.23,
-        'DBIx::Schema::Changelog'    => {4},
+        'DBIx::Schema::Changelog'    => 'v{4}',
     },
     PREREQ_PM => {
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'DBIx-Schema-Changelog-{0}-*' }
+    clean => { FILES => 'DBIx-Schema-Changelog-{0}-{1}-*' }
 );~,
 );
 
-has buildfile => (
-	isa => 'Str',
-	is => 'ro',
-	default => qq~use Module::Build;
-
-Module::Build->new(
-	module_name    => 'DBIx::Schema::Changelog::{0}::{1}',
-	license        => 'artistic_2',
-	dist_abstract  => 'Forward database update from YAML configs',
-	dist_author    => '{2} <{3}>',
-	build_requires => {
-		Test::More				=> 0,
-		FindBin 				=> 0,
-		Test::Pod				=> 1.22,
-		Test::Pod::Coverage		=> 1.08,
-		Pod::Coverage::TrustPod	=> 0.100003,
-		Test::CheckManifest 	=> 0.9,
-	},
-	configure_requires => {
-		Module::Build => 0.3800,
-	},
-	requires => {
-        'strict'                     => 1.08,
-        'Moose'                      => 2.1403,
-        'warnings'                   => 1.23,
-        'DBIx::Schema::Changelog'    => {4},
-	}
-)->create_build_script();~,
+has manifest => (
+    isa     => 'Str',
+    is      => 'ro',
+    default => q~Changes
+Makefile.PL
+MANIFEST
+README.md
+lib/DBIx/Schema/Changelog/{0}/{1}.pm
+t/00-load.t
+t/boilerplate.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t
+~,
 );
 
 has readme => (
-	isa => 'Str',
-	is => 'ro',
-	default => qq~DBIx-Schema-Changelog-{0}-{1} - A new {0} module for DBIx-Schema-Changelog
+    isa => 'Str',
+    is  => 'ro',
+    default =>
+q~DBIx-Schema-Changelog-{0}-{1} - A new {0} module for DBIx-Schema-Changelog
 
 MOTIVATION
 
@@ -103,10 +89,10 @@ INSTALLATION
 
 To install this module, run the following commands:
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+    perl Makefile.PL
+    make
+    make test
+    make install
 
 SUPPORT AND DOCUMENTATION
 
@@ -132,9 +118,9 @@ You can also look for information at:
 );
 
 has license => (
-    isa => 'Str',
-    is => 'ro',
-    default => qq~
+    isa     => 'Str',
+    is      => 'ro',
+    default => q~
 LICENSE AND COPYRIGHT
 
 Copyright (C) {0} {1}
@@ -179,9 +165,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 );
 
 has changes => (
-	isa => 'Str',
-	is => 'ro',
-	default => qq~Revision history for DBIx-Schema-Changelog-{0}-{1}
+    isa     => 'Str',
+    is      => 'ro',
+    default => q~Revision history for DBIx-Schema-Changelog-{0}-{1}
 
 #========================================================================
 # Version {2}  Date: {3} ({4})
@@ -192,9 +178,9 @@ has changes => (
 );
 
 has t_load => (
-    isa => 'Str',
-    is => 'ro',
-    default => qq~use Test::More tests => 4;
+    isa     => 'Str',
+    is      => 'ro',
+    default => q~use Test::More tests => 2;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -206,8 +192,8 @@ use_ok 'DBIx::Schema::Changelog::{0}::{1}';~,
 );
 
 has t_boilerplate => (
-    isa => 'Str',
-    is => 'ro',
+    isa     => 'Str',
+    is      => 'ro',
     default => q/#!perl -T
 use strict;
 use warnings FATAL => 'all';
@@ -259,15 +245,15 @@ TODO: {
     "placeholder date\/time"       => qr(Date\/time)
   );
 
-  module_boilerplate_ok('lib\/DBIx\/Schema\/Changelog\/{0}\/{1}\.pm');
+  module_boilerplate_ok('lib\/DBIx\/Schema\/Changelog\/{0}\/{1}.pm');
 
 
 }/,
 );
 
 has t_manifest => (
-    isa => 'Str',
-    is => 'ro',
+    isa     => 'Str',
+    is      => 'ro',
     default => q~#!perl -T
 use strict;
 use warnings FATAL => 'all';
@@ -285,8 +271,8 @@ ok_manifest();~,
 );
 
 has t_pod_coverage => (
-    isa => 'Str',
-    is => 'ro',
+    isa     => 'Str',
+    is      => 'ro',
     default => q~#!perl -T
 use strict;
 use warnings FATAL => 'all';
@@ -311,15 +297,13 @@ plan skip_all => "Test::Pod::Coverage $min_tpc required for testing POD coverage
 # but older versions don't recognize some common documentation styles
 my $min_pc = 0.18;
 eval "use Pod::Coverage $min_pc";
-plan skip_all => "Pod::Coverage $min_pc required for testing POD coverage"
-    if $@;
-
-all_pod_coverage_ok();~,
+plan skip_all => "Pod::Coverage $min_pc required for testing POD coverage" if $@;
+~,
 );
 
 has t_pod => (
-    isa => 'Str',
-    is => 'ro',
+    isa     => 'Str',
+    is      => 'ro',
     default => q~#!perl -T
 use strict;
 use warnings FATAL => 'all';
@@ -342,7 +326,8 @@ all_pod_files_ok();~,
 =head2 replace_spare
 
 =cut
-sub replace_spare {
+
+sub _replace_spare {
     my ( $string, $options ) = @_;
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
@@ -352,10 +337,10 @@ sub replace_spare {
 
 =cut
 
-sub write_file {
+sub _write_file {
     my ( $file, $text ) = @_;
     print " + $file\n";
-    open(my $fh, '>>', $file);
+    open( my $fh, '>>', $file );
     print $fh $text;
     close $fh;
 }

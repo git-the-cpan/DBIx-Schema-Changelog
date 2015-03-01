@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Index - Action handler for indiezes
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
@@ -30,16 +30,16 @@ If it's supported new index will be created.
 
 sub add {
     my ( $self, $params ) = @_;
-    my $commands = $self->driver()->commands;
+    my $actions = $self->driver()->actions;
 
-    unless ( $commands->{create_index} ) {
+    unless ( $actions->{create_index} ) {
         print STDERR __PACKAGE__, " (", __LINE__,
           ") Create index is not supported!  ", $/;
         return;
     }
 
     my $sql = _replace_spare(
-        $commands->{create_index},
+        $actions->{create_index},
         [
             ( ( defined $params->{name} ) ? $params->{name} : time() ),
             $params->{taple}, $params->{using}, join( ", ", $params->{column} )

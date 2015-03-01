@@ -6,14 +6,13 @@ DBIx::Schema::Changelog::Action - Abstract action class.
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
-use Data::Dumper;
 use warnings FATAL => 'all';
 use Moose::Role;
 
@@ -72,7 +71,6 @@ requires 'drop';
 
 sub _replace_spare {
     my ( $string, $options ) = @_;
-    print Dumper($string, $options);
     $string =~ s/\{(\d+)\}/$options->[$1]/g;
     return $string;
 }

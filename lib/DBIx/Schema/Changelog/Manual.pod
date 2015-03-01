@@ -1,23 +1,23 @@
 
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$DBIx::Schema::Changelog::Manual::VERSION = '0.2.1';
+$DBIx::Schema::Changelog::Manual::VERSION = '0.3.0';
 __END__
 
 =pod
 
 =head1 NAME
 
-	DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
+DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changelog
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =head1 DESCRIPTION
 
-	Continuous Database Migration
-	Package to databases in sync with the development of the application to keep.
+Continuous Database Migration
+Package to databases in sync with the development of the application to keep.
 
 =encoding utf8
 
@@ -40,9 +40,37 @@ DBIx::Schema::Changelog and prereqs into C<~/perl5>.)
 
 =head2 Implemnt Subchangelog files
 
+There are two type of changelog files.
+The main changelog which must be called changlog and the specific file end
+
+	...
+	changelog.yml
+	changelog.json
+	...
+
+The subchangelog files are in the same directory as the main changelog file.
+The difference is that the sub changelog files are defined by postfix.
+
+In the changelog file:
+
+	changelogs: 
+  - "01"
+  - "..."
+
+The subchanglog is:
+
+	changelog-01.yml
+	changelog-....yml
+
 =head2 Define Template
 
 =head1 SUBCHANGELOG ACTIONS
+
+As long the specific drivers is it supporting the following actions are possible.
+
+	- add
+	- alter
+	- drop
 
 =head2 Column
 
@@ -54,19 +82,42 @@ DBIx::Schema::Changelog and prereqs into C<~/perl5>.)
 
 =head2 Sequence
 
-=head2 Sql
-
 =head2 Table
 
 =head2 View
+
+=head2 Sql
+
+It is possible to run custom sql statements.
+WARNING: Execute sql statements can lead very likely to incompatibilities.
+To run a sql statement add following entry:
+
+    - type: sql
+      as:  'SELECT * FROM "user"'
+
 
 =head1 SUBCHANGELOG COMMANDS
 
 =head2 Changeset
 
+To create a new changelog project call:
+
+	changelog-run -c -dir=/path/to/directory
+
 =head2 Driver
 
+If a specific driver is missing it is possible to add a new cpan module.
+By calling:
+
+	changelog-run -md --author='Author' -email='mail@cpan.org' -driver=MySQL -dir=/path/to/directory
+
 =head2 File
+
+If a specific file reader is missing it is possible to add a new cpan module.
+The changelog reader expects a hashref for each changeset
+By calling:
+
+	changelog-run -mf -a='Author' -@='mail@cpan.org' -t=XML -dir=/path/to/directory
 
 =head1 AUTHOR
 

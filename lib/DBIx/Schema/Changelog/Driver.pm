@@ -6,16 +6,15 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose::Role;
-
 use MooseX::Types::PerlVersion qw( PerlVersion );
 use MooseX::Types::Moose qw( Maybe Undef );
 
@@ -67,9 +66,9 @@ has changelog_table => (
                 default => 'current'
             },
             {
-                name    => 'orderexecuted',
-                type    => 'varchar',
-                lenght  => 255,
+                name   => 'orderexecuted',
+                type   => 'varchar',
+                lenght => 255,
             },
             {
                 name    => 'md5sum',
@@ -123,12 +122,12 @@ has origin_types => (
             'oid',     'oidvector',                                     #O
             'path',    'pg_node_tree', 'point', 'polygon',              #P
                                                                         #Q
-            'real',    'refcursor',   'regclass', 'regconfig',    'regdictionary',
-            'regoper', 'regoperator', 'regproc',  'regprocedure', 'regtype',
+            'real', 'refcursor', 'regclass', 'regconfig', 'regdictionary',
+            'regoper', 'regoperator', 'regproc', 'regprocedure', 'regtype',
             'reltime',                                                  #R
             'serial', 'smallint', 'smallserial', 'smgr',                #S
-            'text',      'tid',     'timestamp', 'timestamp_tz', 'time', 'time_tz',
-            'tinterval', 'tsquery', 'tsrange',   'tstzrange',    'tsvector',
+            'text', 'tid', 'timestamp', 'timestamp_tz', 'time', 'time_tz',
+            'tinterval', 'tsquery', 'tsrange', 'tstzrange', 'tsvector',
             'txid_snapshot',                                            #T
             'uuid',                                                     #U
                                                                         #V
@@ -150,24 +149,6 @@ has origin_types => (
 
 requires 'create_changelog_table';
 
-=item generate_unique
-
-=cut
-
-requires 'generate_unique';
-
-=item generate_foreign_key
-
-=cut
-
-requires 'generate_foreign_key';
-
-=item add_column
-
-=cut
-
-requires 'add_column';
-
 =item check_version
 
 =cut
@@ -176,8 +157,12 @@ sub check_version {
     my ( $self, $vers ) = @_;
 
     if ( $self->has_max_version ) {
-        return 1 if ( $self->min_version() <= $vers && $vers <= $self->max_version() );
-        die "Unsupported version: " . $self->min_version() . " <= $vers <= " . $self->max_version();
+        return 1
+          if ( $self->min_version() <= $vers && $vers <= $self->max_version() );
+        die "Unsupported version: "
+          . $self->min_version()
+          . " <= $vers <= "
+          . $self->max_version();
     }
     else {
         return 1 if ( $self->min_version() <= $vers );
@@ -191,10 +176,16 @@ sub check_version {
 
 sub type {
     my ( $self, $col ) = @_;
-    my $ret = ( grep( /^$col->{type}$/, @{ $self->origin_types() } ) ) ? $self->types()->{ $col->{type} } : undef;
+    my $ret =
+      ( grep( /^$col->{type}$/, @{ $self->origin_types() } ) )
+      ? $self->types()->{ $col->{type} }
+      : undef;
     die "Type: $col->{type} not found.\n" unless $ret;
     $ret .= ( $col->{strict} ) ? '(strict)' : '';
-    $ret .= ( defined $col->{lenght} && $col->{lenght} > 0 ) ? "($col->{lenght})" : '';
+    $ret .=
+      ( defined $col->{lenght} && $col->{lenght} > 0 )
+      ? "($col->{lenght})"
+      : '';
     return $ret;
 }
 
@@ -212,7 +203,7 @@ sub has_max_version { defined shift->max_version }
 
 =cut
 
-sub _max_version    { }
+sub _max_version { }
 
 1;    # End of DBIx::Schema::Changelog::Driver
 

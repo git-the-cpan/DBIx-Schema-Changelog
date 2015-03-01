@@ -1,16 +1,16 @@
 package DBIx::Schema::Changelog::Cookbook::File;
-$DBIx::Schema::Changelog::Cookbook::File::VERSION = '0.2.1';
+$DBIx::Schema::Changelog::Cookbook::File::VERSION = '0.3.0';
 __END__
 
 =pod
 
 =head1 NAME
 
-	DBIx::Schema::Changelog::Cookbook::File - A gentle introduction to DBIx::Schema::Changelog
+DBIx::Schema::Changelog::Cookbook::File - A gentle introduction to DBIx::Schema::Changelog::Cookbook::File
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =head1 DESCRIPTION
 

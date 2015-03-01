@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -19,7 +19,7 @@ use MooseX::Types::PerlVersion qw( PerlVersion );
 
 with 'DBIx::Schema::Changelog::Driver';
 
-has commands => (
+has actions => (
     is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
@@ -30,6 +30,23 @@ has commands => (
             add_column   => 'ADD COLUMN {0}',
             create_view  => 'CREATE VIEW {0} AS {1}',
             drop_view    => 'DROP VIEW {0}',
+            unique       => q~CREATE UNIQUE INDEX {0} on {1} ({2})~,
+            foreign_key  => q~FOREIGN KEY ({0}) REFERENCES {1}({2})~,
+        };
+    }
+);
+
+has constraints => (
+    is      => 'ro',
+    isa     => 'HashRef[Str]',
+    default => sub {
+        return {
+            not_null    => 'NOT NULL',
+            unique      => 'UNIQUE',
+            primary_key => 'PRIMARY KEY',
+            foreign_key => 'FOREIGN KEY',
+            check       => 'CHECK',
+            default     => 'DEFAULT',
         };
     }
 );
@@ -38,11 +55,7 @@ has defaults => (
     is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
-        return {
-            current    => 'CURRENT_TIMESTAMP',
-            not_null   => 'NOT NULL',
-            primarykey => 'primary key',
-        };
+        return { current => 'CURRENT_TIMESTAMP', };
     }
 );
 
@@ -78,40 +91,14 @@ sub create_changelog_table {
     my ( $self, $dbh, $name ) = @_;
     my $sth = $dbh->prepare("SELECT * FROM sqlite_master WHERE type='table';");
     if ( $sth->execute() or die "Some error $!" ) {
-        foreach ( $sth->fetchrow_array() ) { return undef if ( $_ =~ /^$name$/ ); }
+        foreach ( $sth->fetchrow_array() ) {
+            return undef if ( $_ =~ /^$name$/ );
+        }
     }
     return {
         name    => $name,
         columns => $self->changelog_table()
     };
-}
-
-=head2 generate_unique
-
-=cut
-
-sub generate_unique {
-    my ( $self, $table, $column ) = @_;
-    return "CREATE UNIQUE INDEX unique_" . $table . "_" . $column . " on $table ($column)";
-}
-
-=head2 generate_foreign_key
-
-=cut
-
-sub generate_foreign_key {
-    my ( $self, $basecol, $foreignkeyvalues ) = @_;
-    return
-"FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable}($foreignkeyvalues->{refcolumn})";
-}
-
-=head2 add_column
-
-=cut
-
-sub add_column {
-    my ( $self, $name, $column ) = @_;
-    return 'ALTER TABLE ' . $name . ' ADD COLUMN ' . $column . ';';
 }
 
 no Moose;

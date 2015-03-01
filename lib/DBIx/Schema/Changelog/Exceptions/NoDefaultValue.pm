@@ -1,4 +1,4 @@
-package DBIx::Schema::Changelog::Core::ExceptionMessages;
+package DBIx::Schema::Changelog::Exceptions::NoDefaultValue;
 
 =head1 NAME
 
@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Core::EceptionMessages - list of eception messages
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 =head1 DESCRIPTION
 

@@ -6,31 +6,30 @@ DBIx::Schema::Changelog::Action::Column - Action handler for table columns
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
 use Text::Trim;
 use Moose;
 use Method::Signatures::Simple;
-use DBIx::Schema::Changelog::Action::Default;
+use DBIx::Schema::Changelog::Action::Constraint;
+use Data::Dumper;
 
 with 'DBIx::Schema::Changelog::Action';
 
-has default => (
+has constraint => (
     is      => 'rw',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
-        DBIx::Schema::Changelog::Action::Default->new(
-            commands => $self->driver()->commands,
-            defaults => $self->driver()->defaults,
-            driver   => $self->driver(),
-            dbh      => $self->dbh()
+        DBIx::Schema::Changelog::Action::Constraint->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
           )
     },
 );
@@ -54,29 +53,21 @@ has errors => (
 =cut
 
 sub add {
-    my ( $self, $table, $col ) = @_;
-    my $commands = $self->driver()->commands;
-    unless ( $commands->{add_column} ) {
-        print STDERR __PACKAGE__, " (", __LINE__, ") Add column is not supported!  ", $/;
+    my ( $self, $col, $constr_ref ) = @_;
+    my $actions = $self->driver()->actions;
+    my $type    = $self->driver()->type($col);
+    my $constraint = $self->constraint()->add( $col, $constr_ref );
+    return qq~$col->{name} $type $constraint~ if ( $col->{create_table} );
+
+    unless ( $actions->{add_column} ) {
+        print STDERR __PACKAGE__, " (", __LINE__,
+          ") Add column is not supported!  ", $/;
         return;
     }
+    my $ret = _replace_spare( $actions->{add_column},
+        [qq~$col->{name} $type $constraint~] );
+    return $ret;
 
-    my $type     = $self->driver()->type($col);
-    my $defaults = $self->driver()->defaults;
-    #
-    die $self->errors()->message( 'no_default_value', [ $col->{name}, $table ] )
-      if ( ( $col->{notnull} || defined $col->{primarykey} )
-        && ( !defined $col->{default} && !defined $col->{foreign} ) );
-
-    my $not_null   = ( $col->{notnull} )            ? $defaults->{not_null}   : '';
-    my $primarykey = ( defined $col->{primarykey} ) ? $defaults->{primarykey} : '';
-    $col->{table} = $table;
-    my $default = $self->default()->add($col);
-    return qq~$col->{name} $type $not_null $primarykey $default~ if ( $col->{create_table} );
-
-    my $sql = _replace_spare( $commands->{alter_table}, [$table] )
-      . _replace_spare( $commands->{add_column}, [qq~$col->{name} $type $not_null $primarykey $default~] );
-    return $self->_do($sql);
 }
 
 =item alter
@@ -86,7 +77,10 @@ sub add {
 =cut
 
 sub alter {
-
+    my ( $self, $params ) = @_;
+    print STDERR __PACKAGE__, " (", __LINE__,
+      ") Alter column is not supported!  ", $/;
+    return undef;
 }
 
 =item drop
@@ -96,15 +90,17 @@ sub alter {
 =cut
 
 sub drop {
-    my ( $self, $table, $params ) = @_;
-    my $commands = $self->driver()->commands;
-    unless ( $commands->{drop_column} ) {
-        print STDERR __PACKAGE__, " (", __LINE__, ") Create index is not supported!  ", $/;
+    my ( $self, $params ) = @_;
+    my $actions = $self->driver()->actions;
+    unless ( $actions->{drop_column} ) {
+        print STDERR __PACKAGE__, " (", __LINE__,
+          ") Drop column is not supported!  ", $/;
         return;
     }
     foreach ( @{ $params->{dropcolumn} } ) {
-        my $sql = _replace_spare( $commands->{alter_table}, [$table] );
-        $sql .= ' ' . _replace_spare( $commands->{drop_column}, [ $_->{name} ] );
+        my $sql =
+          _replace_spare( $actions->{alter_table}, [ $params->{table} ] );
+        $sql .= ' ' . _replace_spare( $actions->{drop_column}, [ $_->{name} ] );
         $self->_do($sql);
     }
 
@@ -122,7 +118,8 @@ sub drop {
 
 sub run_constraints {
     my ( $self, $table, $constraints ) = @_;
-    $self->_do( $self->driver()->add_constraint( $table, $_ ) ) foreach (@$constraints);
+    $self->_do( $self->driver()->add_constraint( $table, $_ ) )
+      foreach (@$constraints);
 
 }
 

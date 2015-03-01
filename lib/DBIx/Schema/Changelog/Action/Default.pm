@@ -6,18 +6,18 @@ DBIx::Schema::Changelog::Action::Default - Handle default values for table colum
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
 use Moose;
 use Method::Signatures::Simple;
 use DBIx::Schema::Changelog::Action::Sequence;
-
+use Data::Dumper;
 with 'DBIx::Schema::Changelog::Action';
 
 has sequence => (
@@ -26,7 +26,7 @@ has sequence => (
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
         DBIx::Schema::Changelog::Action::Sequence->new(
-            commands => $self->driver()->commands,
+            actions  => $self->driver()->actions,
             defaults => $self->driver()->defaults,
             driver   => $self->driver(),
             dbh      => $self->dbh()
@@ -46,30 +46,21 @@ has sequence => (
 
 sub add {
     my ( $self, $params ) = @_;
-    my $ret      = q~~;
-    my $defaults = $self->driver()->defaults();
     if ( defined $params->{default} && $params->{default} eq 'inc' ) {
-        $ret = $self->sequence()->add(
-            {
-                default => $params->{default},
-                table   => $params->{table},
-                name    => $params->{name}
-            }
-        );
+        return $self->sequence()->add($params);
     }
     elsif ( defined $params->{default} && $params->{default} eq 'current' ) {
-        $ret = 'DEFAULT ' . $defaults->{current}
+        return 'DEFAULT ' . $self->driver()->defaults()->{current}
           if ( $params->{default} eq 'current' );
     }
     else {
-        $ret =
+        return
             ( defined $params->{default} )
-          ? ( $defaults->{boolean_str} )
+          ? ( $self->driver()->defaults()->{boolean_str} )
               ? "DEFAULT '$params->{default}'"
               : "DEFAULT $params->{default}"
           : '';
     }
-    return $ret;
 }
 
 =item alter 

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
@@ -19,7 +19,7 @@ use MooseX::Types::PerlVersion qw( PerlVersion );
 
 with 'DBIx::Schema::Changelog::Driver';
 
-has commands => (
+has actions => (
     is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
@@ -33,8 +33,25 @@ has commands => (
             drop_view    => 'DROP VIEW {0}',
             create_index => 'CREATE INDEX idx_{0} ON {1} USING {2} ({3})',
             create_sequence =>
-q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE 9223372036854775807 START 1 CACHE 1~,
+q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE {3} START {4} CACHE {5}~,
             nextval_sequence => q~nextval('{0}'::regclass)~,
+            unique           => q~CONSTRAINT {0} UNIQUE ({1})~,
+            foreign_key  => q~CONSTRAINT {3} FOREIGN KEY ({0}) REFERENCES {1} ({2}) MATCH SIMPLE ON DELETE NO ACTION ON UPDATE NO ACTION~,
+        };
+    }
+);
+
+has constraints => (
+    is      => 'ro',
+    isa     => 'HashRef[Str]',
+    default => sub {
+        return {
+            not_null    => 'NOT NULL',
+            unique      => 'UNIQUE',
+            primary_key => 'PRIMARY KEY',
+            foreign_key => 'FOREIGN KEY',
+            check       => 'CHECK',
+            default     => 'DEFAULT',
         };
     }
 );
@@ -49,6 +66,8 @@ has defaults => (
             not_null    => 'NOT NULL',
             primarykey  => 'primary key',
             boolean_str => 1,
+            uuid =>
+'(md5(((((current_database())::text || ("current_user"())::text) || now()) || random())))::uuid',
         };
     }
 );
@@ -153,46 +172,6 @@ sub create_changelog_table {
         name    => $name,
         columns => $self->changelog_table()
     };
-}
-
-=head2 generate_unique
-
-=cut
-
-sub generate_unique {
-    my ( $self, $table, $column ) = @_;
-    my $unique_name = "unique_" . $table . "_" . $column;
-    return "CONSTRAINT $unique_name UNIQUE ($column)";
-
-}
-
-=head2 generate_foreign_key
-
-=cut
-
-sub generate_foreign_key {
-    my ( $self, $basecol, $foreignkeyvalues ) = @_;
-    my $reftable    = '' . $foreignkeyvalues->{reftable};
-    my $refcolumn   = '' . $foreignkeyvalues->{refcolumn};
-    my $basecol_tmp = '' . $basecol;
-    $reftable =~ s/"//g;
-    $refcolumn =~ s/"//g;
-    $basecol_tmp =~ s/"//g;
-    my $fk_name = "fk_" . $basecol_tmp . "_" . $reftable . "_" . $refcolumn;
-    my $match =
-      ( defined $foreignkeyvalues->{match} )
-      ? $foreignkeyvalues->{match}
-      : 'SIMPLE';
-    return
-"CONSTRAINT $fk_name FOREIGN KEY ($basecol) REFERENCES $foreignkeyvalues->{reftable} ($foreignkeyvalues->{refcolumn}) MATCH $match ON DELETE NO ACTION ON UPDATE NO ACTION";
-}
-
-=head2 add_column
-
-=cut
-
-sub add_column {
-    my ( $self, $tableName, $column ) = @_;
 }
 
 no Moose;

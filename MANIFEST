@@ -4,8 +4,6 @@ examples/bin/pg.pl
 examples/bin/sqlite.pl
 examples/changelog/changelog-01.yml
 examples/changelog/changelog.yml
-examples/chng_json/changelog-01.json
-examples/chng_json/changelog.json
 lib/DBIx/Schema/Changelog.pm
 lib/DBIx/Schema/Changelog/Action.pm
 lib/DBIx/Schema/Changelog/Changeset.pm
@@ -24,12 +22,12 @@ lib/DBIx/Schema/Changelog/Command/Base.pm
 lib/DBIx/Schema/Changelog/Command/Changeset.pm
 lib/DBIx/Schema/Changelog/Command/Driver.pm
 lib/DBIx/Schema/Changelog/Command/File.pm
-lib/DBIx/Schema/Changelog/Core/ExceptionMessages.pm
 lib/DBIx/Schema/Changelog/Driver/Pg.pm
 lib/DBIx/Schema/Changelog/Driver/SQLite.pm
 lib/DBIx/Schema/Changelog/File/JSON.pm
 lib/DBIx/Schema/Changelog/File/Yaml.pm
-
+lib/DBIx/Schema/Changelog/Exceptions.pm
+lib/DBIx/Schema/Changelog/Exceptions/NoDefaultValue.pm
 lib/DBIx/Schema/Changelog/Cookbook.pod
 lib/DBIx/Schema/Changelog/Manual.pod
 lib/DBIx/Schema/Changelog/Tutorial.pod
@@ -38,8 +36,8 @@ lib/DBIx/Schema/Changelog/Cookbook/Driver.pod
 lib/DBIx/Schema/Changelog/Cookbook/File.pod
 
 Makefile.PL
-Build.PL
 MANIFEST
+MANIFEST.SKIP
 README.md
 t/00-load.t
 t/001-create.t
@@ -54,7 +52,7 @@ t/043-index.t
 t/044-table.t
 t/045-view.t
 t/046-sql.t
-t/047-default.t
+t/047-sequence.t
 t/050-command.t
 t/051-base.t
 t/052-driver.t
@@ -70,5 +68,7 @@ t/pod-coverage.t
 t/pod.t
 t/data/changelog/changelog-01.yml
 t/data/changelog/changelog.yml
-META.yml
-META.json
+t/data/changelog/changelog-01.json
+t/data/changelog/changelog.json
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

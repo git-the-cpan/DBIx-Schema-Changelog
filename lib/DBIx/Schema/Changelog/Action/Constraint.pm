@@ -6,17 +6,32 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;
+use Data::Dumper;
 use Moose;
+use Method::Signatures::Simple;
+use DBIx::Schema::Changelog::Action::Default;
 
 with 'DBIx::Schema::Changelog::Action';
+
+has default => (
+    is      => 'rw',
+    lazy    => 1,
+    does    => 'DBIx::Schema::Changelog::Action',
+    default => method {
+        DBIx::Schema::Changelog::Action::Default->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
+          )
+    },
+);
 
 =head1 SUBROUTINES/METHODS
 
@@ -25,13 +40,54 @@ with 'DBIx::Schema::Changelog::Action';
 =cut
 
 sub add {
-    my ( $self, $table_name, $col, $constraints ) = @_;
-	push( @$constraints, $self->driver()->generate_unique( $table_name, $col->{name} ) ) if ( defined $col->{unique} );
-	push( @$constraints, $self->driver()->generate_foreign_key( $col->{name}, $col->{foreign} ) ) if ( defined $col->{foreign} );
-    #$self->table_action()->add($_)   if (uc $constraint->{type} eq 'NOT_NULL' );
-    #$self->table_action()->alter($_) if (uc $constraint_->{type} eq 'PRIMARY' );
-    #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
-    #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
+    my ( $self, $col, $constr_ref ) = @_;
+    my $defaults = $self->driver()->defaults;
+    my $consts   = $self->driver()->constraints;
+    my $actions  = $self->driver()->actions;
+
+    print __PACKAGE__, __LINE__, Dumper($col);
+    die $self->errors()
+      ->message( 'no_default_value', [ $col->{name}, $col->{table} ] )
+      if ( ( $col->{notnull} || defined $col->{primarykey} )
+        && ( !defined $col->{default} && !defined $col->{foreign} ) );
+
+    if ( defined $col->{unique} ) {
+        die "Add column is not supported!", $/ unless $actions->{unique};
+        my $unique_name = "unique_" . $col->{table} . "_" . $col->{name};
+        push(
+            @$constr_ref,
+            _replace_spare(
+                $actions->{unique},
+                [
+                    "unique_" . $col->{table} . "_" . $col->{name}, $col->{name}
+                ]
+            )
+        );
+    }
+    if ( defined $col->{foreign} ) {
+        die "Foreign key is not supported!", $/ unless $actions->{foreign_key};
+        push(
+            @$constr_ref,
+            _replace_spare(
+                $actions->{foreign_key},
+                [
+                    $col->{name},
+                    $col->{foreign}->{reftable},
+                    $col->{foreign}->{refcolumn},
+                    'fkey_'
+                      . $col->{table} . '_'
+                      . $col->{foreign}->{refcolumn} . '_'
+                      . $col->{name},
+                ]
+            )
+        );
+    }
+
+    my $not_null = ( $col->{notnull} ) ? $consts->{not_null} : '';
+    my $primarykey =
+      ( defined $col->{primarykey} ) ? $consts->{primary_key} : '';
+    my $default = $self->default()->add($col);
+    return qq~$not_null $primarykey $default~;
 }
 
 =head2 alter
@@ -39,13 +95,14 @@ sub add {
 =cut
 
 sub alter {
-    my ( $self, $table_name, $col, $constraints ) = @_;
-    #$self->table_action()->add($_)   if (uc $constraint->{type} eq 'NOT_NULL' );
-    #$self->table_action()->drop($_)  if (uc $constraint_->{type} eq 'UNIQUE' );
-    #$self->table_action()->alter($_) if (uc $constraint_->{type} eq 'PRIMARY' );
-    #$self->index_action()->add($_)   if (uc $constraint_->{type} eq 'FOREIGN' );
-    #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
-    #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
+    my ( $self, $table_name, $col, $constr_ref ) = @_;
+
+   #$self->table_action()->add($_)   if (uc $constraint->{type} eq 'NOT_NULL' );
+   #$self->table_action()->drop($_)  if (uc $constraint_->{type} eq 'UNIQUE' );
+   #$self->table_action()->alter($_) if (uc $constraint_->{type} eq 'PRIMARY' );
+   #$self->index_action()->add($_)   if (uc $constraint_->{type} eq 'FOREIGN' );
+   #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
+   #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
 }
 
 =head2 drop
@@ -54,12 +111,13 @@ sub alter {
 
 sub drop {
     my ( $self, $table_name, $col, $constraints ) = @_;
-    #$self->table_action()->add($_)   if (uc $constraint->{type} eq 'NOT_NULL' );
-    #$self->table_action()->drop($_)  if (uc $constraint_->{type} eq 'UNIQUE' );
-    #$self->table_action()->alter($_) if (uc $constraint_->{type} eq 'PRIMARY' );
-    #$self->index_action()->add($_)   if (uc $constraint_->{type} eq 'FOREIGN' );
-    #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
-    #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
+
+   #$self->table_action()->add($_)   if (uc $constraint->{type} eq 'NOT_NULL' );
+   #$self->table_action()->drop($_)  if (uc $constraint_->{type} eq 'UNIQUE' );
+   #$self->table_action()->alter($_) if (uc $constraint_->{type} eq 'PRIMARY' );
+   #$self->index_action()->add($_)   if (uc $constraint_->{type} eq 'FOREIGN' );
+   #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
+   #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
 }
 
 no Moose;

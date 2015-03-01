@@ -2,22 +2,22 @@ package DBIx::Schema::Changelog;
 
 =head1 NAME
 
-    DBIx::Schema::Changelog - (ALPHA QUALITY) Continuous Database Migration
+DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 =head1 DESCRIPTION
 
-    C<DBIx::Schema::Changelog> is a pure Perl module.
-    
-    Continuous Database Migration
-    A package which allows a continuous development with an application that hold the appropriate database system synchronously.
+C<DBIx::Schema::Changelog> is a pure Perl module.
+
+Continuous Database Migration
+A package which allows a continuous development with an application that hold the appropriate database system synchronously.
 
 =cut
 
@@ -38,6 +38,11 @@ use MooseX::Types::LoadableClass qw(LoadableClass);
 use Method::Signatures::Simple;
 
 use Hash::MD5 qw(sum_hash);
+
+has db_changelog_table => ( isa => Str, default => 'databasechangelog' );
+has db_driver          => ( isa => Str, default => 'SQLite' );
+has file_type          => ( isa => Str, default => 'Yaml' );
+has dbh => ( isa => 'DBI::db', required => 1, );
 
 has table_action => (
     lazy    => 1,
@@ -62,11 +67,6 @@ has changeset => (
     },
 );
 
-has db_changelog_table => (
-    isa     => Str,
-    default => 'databasechangelog'
-);
-
 has insert_dblog => (
     isa     => 'DBI::st',
     lazy    => 1,
@@ -76,16 +76,6 @@ has insert_dblog => (
               . $self->db_changelog_table()
               . "(id, author, filename, md5sum, changelog) VALUES (?,?,?,?,?)" )
     },
-);
-
-has file_type => (
-    isa     => Str,
-    default => 'Yaml'
-);
-
-has db_driver => (
-    isa     => Str,
-    default => 'SQLite'
 );
 
 has loader_class => (
@@ -114,11 +104,6 @@ has driver => (
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Driver',
     default => method { $self->driver_class()->new(); }
-);
-
-has dbh => (
-    isa      => 'DBI::db',
-    required => 1,
 );
 
 sub _parse_log {
@@ -156,9 +141,9 @@ sub _check_key {
 
 =head2 BUILD
 
-    Run to check driver version with installed db driver.
+Run to check driver version with installed db driver.
 
-    Creates changelog table if it's not existing.
+Creates changelog table if it's not existing.
 
 =cut
 
@@ -177,7 +162,7 @@ sub BUILD {
 
 =head2 read
 
-    Read main changelog file and sub changelog files
+Read main changelog file and sub changelog files
 
 =cut
 
@@ -189,6 +174,14 @@ sub read {
 
     #first load templates
     $self->table_action()->load_templates( $main->{templates} );
+    $self->table_action()
+      ->prefix( ( defined $main->{prefix} && $main->{prefix} ne '' )
+        ? $main->{prefix} . '_'
+        : '' );
+    $self->table_action()
+      ->postfix( ( defined $main->{postfix} && $main->{postfix} ne '' )
+        ? '_' . $main->{postfix}
+        : '' );
 
     # now load changelogs
     $self->_parse_log( File::Spec->catfile( $folder, "changelog-$_" ) )

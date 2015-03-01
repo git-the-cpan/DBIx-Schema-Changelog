@@ -1,8 +1,8 @@
-package DBIx::Schema::Changelog::Action::View;
+package DBIx::Schema::Changelog::Exceptions;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Action::View - Handles view actions
+DBIx::Schema::Changelog::Exceptions - Abstract exceptions class.
 
 =head1 VERSION
 
@@ -13,66 +13,15 @@ Version 0.3.0
 our $VERSION = '0.3.0';
 
 use strict;
-use warnings;
-use Moose;
+use Data::Dumper;
+use warnings FATAL => 'all';
 
-with 'DBIx::Schema::Changelog::Action';
 
-=head1 SUBROUTINES/METHODS
-
-=over 4
-
-=item add
-
-    Add view
-
-=cut
-
-sub add {
-    my ( $self, $params ) = @_;
-    my $actions = $self->driver()->actions;
-    unless ( $actions->{create_view} ) {
-        print STDERR __PACKAGE__, " (", __LINE__,
-          ") Create view is not supported!  ", $/;
-        return;
-    }
-    my $sql = _replace_spare( $actions->{create_view},
-        [ $params->{name}, $params->{as} ] );
-    $self->_do($sql);
-}
-
-=item alter
-
-    Drop view and add new one.
-
-=cut
-
-sub alter {
-    my ( $self, $params ) = @_;
-    $self->drop($params);
-    $self->add($params);
-}
-
-=item drop
-
-    Drop defined view.
-
-=cut
-
-sub drop {
-    my ( $self, $params ) = @_;
-    my $actions = $self->driver()->actions;
-    my $sql = _replace_spare( $actions->{drop_view}, [ $params->{name} ] );
-    $self->_do($sql);
-
-}
-
-no Moose;
-__PACKAGE__->meta->make_immutable;
+__END__
 
 1;
 
-=back
+
 
 =head1 AUTHOR
 
@@ -118,4 +67,7 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 =cut
+
+1;    # End of DBIx::Schema::Changelog::Exceptions

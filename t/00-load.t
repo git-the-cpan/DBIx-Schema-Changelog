@@ -1,4 +1,4 @@
-use Test::More tests => 35;
+use Test::More tests => 33;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -19,9 +19,6 @@ use_ok 'DBI';
 
 require_ok( 'Hash::MD5' );
 use_ok 'Hash::MD5';
-
-require_ok( 'Iterator::Simple' );
-use_ok 'Iterator::Simple';
 
 require_ok( 'DBI' );
 use_ok 'DBI';

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Driver - Create a new driver modul from templa
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -29,13 +29,18 @@ has file => (
 
 DBIx::Schema::Changelog::Driver::{0} - A new DBIx::Schema::Changelog::Driver module!
 
+=head1 VERSION
+
+Version 0.1.0
+
 =cut
+
+our $VERSION = '0.1.0';
 
 use {4};
 use strict;
 use warnings FATAL => 'all';
 use Moose;
-use MooseX::Types::Version qw( Ver );
 
 with 'DBIx::Schema::Changelog::Driver';
 
@@ -85,7 +90,7 @@ sub generate_unique {}
 
 sub generate_foreign_key {}
 
-=head2 create_index
+=head2 add_column
 
 =cut
 
@@ -157,14 +162,11 @@ sub make {
     mkpath( "$dir/t",                                0755 );
 
     #module
-    write_file(
-        File::Spec->catfile(
-            $dir,        'lib',
-            'DBIx',      'Schema',
-            'Changelog', 'Driver',
-            "$config->{driver}.pm"
-        ),
-        replace_spare(
+    my $path = File::Spec->catfile( $dir, 'lib', 'DBIx', 'Schema', 'Changelog',
+        'Driver', "$config->{driver}.pm" );
+    _write_file(
+        $path,
+        _replace_spare(
             $self->file(),
             [
                 $config->{driver}, $config->{author},
@@ -173,42 +175,29 @@ sub make {
             ]
         )
     );
-    write_file(
-        File::Spec->catfile(
-            $dir,        'lib',
-            'DBIx',      'Schema',
-            'Changelog', 'Driver',
-            "$config->{driver}.pm"
-        ),
-        replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
+    _write_file( $path,
+        _replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
     );
-
-    write_file(
-        File::Spec->catfile(
-            $dir,        'lib',
-            'DBIx',      'Schema',
-            'Changelog', 'Driver',
-            "$config->{driver}.pm"
-        ),
-        qq~\n=cut\n~
-    );
+    _write_file( $path, qq~\n=cut\n~ );
 
     #auxilary
-    write_file(
-        "$dir/README.md",
-        replace_spare(
+    $path = File::Spec->catfile( $dir, 'README.md' );
+    _write_file(
+        $path,
+        _replace_spare(
             $self->readme(),
             [
                 'Driver', $config->{driver}, $config->{author}, $config->{email}
             ]
         )
     );
-    write_file( "$dir/README.md",
-        replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
+    _write_file( $path,
+        _replace_spare( $self->license(), [ $self->year(), $config->{author} ] )
     );
-    write_file(
-        "$dir/Makefile.PL",
-        replace_spare(
+    $path = File::Spec->catfile( $dir, 'Makefile.PL' );
+    _write_file(
+        $path,
+        _replace_spare(
             $self->makefile(),
             [
                 'Driver',         $config->{driver}, $config->{author},
@@ -216,19 +205,10 @@ sub make {
             ]
         )
     );
-    write_file(
-        "$dir/Build.PL",
-        replace_spare(
-            $self->buildfile(),
-            [
-                'Driver',         $config->{driver}, $config->{author},
-                $config->{email}, $VERSION
-            ]
-        )
-    );
-    write_file(
-        "$dir/Changes",
-        replace_spare(
+    $path = File::Spec->catfile( $dir, 'Changes' );
+    _write_file(
+        $path,
+        _replace_spare(
             $self->changes(),
             [
                 'Driver',    $config->{driver},
@@ -237,20 +217,27 @@ sub make {
             ]
         )
     );
+    $path = File::Spec->catfile( $dir, 'MANIFEST' );
+    _write_file( $path,
+        _replace_spare( $self->manifest(), [ 'Driver', $config->{driver} ] ) );
 
     #tests
-    write_file( "$dir/t/00-load.t",
-        replace_spare( $self->t_load(), [ 'Driver', $config->{driver} ] ) );
-    write_file(
-        "$dir/t/boilerplate.t",
-        replace_spare(
+    $path = File::Spec->catfile( $dir, 't', '00-load.t' );
+    _write_file( $path,
+        _replace_spare( $self->t_load(), [ 'Driver', $config->{driver} ] ) );
+    $path = File::Spec->catfile( $dir, 't', 'boilerplate.t' );
+    _write_file(
+        $path,
+        _replace_spare(
             $self->t_boilerplate(), [ 'Driver', $config->{driver} ]
         )
     );
-    write_file( "$dir/t/manifest.t", replace_spare( $self->t_manifest(), [] ) );
-    write_file( "$dir/t/pod-coverage.t",
-        replace_spare( $self->t_pod_coverage(), [] ) );
-    write_file( "$dir/t/pod.t", replace_spare( $self->t_pod(), [] ) );
+    $path = File::Spec->catfile( $dir, 't', 'manifest.t' );
+    _write_file( $path, _replace_spare( $self->t_manifest(), [] ) );
+    $path = File::Spec->catfile( $dir, 't', 'pod-coverage.t' );
+    _write_file( $path, _replace_spare( $self->t_pod_coverage(), [] ) );
+    $path = File::Spec->catfile( $dir, 't', 'pod.t' );
+    _write_file( $path, _replace_spare( $self->t_pod(), [] ) );
 }
 
 no Moose;

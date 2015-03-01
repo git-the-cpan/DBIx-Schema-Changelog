@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Sql - Action for manualy called sql
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 
 use strict;
 use warnings;

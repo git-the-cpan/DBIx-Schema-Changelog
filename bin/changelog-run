@@ -17,19 +17,19 @@ DBIx::Schema::Changelog::Command->run;
 
 =head1 SYNOPSIS
 
-	./bin/changelog-run  [commands] [options]
+	changelog-run  [commands] [options]
 	...
 	# start reading
-	./bin/changelog-run -db=db.sqlite -s=/path/to/changelog
+	changelog-run -db=db.sqlite -s=/path/to/changelog
 	...
 	# make new driver module
-	./bin/changelog-run -md --author='Mario Zieschang' -email='mziescha@cpan.org' -driver=MySQL -dir=/path/to/directory
+	changelog-run -md --author='Mario Zieschang' -email='mziescha@cpan.org' -driver=MySQL -dir=/path/to/directory
 	...
 	# make new file read module
-	./bin/changelog-run -mf -a='Mario Zieschang' -@='mziescha@cpan.org' -t=XML -dir=/path/to/directory
+	changelog-run -mf -a='Mario Zieschang' -@='mziescha@cpan.org' -t=XML -dir=/path/to/directory
 	...
 	# create a new changeset project
-	./bin/changelog-run -c -dir=/path/to/directory
+	changelog-run -c -dir=/path/to/directory
 
 =head1 OPTIONS
 
