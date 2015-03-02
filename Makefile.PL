@@ -35,7 +35,7 @@ WriteMakefile(
         'DBD::SQLite'                  => 1.4,
         'File::Spec'                   => 0,
         'YAML'                         => 1.13,
-        'Test::Command'                => 0.11,
+        'Test::Cmd'                    => 0,
     },
     PREREQ_PM => {
         'MooseX::Types::Path::Class'   => 0.06,
@@ -59,7 +59,7 @@ WriteMakefile(
         'File::Spec'                   => 0,
         'YAML'                         => 1.13,
         'YAML::XS'                     => 0.55,
-        'Test::Command'                => 0.11,
+        'Test::Cmd'                    => 0,
     },
     META_MERGE => {
         'meta-spec' => { version => 2 },

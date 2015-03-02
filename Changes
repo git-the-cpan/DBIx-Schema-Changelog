@@ -1,10 +1,32 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
-# Version 0.1.0  Date: 2015/02/24 (Mario Zieschang, Thomas Mueller)
+# Version 0.3.1  Date: 2015/03/02 (Mario Zieschang)
 #========================================================================
 
-* First version, released on an unsuspecting world.
+== BUG FIXES:
+
+	* windows tests for command line failed
+
+#========================================================================
+# Version 0.3.0  Date: 2015/02/26 (Mario Zieschang)
+#========================================================================
+
+== DOCUMENTATION:
+
+	* Manual for changelog files
+
+== ENHANCEMENT:
+
+	* Configurable postfix and prefix for table names
+
+#========================================================================
+# Version 0.2.1  Date: 2015/02/26 (Mario Zieschang)
+#========================================================================
+
+== BUG FIXES:
+
+	* Can't locate object method "type" via package "DBIx::Schema::Changelog::Command::Changeset" at .. /Command/Changeset.pm line 32.
 
 #========================================================================
 # Version 0.2.0  Date: 2015/02/25 (Mario Zieschang)
@@ -29,25 +51,7 @@ Revision history for DBIx-Schema-Changelog
 	* downgrade min perl version to 5.10
 
 #========================================================================
-# Version 0.2.1  Date: 2015/02/26 (Mario Zieschang)
+# Version 0.1.0  Date: 2015/02/24 (Mario Zieschang, Thomas Mueller)
 #========================================================================
 
-== BUG FIXES:
-
-	* Can't locate object method "type" via package "DBIx::Schema::Changelog::Command::Changeset" at .. /Command/Changeset.pm line 32.
-
-#========================================================================
-# Version 0.3.0  Date: 2015/02/26 (Mario Zieschang)
-#========================================================================
-
-== DOCUMENTATION:
-
-	* Manual for changelog files
-
-== BUG FIXES:
-
-	* 
-
-== ENHANCEMENT:
-
-	* Configurable postfix and prefix for table names
+* First version, released on an unsuspecting world.

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::File::Yaml - Module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.3.0
+Version 0.3.1
 
 =cut
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.3.1';
 
 use strict;
 use warnings FATAL => 'all';

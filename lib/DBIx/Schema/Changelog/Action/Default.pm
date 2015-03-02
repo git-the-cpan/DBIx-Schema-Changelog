@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Default - Handle default values for table colum
 
 =head1 VERSION
 
-Version 0.3.0
+Version 0.3.1
 
 =cut
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.3.1';
 
 use strict;
 use warnings;

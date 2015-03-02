@@ -1,13 +1,25 @@
-use Test::Command tests => 2;
+use Test::Cmd;
+use Test::More tests => 6;
 
-use FindBin;
-use lib "$FindBin::Bin/../lib";
 use strict;
 use warnings;
- 
-my $cmd = 'changelog-run -?'; 
-exit_is_num($cmd, 127);
+use FindBin;
+use File::Spec;
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 
-$cmd = "changelog-run -s=''";
-exit_is_num($cmd, 127);
+my $cmd = Test::Cmd->new(
+    workdir => '',
+    prog    => File::Spec->catfile( 'blib', 'script', 'changelog-run' ),
+);
 
+ok( $cmd->run( args => '-h' ),     'changelog-run help ok' );
+ok( $cmd->run( args => '--help' ), 'changelog-run help ok' );
+ok( $cmd->run( args => '-?' ),     'changelog-run help ok' );
+
+my $chglgs = File::Spec->catfile( $FindBin::Bin, 'data', 'changelog' );
+ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),'changelog-run run ok' );
+ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),'changelog-run run ok' );
+ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),'changelog-run run ok' );
+
+#my $file = File::Spec->catfile( $FindBin::Bin, '..', '.tmp.cmdtest.sqlite' );
+#unlink $file or warn "Could not unlink $file: $!";
