@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;
@@ -53,19 +53,21 @@ sub add {
 
     if ( defined $col->{unique} ) {
         die "Add column is not supported!", $/ unless $actions->{unique};
-        my $unique_name = "unique_" . $col->{table} . "_" . $col->{name};
+        my $table = '' . $col->{table};
+        $table =~ s/"//g;
+        my $unique_name = "unique_" . $table . "_" . $col->{name};
         push(
             @$constr_ref,
             _replace_spare(
                 $actions->{unique},
-                [
-                    "unique_" . $col->{table} . "_" . $col->{name}, $col->{name}
-                ]
+                [ "unique_" . $table . "_" . $col->{name}, $col->{name} ]
             )
         );
     }
     if ( defined $col->{foreign} ) {
         die "Foreign key is not supported!", $/ unless $actions->{foreign_key};
+        my $table = '' . $col->{table};
+        $table =~ s/"//g;
         push(
             @$constr_ref,
             _replace_spare(
@@ -75,7 +77,7 @@ sub add {
                     $col->{foreign}->{reftable},
                     $col->{foreign}->{refcolumn},
                     'fkey_'
-                      . $col->{table} . '_'
+                      . $table . '_'
                       . $col->{foreign}->{refcolumn} . '_'
                       . $col->{name},
                 ]
@@ -124,6 +126,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
 
 =head1 AUTHOR
 

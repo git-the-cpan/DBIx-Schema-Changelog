@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -206,6 +206,8 @@ sub has_max_version { defined shift->max_version }
 sub _max_version { }
 
 1;    # End of DBIx::Schema::Changelog::Driver
+
+__END__
 
 =back
 

@@ -1,7 +1,7 @@
-use Test::More tests => 33;
+use Test::More tests => 31;
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use strict;
 use warnings;
 
@@ -28,9 +28,6 @@ use_ok 'YAML::XS';
 
 require_ok( 'Moose' );
 use_ok 'Moose';
-
-require_ok( 'Module::Version' );
-use_ok 'Module::Version';
 
 require_ok( 'MooseX::HasDefaults::RO' );
 use_ok 'MooseX::HasDefaults::RO';

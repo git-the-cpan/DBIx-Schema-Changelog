@@ -6,15 +6,16 @@ DBIx::Schema::Changelog::Action - Abstract action class.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose::Role;
+use Data::Dumper;
 
 =head1 ATTRIBUTES
 
@@ -86,6 +87,10 @@ sub _do {
     $self->dbh()->do($sql) or die "Can't handle sql: \n\t$sql\n $!";
 }
 
+1;    # End of DBIx::Schema::Changelog::Action
+
+__END__
+
 =head1 AUTHOR
 
 Mario Zieschang, C<< <mario.zieschang at combase.de> >>
@@ -133,4 +138,3 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1;    # End of DBIx::Schema::Changelog::Action

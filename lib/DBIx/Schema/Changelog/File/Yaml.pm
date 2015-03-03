@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::File::Yaml - Module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -80,6 +80,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::File
+
+__END__
 
 =back
 

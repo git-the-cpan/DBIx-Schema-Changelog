@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Base - Abstract file class.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -183,7 +183,7 @@ has t_load => (
     default => q~use Test::More tests => 2;
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use strict;
 use warnings;
 
@@ -345,6 +345,10 @@ sub _write_file {
     close $fh;
 }
 
+1;    # End of DBIx::Schema::Changelog::File
+
+__END__
+
 =head1 AUTHOR
 
 Mario Zieschang, C<< <mario.zieschang at combase.de> >>
@@ -391,5 +395,3 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 =cut
-
-1;    # End of DBIx::Schema::Changelog::File

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::TableAction handler for tables
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;
@@ -126,8 +126,13 @@ sub add {
         }
     }
     push( @columns, @$constraints );
-    my $sql = _replace_spare( $actions->{create_table},
-        [ $name, join( ",\n\t", @columns ) ] );
+    my $sql = _replace_spare(
+        $actions->{create_table},
+        [
+            $name,             join( ",\n\t", @columns ),
+            $params->{engine}, $params->{charset}
+        ]
+    );
     $self->_do($sql);
 
 }
@@ -208,6 +213,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
 
 =back
 

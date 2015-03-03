@@ -7,7 +7,7 @@ changelog-run - Commandline Modul for DBIx::Schema::Changelog
 =cut
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 
 use strict;
 use warnings;

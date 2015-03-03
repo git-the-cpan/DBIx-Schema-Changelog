@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Column - Action handler for table columns
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;
@@ -22,7 +22,17 @@ use Data::Dumper;
 
 with 'DBIx::Schema::Changelog::Action';
 
-has constraint => (
+=head1 ATTRIBUTES
+
+=over 4
+
+=item constraint_action
+
+DBIx::Schema::Changelog::Action::Constraint object.
+
+=cut
+
+has constraint_action => (
     is      => 'rw',
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Action',
@@ -34,12 +44,7 @@ has constraint => (
     },
 );
 
-has errors => (
-    is      => 'ro',
-    isa     => 'DBIx::Schema::Changelog::Core::EceptionMessages',
-    lazy    => 1,
-    default => sub { DBIx::Schema::Changelog::Core::EceptionMessages->new() }
-);
+=back
 
 =head1 SUBROUTINES/METHODS
 
@@ -54,9 +59,9 @@ has errors => (
 
 sub add {
     my ( $self, $col, $constr_ref ) = @_;
-    my $actions = $self->driver()->actions;
-    my $type    = $self->driver()->type($col);
-    my $constraint = $self->constraint()->add( $col, $constr_ref );
+    my $actions    = $self->driver()->actions;
+    my $type       = $self->driver()->type($col);
+    my $constraint = $self->constraint_action()->add( $col, $constr_ref );
     return qq~$col->{name} $type $constraint~ if ( $col->{create_table} );
 
     unless ( $actions->{add_column} ) {
@@ -98,10 +103,9 @@ sub drop {
         return;
     }
     foreach ( @{ $params->{dropcolumn} } ) {
-        my $sql =
-          _replace_spare( $actions->{alter_table}, [ $params->{table} ] );
-        $sql .= ' ' . _replace_spare( $actions->{drop_column}, [ $_->{name} ] );
-        $self->_do($sql);
+        my $s = _replace_spare( $actions->{alter_table}, [ $params->{name} ] );
+        $s .= ' ' . _replace_spare( $actions->{drop_column}, [ $_->{name} ] );
+        $self->_do($s);
     }
 
 }
@@ -127,6 +131,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
 
 =back
 

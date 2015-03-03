@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Changeset - Handles action types.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;
@@ -94,6 +94,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::Changeset
+
+__END__
 
 =back
 

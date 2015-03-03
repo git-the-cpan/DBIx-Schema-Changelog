@@ -1,15 +1,27 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
+# Version 0.4.0  Date: 2015/03/3 (Mario Zieschang)
+#========================================================================
+
+== DOCUMENTATION:
+
+	* DBIx::Schema::Changelog::Cookbook
+
+== BUG FIXES:
+
+	* drop column
+
+#========================================================================
 # Version 0.3.2  Date: 2015/03/03 (Mario Zieschang)
 #========================================================================
 
 == BUG FIXES:
 
-	* windows tests for command line failed
+	* fixes for windows test
 
 #========================================================================
-# Version 0.3.0  Date: 2015/02/26 (Mario Zieschang)
+# Version 0.3.0  Date: 2015/03/01 (Mario Zieschang)
 #========================================================================
 
 == DOCUMENTATION:

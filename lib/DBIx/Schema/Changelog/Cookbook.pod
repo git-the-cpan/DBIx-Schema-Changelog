@@ -1,20 +1,72 @@
 package DBIx::Schema::Changelog::Cookbook;
-$DBIx::Schema::Changelog::Cookbook::VERSION = '0.3.1';
+$DBIx::Schema::Changelog::Cookbook::VERSION = '0.4.0';
 __END__
 
 =pod
 
 =head1 NAME
 
-	DBIx::Schema::Changelog::Cookbook - A gentle introduction to DBIx::Schema::Changelog
+DBIx::Schema::Changelog::Cookbook - A gentle introduction to DBIx::Schema::Changelog
 
 =head1 VERSION
 
-Version 0.3.1
+Version 0.4.0
 
 =head1 DESCRIPTION
 
-	
+A simple guide to run the DBIx::Schema::Changelog.
+
+=head1 RUNNING A CHANGELOG PROJECT
+ 
+=head2 A simple example to crate a changelog project.
+
+There is a strict hirachy to read the changelogs.
+
+	/changelog-directory
+		|
+		|-->changlog.<filetype>
+		|-->changlog-<subname_1>.<filetype>
+		|-->changlog-<...>.<filetype>
+		|-->changlog-<subname_2>.<filetype>
+ 
+The names for the sub changelogs can be known for all.
+
+For more information how the changeset is written look at 
+L<DBIx::Schema::Changelog::Cookbook::Changeset>.
+
+=head2 A simple example to crate read the changelog project.
+
+The changelog project can be written stand alone by command line tool.
+
+For standard db C<SQLite>:
+
+	changelog-run -db=<dbname> -s=/path/to/changelog
+
+For specific db:
+
+	changelog-run  -s='<path to changelog-directory>' -db='league;host=127.0.0.1' -u='<user>' -p='<password>' --driver=<driver name>	
+
+And write it direcly in your code.
+
+For standard db C<SQLite>:
+
+	my $dbh = DBI->connect( "dbi:SQLite:database=<dbname>" );
+	DBIx::Schema::Changelog->new( dbh => $dbh)->read( '<path to changelog-directory>' );
+
+For specific db:
+
+	my $dbh = DBI->connect( "dbi:Pg:dbname=<dbname>;host=127.0.0.1", <driver name>, '<password>' );
+	DBIx::Schema::Changelog->new( dbh => $dbh, db_driver => 'Pg' )->read( '<path to changelog-directory>' );
+
+If your driver is not supported evryone is invided to read himself driver or write me.
+The for more information to create an own driver look at: L<DBIx::Schema::Changelog::Cookbook::Driver>.
+
+=head2 Create a specific file reader.
+
+The changelog reader expect a hashref in the main changelog file.
+And a arrayref in the subchangelog files.
+
+The for more information to create an own file reader look at: L<DBIx::Schema::Changelog::Cookbook::File>.
 
 =encoding utf8
 

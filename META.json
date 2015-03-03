@@ -4,7 +4,7 @@
       "Mario Zieschang <mziescha@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.142060",
+   "generated_by" : "ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "artistic_2"
    ],
@@ -29,7 +29,6 @@
             "Hash::MD5" : "0.05",
             "JSON::Parse" : "0.31",
             "Method::Signatures::Simple" : "1.07",
-            "Module::Version" : "0.12",
             "Moose" : "2.1403",
             "MooseX::HasDefaults::RO" : "0",
             "MooseX::Types::LoadableClass" : "0.013",
@@ -37,9 +36,14 @@
             "MooseX::Types::Path::Class" : "0.06",
             "MooseX::Types::PerlVersion" : "0.002",
             "Path::Class" : "0.3",
+            "Pod::Coverage::TrustPod" : "0",
             "Pod::Usage" : "0",
             "Storable" : "2.49",
+            "Test::CheckManifest" : "0",
             "Test::Cmd" : "0",
+            "Test::Exception" : "0",
+            "Test::Pod::Coverage" : "0",
+            "Test::PostgreSQL" : "1.01",
             "Text::Trim" : "1.02",
             "Time::Piece" : "1.27",
             "YAML" : "1.13",
@@ -60,7 +64,6 @@
             "Hash::MD5" : "0.05",
             "JSON::Parse" : "0.31",
             "Method::Signatures::Simple" : "1.07",
-            "Module::Version" : "0.12",
             "Moose" : "2.1403",
             "MooseX::HasDefaults::RO" : "0",
             "MooseX::Types::LoadableClass" : "0.013",
@@ -68,9 +71,14 @@
             "MooseX::Types::Path::Class" : "0.06",
             "MooseX::Types::PerlVersion" : "0.002",
             "Path::Class" : "0.3",
+            "Pod::Coverage::TrustPod" : "0",
             "Pod::Usage" : "0",
             "Storable" : "2.49",
+            "Test::CheckManifest" : "0",
             "Test::Cmd" : "0",
+            "Test::Exception" : "0",
+            "Test::Pod::Coverage" : "0",
+            "Test::PostgreSQL" : "1.01",
             "Text::Trim" : "1.02",
             "Time::Piece" : "1.27",
             "YAML" : "1.13",
@@ -87,5 +95,5 @@
          "web" : "https://github.com/mziescha/DBIx-Schema-Changelog"
       }
    },
-   "version" : "v0.3.2"
+   "version" : "v0.4.0"
 }

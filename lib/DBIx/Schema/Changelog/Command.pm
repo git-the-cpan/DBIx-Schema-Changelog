@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command - Commandline Modul for DBIx::Schema::Changelog
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;

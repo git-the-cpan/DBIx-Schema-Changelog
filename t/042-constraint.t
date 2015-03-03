@@ -1,6 +1,6 @@
 use Test::More tests => 6;
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use strict;
 use warnings;
 

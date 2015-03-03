@@ -1,7 +1,7 @@
 use Test::More tests => 8;
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use strict;
 use warnings;
 use DBIx::Schema::Changelog::Driver::SQLite;

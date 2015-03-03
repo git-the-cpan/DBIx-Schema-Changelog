@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::File - Abstract file class.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -19,6 +19,8 @@ use Moose::Role;
 requires 'load';
 
 1;    # End of DBIx::Schema::Changelog::File
+
+__END__
 
 =head1 AUTHOR
 

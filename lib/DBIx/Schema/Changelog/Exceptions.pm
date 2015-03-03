@@ -6,22 +6,19 @@ DBIx::Schema::Changelog::Exceptions - Abstract exceptions class.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use Data::Dumper;
 use warnings FATAL => 'all';
 
+1;    # End of DBIx::Schema::Changelog::Exceptions
 
 __END__
-
-1;
-
-
 
 =head1 AUTHOR
 
@@ -67,7 +64,4 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 =cut
-
-1;    # End of DBIx::Schema::Changelog::Exceptions

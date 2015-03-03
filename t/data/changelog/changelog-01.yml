@@ -165,4 +165,4 @@
       columns:
           - tpl: 'tpl_client_ref'
     - type: droptable
-      name: '"dop_table_test"'
+      name: 'dop_table_test'

@@ -40,10 +40,10 @@ MANIFEST
 MANIFEST.SKIP
 README.md
 t/00-load.t
-t/001-create.t
 t/010-changelog.t
 t/020-driver.t
 t/021-sqlite.t
+t/022-pg.t
 t/030-changeset.t
 t/040-action.t
 t/041-column.t

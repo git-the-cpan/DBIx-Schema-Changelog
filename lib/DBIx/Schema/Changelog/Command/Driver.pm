@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Driver - Create a new driver modul from templa
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -100,6 +100,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;  # End of DBIx::Schema::Changelog::File::{0}
+
+__END__
 
 =head1 BUGS
 
@@ -244,6 +246,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
 
 =head1 AUTHOR
 

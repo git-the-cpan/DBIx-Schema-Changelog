@@ -29,18 +29,13 @@ use_ok 'DBIx::Schema::Changelog::Command::Changeset';
 
 my $path = File::Spec->catfile( $FindBin::Bin, '..', '.tmp' );
 
-my $insert = {
-    dir       => $path,
-    file_type => 'Yaml'
-};
-
+my $insert = { dir => $path, file_type => 'Yaml' };
 DBIx::Schema::Changelog::Command::Changeset->new($insert)->make();
 
-my $file = File::Spec->catfile( $path, '.tmp.changeset.sqlite' );
-
+my $file = File::Spec->catfile( $path, 'changeset.sqlite' );
 my $dbh = DBI->connect("dbi:SQLite:database=$file");
 DBIx::Schema::Changelog->new( dbh => $dbh )
   ->read( File::Spec->catfile( $path, 'changelog' ) );
 $dbh->disconnect();
 
-remove_tree $path or warn "Could not unlink $path: $!";
+remove_tree $path or warn "Could not remove $path: $!";

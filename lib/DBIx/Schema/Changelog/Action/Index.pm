@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Index - Action handler for indiezes
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 use strict;
 use warnings;
@@ -68,6 +68,8 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
 
 =back
 
