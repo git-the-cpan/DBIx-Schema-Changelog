@@ -36,11 +36,11 @@ my $insert = {
 
 DBIx::Schema::Changelog::Command::Changeset->new($insert)->make();
 
-my $dbh = DBI->connect("dbi:SQLite:database=.tmp.changeset.sqlite");
+my $file = File::Spec->catfile( $path, '.tmp.changeset.sqlite' );
+
+my $dbh = DBI->connect("dbi:SQLite:database=$file");
 DBIx::Schema::Changelog->new( dbh => $dbh )
   ->read( File::Spec->catfile( $path, 'changelog' ) );
+$dbh->disconnect();
 
-my $file = File::Spec->catfile( $FindBin::Bin, '..', '.tmp.changeset.sqlite' );
-unlink $file or die "Could not unlink $file: $!";
-
-remove_tree $path or die "Could not unlink $path: $!";
+remove_tree $path or warn "Could not unlink $path: $!";

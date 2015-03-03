@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Core::EceptionMessages - list of eception messages
 
 =head1 VERSION
 
-Version 0.3.1
+Version 0.3.2
 
 =cut
 
-our $VERSION = '0.3.1';
+our $VERSION = '0.3.2';
 
 =head1 DESCRIPTION
 

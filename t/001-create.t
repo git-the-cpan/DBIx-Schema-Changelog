@@ -19,4 +19,4 @@ use_ok 'DBIx::Schema::Changelog';
 
 my $dbh = DBI->connect("dbi:SQLite:database=.tmp.sqlite");
 DBIx::Schema::Changelog->new( dbh => $dbh )->read( File::Spec->catfile( $FindBin::Bin, 'data', 'changelog' ) );
-
+$dbh->disconnect();

@@ -48,3 +48,4 @@ is(
     'Creating view failed'
 );
 is( $object->drop( { name => 'view_test' } ), '0E0', 'Drop view failed' );
+$dbh->disconnect();

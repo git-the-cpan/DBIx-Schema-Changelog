@@ -45,3 +45,4 @@ is(
 );
 is( $object->drop( { table => '"user"', name => 'drop_test' } ),
     undef, 'Drop column test.' );
+$dbh->disconnect();
