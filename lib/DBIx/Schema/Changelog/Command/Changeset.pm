@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings FATAL => 'all';

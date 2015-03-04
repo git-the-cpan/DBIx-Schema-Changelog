@@ -1,3 +1,4 @@
+use Test::Requires qw(DBI DBD::SQLite);
 use Test::More tests => 12;
 
 use strict;
@@ -33,7 +34,8 @@ my $insert = { dir => $path, file_type => 'Yaml' };
 DBIx::Schema::Changelog::Command::Changeset->new($insert)->make();
 
 my $file = File::Spec->catfile( $path, 'changeset.sqlite' );
-my $dbh = DBI->connect("dbi:SQLite:database=$file");
+my $dbh = DBI->connect("dbi:SQLite:database=$file")
+  or plan skip_all => $DBI::errstr;
 DBIx::Schema::Changelog->new( dbh => $dbh )
   ->read( File::Spec->catfile( $path, 'changelog' ) );
 $dbh->disconnect();

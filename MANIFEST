@@ -53,6 +53,7 @@ t/044-table.t
 t/045-view.t
 t/046-sql.t
 t/047-sequence.t
+t/048-default.t
 t/050-command.t
 t/051-base.t
 t/052-driver.t

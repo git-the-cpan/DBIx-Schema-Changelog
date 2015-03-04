@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -143,12 +143,6 @@ has origin_types => (
 
 =over 4
 
-=item create_changelog_table
-
-=cut
-
-requires 'create_changelog_table';
-
 =item check_version
 
 =cut
@@ -204,6 +198,24 @@ sub has_max_version { defined shift->max_version }
 =cut
 
 sub _max_version { }
+
+=item create_changelog_table
+
+=cut
+
+sub create_changelog_table {
+    my ( $self, $dbh, $name ) = @_;
+    my $sth = $dbh->prepare( $self->select_changelog_table() );
+    if ( $sth->execute() or die "Some error $!" ) {
+        foreach ( $sth->fetchrow_array() ) {
+            return undef if ( $_ =~ /^$name$/ );
+        }
+    }
+    return {
+        name    => $name,
+        columns => $self->changelog_table()
+    };
+}
 
 1;    # End of DBIx::Schema::Changelog::Driver
 

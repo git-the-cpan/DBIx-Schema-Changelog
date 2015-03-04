@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Column - Action handler for table columns
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings;
@@ -21,30 +21,6 @@ use DBIx::Schema::Changelog::Action::Constraint;
 use Data::Dumper;
 
 with 'DBIx::Schema::Changelog::Action';
-
-=head1 ATTRIBUTES
-
-=over 4
-
-=item constraint_action
-
-DBIx::Schema::Changelog::Action::Constraint object.
-
-=cut
-
-has constraint_action => (
-    is      => 'rw',
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Constraint->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-=back
 
 =head1 SUBROUTINES/METHODS
 
@@ -58,15 +34,14 @@ has constraint_action => (
 =cut
 
 sub add {
-    my ( $self, $col, $constr_ref ) = @_;
-    my $actions    = $self->driver()->actions;
-    my $type       = $self->driver()->type($col);
-    my $constraint = $self->constraint_action()->add( $col, $constr_ref );
+    my ( $self, $col, $constraint ) = @_;
+    my $actions = $self->driver()->actions;
+    my $type    = $self->driver()->type($col);
     return qq~$col->{name} $type $constraint~ if ( $col->{create_table} );
 
     unless ( $actions->{add_column} ) {
         print STDERR __PACKAGE__, " (", __LINE__,
-          ") Add column is not supported!  ", $/;
+          ") Add column is not supported!", $/;
         return;
     }
     my $ret = _replace_spare( $actions->{add_column},
@@ -84,7 +59,7 @@ sub add {
 sub alter {
     my ( $self, $params ) = @_;
     print STDERR __PACKAGE__, " (", __LINE__,
-      ") Alter column is not supported!  ", $/;
+      ") Alter column is not supported!", $/;
     return undef;
 }
 
@@ -99,7 +74,7 @@ sub drop {
     my $actions = $self->driver()->actions;
     unless ( $actions->{drop_column} ) {
         print STDERR __PACKAGE__, " (", __LINE__,
-          ") Drop column is not supported!  ", $/;
+          ") Drop column is not supported!", $/;
         return;
     }
     foreach ( @{ $params->{dropcolumn} } ) {
@@ -107,23 +82,6 @@ sub drop {
         $s .= ' ' . _replace_spare( $actions->{drop_column}, [ $_->{name} ] );
         $self->_do($s);
     }
-
-}
-
-=back
-
-=head1 ADDITIONAL SUBROUTINES/METHODS
-
-=over 4
-
-=item run_constraints
-
-=cut
-
-sub run_constraints {
-    my ( $self, $table, $constraints ) = @_;
-    $self->_do( $self->driver()->add_constraint( $table, $_ ) )
-      foreach (@$constraints);
 
 }
 

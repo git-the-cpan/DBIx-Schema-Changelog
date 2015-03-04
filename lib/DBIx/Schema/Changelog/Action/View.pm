@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::View - Handles view actions
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings;
@@ -31,11 +31,7 @@ with 'DBIx::Schema::Changelog::Action';
 sub add {
     my ( $self, $params ) = @_;
     my $actions = $self->driver()->actions;
-    unless ( $actions->{create_view} ) {
-        print STDERR __PACKAGE__, " (", __LINE__,
-          ") Create view is not supported!  ", $/;
-        return;
-    }
+    die " Create view is not supported!" unless ( $actions->{create_view} );
     my $sql = _replace_spare( $actions->{create_view},
         [ $params->{name}, $params->{as} ] );
     $self->_do($sql);

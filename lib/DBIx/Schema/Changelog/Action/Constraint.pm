@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings;
@@ -41,49 +41,14 @@ has default => (
 
 sub add {
     my ( $self, $col, $constr_ref ) = @_;
-    my $defaults = $self->driver()->defaults;
-    my $consts   = $self->driver()->constraints;
-    my $actions  = $self->driver()->actions;
+    my $consts = $self->driver()->constraints;
+    my $must_nn = ( $col->{notnull} || defined $col->{primarykey} ) ? 1 : 0;
+    my $isnt_nn =
+      ( !defined $col->{default} && !defined $col->{foreign} ) ? 1 : 0;
 
-    print __PACKAGE__, __LINE__, Dumper($col);
-    die $self->errors()
-      ->message( 'no_default_value', [ $col->{name}, $col->{table} ] )
-      if ( ( $col->{notnull} || defined $col->{primarykey} )
-        && ( !defined $col->{default} && !defined $col->{foreign} ) );
-
-    if ( defined $col->{unique} ) {
-        die "Add column is not supported!", $/ unless $actions->{unique};
-        my $table = '' . $col->{table};
-        $table =~ s/"//g;
-        my $unique_name = "unique_" . $table . "_" . $col->{name};
-        push(
-            @$constr_ref,
-            _replace_spare(
-                $actions->{unique},
-                [ "unique_" . $table . "_" . $col->{name}, $col->{name} ]
-            )
-        );
-    }
-    if ( defined $col->{foreign} ) {
-        die "Foreign key is not supported!", $/ unless $actions->{foreign_key};
-        my $table = '' . $col->{table};
-        $table =~ s/"//g;
-        push(
-            @$constr_ref,
-            _replace_spare(
-                $actions->{foreign_key},
-                [
-                    $col->{name},
-                    $col->{foreign}->{reftable},
-                    $col->{foreign}->{refcolumn},
-                    'fkey_'
-                      . $table . '_'
-                      . $col->{foreign}->{refcolumn} . '_'
-                      . $col->{name},
-                ]
-            )
-        );
-    }
+    die "No default value set for $col->{name}" if ( $must_nn && $isnt_nn );
+    push( @$constr_ref, $self->_unique($col) )  if ( defined $col->{unique} );
+    push( @$constr_ref, $self->_foreign($col) ) if ( defined $col->{foreign} );
 
     my $not_null = ( $col->{notnull} ) ? $consts->{not_null} : '';
     my $primarykey =
@@ -120,6 +85,50 @@ sub drop {
    #$self->index_action()->add($_)   if (uc $constraint_->{type} eq 'FOREIGN' );
    #$self->index_action()->alter($_) if (uc $constraint_->{type} eq 'CHECK' );
    #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
+}
+
+=head1 AUXILARY SUBROUTINES/METHODS
+
+=head2 _foreign
+
+Private sub to handle foreign keys constraints
+
+=cut
+
+sub _foreign {
+    my ( $self, $col, $constr_ref ) = @_;
+    my $actions = $self->driver()->actions;
+    die "Foreign key is not supported!", $/ unless $actions->{foreign_key};
+    my $table = '' . $col->{table};
+    $table =~ s/"//g;
+    return _replace_spare(
+        $actions->{foreign_key},
+        [
+            $col->{name},
+            $col->{foreign}->{reftable},
+            $col->{foreign}->{refcolumn},
+            'fkey_'
+              . $table . '_'
+              . $col->{foreign}->{refcolumn} . '_'
+              . $col->{name},
+        ]
+    );
+}
+
+=head2 _unique
+
+Private sub to handle unique constraints
+
+=cut
+
+sub _unique {
+    my ( $self, $col, $constr_ref ) = @_;
+    my $actions = $self->driver()->actions;
+    return unless $actions->{unique};
+    my $table = '' . $col->{table};
+    $table =~ s/"//g;
+    return _replace_spare( $actions->{unique},
+        [ qq~unique_$col->{name}~, join( ',', @{ $col->{unique} } ) ] );
 }
 
 no Moose;

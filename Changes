@@ -1,6 +1,21 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
+# Version 0.5.0  Date: 2015/03/4 (Mario Zieschang)
+#========================================================================
+
+== DOCUMENTATION:
+
+	* Cookbooks
+
+== ENHANCEMENT:
+
+	* extract create sequence for optinal driver
+	* add test for default action
+	* add unique constraint
+	* add constraint for single entry 
+
+#========================================================================
 # Version 0.4.0  Date: 2015/03/3 (Mario Zieschang)
 #========================================================================
 

@@ -1,3 +1,4 @@
+use Test::Requires qw(DBI DBD::SQLite);
 use Test::More tests => 11;
 
 use FindBin;
@@ -16,7 +17,8 @@ use_ok 'DBIx::Schema::Changelog::Driver::SQLite';
 require_ok('DBIx::Schema::Changelog::Action::View');
 use_ok 'DBIx::Schema::Changelog::Action::View';
 
-my $dbh    = DBI->connect("dbi:SQLite:database=.tmp.sqlite");
+my $dbh = DBI->connect("dbi:SQLite:database=.tmp.sqlite")
+  or plan skip_all => $DBI::errstr;
 my $driver = DBIx::Schema::Changelog::Driver::SQLite->new();
 my $object =
   DBIx::Schema::Changelog::Action::View->new( driver => $driver, dbh => $dbh );

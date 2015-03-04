@@ -6,21 +6,22 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose;
+use MooseX::HasDefaults::RO;
 use MooseX::Types::PerlVersion qw( PerlVersion );
+use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Driver';
 
 has actions => (
-    is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
         return {
@@ -30,14 +31,12 @@ has actions => (
             add_column   => 'ADD COLUMN {0}',
             create_view  => 'CREATE VIEW {0} AS {1}',
             drop_view    => 'DROP VIEW {0}',
-            unique       => q~CREATE UNIQUE INDEX {0} on {1} ({2})~,
             foreign_key  => q~FOREIGN KEY ({0}) REFERENCES {1}({2})~,
         };
     }
 );
 
 has constraints => (
-    is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
         return {
@@ -52,15 +51,16 @@ has constraints => (
 );
 
 has defaults => (
-    is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
-        return { current => 'CURRENT_TIMESTAMP', };
+        return {
+            current => 'CURRENT_TIMESTAMP',
+            inc     => 'AUTOINCREMENT',
+        };
     }
 );
 
 has types => (
-    is      => 'ro',
     isa     => 'HashRef[Str]',
     default => sub {
         return {
@@ -79,27 +79,13 @@ has types => (
     }
 );
 
+has select_changelog_table => (
+    isa     => 'Str',
+    lazy    => 1,
+    default => "SELECT * FROM sqlite_master WHERE type='table';",
+);
+
 sub _min_version { '3.7' }
-
-=head1 SUBROUTINES/METHODS
-
-=head2 create_changelog_table
-
-=cut
-
-sub create_changelog_table {
-    my ( $self, $dbh, $name ) = @_;
-    my $sth = $dbh->prepare("SELECT * FROM sqlite_master WHERE type='table';");
-    if ( $sth->execute() or die "Some error $!" ) {
-        foreach ( $sth->fetchrow_array() ) {
-            return undef if ( $_ =~ /^$name$/ );
-        }
-    }
-    return {
-        name    => $name,
-        columns => $self->changelog_table()
-    };
-}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

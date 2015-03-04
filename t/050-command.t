@@ -1,3 +1,4 @@
+use Test::Requires qw(Test::Cmd);
 use Test::Cmd;
 use Test::More tests => 6;
 

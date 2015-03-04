@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Driver - Create a new driver modul from templa
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -71,12 +71,6 @@ has types => (
 sub _min_version { '0' }
 
 =head1 SUBROUTINES/METHODS
-
-=head2 create_changelog_table
-
-=cut
-
-sub create_changelog_table {}
 
 =head2 generate_unique
 

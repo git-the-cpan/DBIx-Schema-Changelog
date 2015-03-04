@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::TableAction handler for tables
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings;
@@ -116,13 +116,15 @@ sub add {
         unless ( $col->{tpl} ) {
             $col->{table}        = $params->{name};
             $col->{create_table} = 1;
-            push( @columns, $self->column_action()->add( $col, $constraints ) );
+            my $const = $self->constraint_action()->add( $col, $constraints );
+            push( @columns, $self->column_action()->add( $col, $const ) );
             next;
         }
         foreach ( @{ $self->templates()->{ $col->{tpl} } } ) {
             $_->{table}        = $params->{name};
             $_->{create_table} = 1;
-            push( @columns, $self->column_action()->add( $_, $constraints ) );
+            my $const = $self->constraint_action()->add( $_, $constraints );
+            push( @columns, $self->column_action()->add( $_, $const ) );
         }
     }
     push( @columns, @$constraints );
@@ -148,13 +150,15 @@ sub alter {
     my ( $self, $params ) = @_;
     return unless $params->{name};
     my $actions = $self->driver()->actions;
+    my $sql =
+      _replace_spare( $actions->{alter_table}, [ $params->{name} ] );
     if ( defined $params->{addcolumn} ) {
         foreach ( @{ $params->{addcolumn} } ) {
             $_->{table} = $params->{name};
             my $sql =
               _replace_spare( $actions->{alter_table}, [ $params->{name} ] );
-            my $col = $self->column_action()->add($_);
-            $self->_do( $sql . $col );
+            my $const = $self->constraint_action()->add($_);
+            $self->_do( $sql . $self->column_action()->add( $_, $const ) );
         }
     }
     elsif ( defined $params->{altercolumn} ) {
@@ -164,7 +168,18 @@ sub alter {
         $self->column_action()->drop($params);
     }
     elsif ( defined $params->{addconstraint} ) {
-        $self->constraint_action()->add($params);
+        unless ( $actions->{add_constraint} ) {
+            print STDERR __PACKAGE__, ' (', __LINE__,
+              '). Add constraint is not supported!', $/;
+            return;
+        }
+        my $constraints = [];
+        my $fk          = $params->{addconstraint};
+        $fk->{table} = $params->{name};
+        $self->constraint_action()->add( $fk, $constraints );
+        $self->_do(
+            $sql . ' ' . _replace_spare( $actions->{add_constraint}, [$_] ) )
+          foreach @$constraints;
     }
     else {
         die __PACKAGE__

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Sequence - Action handler for sequences
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use strict;
 use warnings;
@@ -39,27 +39,14 @@ sub add {
       if ( !defined $defaults->{ $params->{default} }
         || $defaults->{ $params->{default} } ne 'sequence' );
 
-    unless ( $actions->{create_sequence} ) {
-        print STDERR __PACKAGE__, " (", __LINE__,
-          ") Create sequence is not supported!  ", $/;
-        return;
-    }
-    $params->{table} =~ s/"//g;
-    $params->{name} =~ s/"//g;
-    my $seq = 'seq_' . $params->{table} . '_' . $params->{name};
-    my $sql = _replace_spare( $actions->{create_sequence},
-        [ $seq, 1, 1, 9223372036854775807, 1, 1 ] );
-    if ( defined $self->dbh() ) {
-        print __PACKAGE__, __LINE__, Dumper($sql);
-        $self->_do($sql);
-        return "DEFAULT nextval('$seq'::regclass)";
-    }
-    return undef;
+    die "Create sequence is not supported!"
+      unless ( $actions->{create_sequence} );
+    return $self->_create_sequence($params);
 }
 
 =item alter
 
-    Not yet implemented!
+Not yet implemented!
 
 =cut
 
@@ -67,11 +54,29 @@ sub alter { }
 
 =item drop
 
-    Not yet implemented!
+Not yet implemented!
 
 =cut
 
 sub drop { }
+
+=item _create_sequence
+
+=cut
+
+sub _create_sequence {
+    my ( $self, $params ) = @_;
+    my $actions = $self->driver()->actions;
+    die "Db connection iss missing!" unless ( $self->dbh() );
+    $params->{table} =~ s/"//g;
+    $params->{name} =~ s/"//g;
+    my $seq = 'seq_' . $params->{table} . '_' . $params->{name};
+    my $sql = _replace_spare( $actions->{create_sequence},
+        [ $seq, 1, 1, 9223372036854775807, 1, 1 ] );
+    print __PACKAGE__, __LINE__, Dumper($sql);
+    $self->_do($sql);
+    return _replace_spare( $actions->{nextval_sequence}, [$seq] );
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

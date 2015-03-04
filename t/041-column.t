@@ -1,4 +1,5 @@
-use Test::More tests => 9;
+use Test::Requires qw(DBI DBD::SQLite);
+use Test::More tests => 10;
 
 use FindBin;
 use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
@@ -6,7 +7,8 @@ use strict;
 use warnings;
 use DBI;
 use DBIx::Schema::Changelog::Driver::SQLite;
-my $driver = DBIx::Schema::Changelog::Driver::SQLite->new();
+my $driver = new_ok('DBIx::Schema::Changelog::Driver::SQLite')
+  or plan skip_all => 'Could not initiate driver!';
 
 require_ok('DBI');
 use_ok 'DBI';
@@ -14,7 +16,8 @@ use_ok 'DBI';
 require_ok('DBIx::Schema::Changelog::Action::Column');
 use_ok 'DBIx::Schema::Changelog::Action::Column';
 
-my $dbh    = DBI->connect("dbi:SQLite:database=.tmp.sqlite");
+my $dbh = DBI->connect("dbi:SQLite:database=.tmp.sqlite")
+  or plan skip_all => $DBI::errstr;
 my $object = DBIx::Schema::Changelog::Action::Column->new(
     driver => $driver,
     dbh    => $dbh
@@ -26,9 +29,9 @@ isa_ok( $object, 'DBIx::Schema::Changelog::Action::Column' );
 
 is(
     $object->add(
-        { table => '"user"', name => 'drop_test', type => 'integer' }
+        { table => '"user"', name => 'drop_test', type => 'integer' }, ''
     ),
-    'ADD COLUMN drop_test INTEGER   ',
+    'ADD COLUMN drop_test INTEGER ',
     'Add column test.'
 );
 is(

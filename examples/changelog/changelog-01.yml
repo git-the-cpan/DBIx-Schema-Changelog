@@ -144,3 +144,52 @@
   entries:
     - type: sql
       as:  'SELECT * FROM "user"'
+
+- id: 001.05-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: altertable
+      name: '"user"'
+      addcolumn:
+          - { name: 'drop_test', type: integer }
+    - type: altertable
+      name: '"user"'
+      dropcolumn:
+          - { name: 'drop_test', type: integer }
+
+- id: 001.06-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: createtable
+      name: 'dop_table_test'
+      columns:
+          - tpl: 'tpl_client_ref'
+    - type: droptable
+      name: 'dop_table_test'
+
+- id: 001.07-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: createtable
+      name: 'add_foreign_test'
+      columns:
+          - tpl: 'tpl_client_ref'
+          - name: player1
+            type: integer
+
+- id: 001.08-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: altertable
+      name: 'add_foreign_test'
+      addconstraint:
+        name: player1
+        foreign:
+            reftable: 'team'
+            refcolumn: 'id'
+
+- id: 001.09-maz
+  author: "Mario Zieschang"
+  entries:
+    - type: droptable
+      name: 'add_foreign_test'

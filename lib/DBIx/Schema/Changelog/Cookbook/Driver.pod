@@ -1,5 +1,5 @@
 package DBIx::Schema::Changelog::Cookbook::Driver;
-$DBIx::Schema::Changelog::Cookbook::Driver::VERSION = '0.4.0';
+$DBIx::Schema::Changelog::Cookbook::Driver::VERSION = '0.5.0';
 __END__
 
 =pod
@@ -10,11 +10,14 @@ DBIx::Schema::Changelog::Cookbook::Driver - A gentle introduction to DBIx::Schem
 
 =head1 VERSION
 
-Version 0.4.0
+Version 0.5.0
 
 =head1 DESCRIPTION
 
-	
+A simple guide to create a db driver to run L<DBIx::Schema::Changelog>.
+
+=head2 Create a new driver project.
+
 
 =encoding utf8
 
