@@ -40,6 +40,8 @@ WriteMakefile(
         'Test::PostgreSQL'             => 1.01,
         'Test::CheckManifest'          => 0,
         'Test::Pod::Coverage'          => 0,
+        'Test::Requires'               => 0,
+        'Test::Spelling'               => 0,
 
     },
     PREREQ_PM => {
@@ -69,6 +71,8 @@ WriteMakefile(
         'Test::PostgreSQL'             => 1.01,
         'Test::CheckManifest'          => 0,
         'Test::Pod::Coverage'          => 0,
+        'Test::Requires'               => 0,
+        'Test::Spelling'               => 0,
     },
     META_MERGE => {
         'meta-spec' => { version => 2 },

@@ -7,16 +7,10 @@ use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use Test::Requires qw(DBI DBD::Pg Test::PostgreSQL);
 use DBI;
 use Test::PostgreSQL;
-use Test::More tests => 10;
+use Test::More;
 use Test::Exception;
 
-my $pg = new_ok(
-    'Test::PostgreSQL' => [
-        my_cnf => {
-            'skip-networking' => '',
-        }
-    ]
-) or plan( skip_all => $Test::PostgreSQL::errstr );
+plan tests => 10;
 
 require_ok('DBIx::Schema::Changelog::Driver::Pg');
 use_ok 'DBIx::Schema::Changelog::Driver::Pg';
@@ -24,25 +18,41 @@ use_ok 'DBIx::Schema::Changelog::Driver::Pg';
 require_ok('DBIx::Schema::Changelog::Action::Sequence');
 use_ok 'DBIx::Schema::Changelog::Action::Sequence';
 
-my $dbh = DBI->connect(
-    $pg->dsn( dbname => 'test' ),
-    '', '', { AutoCommit => 1, RaiseError => 1, },
-);
 my $driver = DBIx::Schema::Changelog::Driver::Pg->new();
-my $object = DBIx::Schema::Changelog::Action::Sequence->new(
-    driver => $driver,
-    dbh    => $dbh
-);
+my $object =
+  DBIx::Schema::Changelog::Action::Sequence->new( driver => $driver );
+is( $object->alter(), undef, 'Alter sequence is failing' );
+is( $object->drop(),  undef, 'Drop sequence is failing' );
 
 can_ok( 'DBIx::Schema::Changelog::Action::Sequence',
     @{ [ 'add', 'alter', 'drop' ] } );
 isa_ok( $object, 'DBIx::Schema::Changelog::Action::Sequence' );
 
-is(
-    $object->add( { default => 'inc', table => 'test', name => 'seq_test' } ),
-    q~DEFAULT nextval('seq_test_seq_test'::regclass)~,
-    'Add sequence is failing!'
-);
-is( $object->alter(), undef, 'Alter sequence is failing' );
-is( $object->drop(),  undef, 'Drop sequence is failing' );
+SKIP: {
+	eval { require Test::PostgreSQL };
+ 
+    skip "Test::PostgreSQL not installed", 2 if $@;
+
+    my $pg = new_ok('Test::PostgreSQL');
+
+    my $dbh = DBI->connect(
+        $pg->dsn( dbname => 'test' ),
+        '', '', { AutoCommit => 1, RaiseError => 1, },
+    );
+    $object = DBIx::Schema::Changelog::Action::Sequence->new(
+        driver => $driver,
+        dbh    => $dbh
+    );
+
+    is(
+        $object->add(
+            { default => 'inc', table => 'test', name => 'seq_test' }
+        ),
+        q~DEFAULT nextval('seq_test_seq_test'::regclass)~,
+        'Add sequence is failing!'
+    );
+
+    $dbh->disconnect();
+    done_testing;
+}
 

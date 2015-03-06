@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =cut
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.6.0';
 
 use strict;
 use warnings;
@@ -42,12 +42,20 @@ has default => (
 sub add {
     my ( $self, $col, $constr_ref ) = @_;
     my $consts = $self->driver()->constraints;
-    my $must_nn = ( $col->{notnull} || defined $col->{primarykey} ) ? 1 : 0;
+    if ( defined $col->{primarykey} && ref $col->{primarykey} eq 'ARRAY' ) {
+        push( @$constr_ref, $self->_primary($col) );
+        return;
+    }
+    if ( defined $col->{unique} ) {
+        push( @$constr_ref, $self->_unique($col) );
+        return;
+    }
+
+    my $must_nn = ( defined $col->{primarykey} ) ? 1 : 0;
     my $isnt_nn =
       ( !defined $col->{default} && !defined $col->{foreign} ) ? 1 : 0;
 
     die "No default value set for $col->{name}" if ( $must_nn && $isnt_nn );
-    push( @$constr_ref, $self->_unique($col) )  if ( defined $col->{unique} );
     push( @$constr_ref, $self->_foreign($col) ) if ( defined $col->{foreign} );
 
     my $not_null = ( $col->{notnull} ) ? $consts->{not_null} : '';
@@ -87,7 +95,7 @@ sub drop {
    #$self->index_action()->drop($_)  if (uc $constraint_->{type} eq 'DEFAULT' );
 }
 
-=head1 AUXILARY SUBROUTINES/METHODS
+=head1 AUXILIARY SUBROUTINES/METHODS
 
 =head2 _foreign
 
@@ -99,18 +107,21 @@ sub _foreign {
     my ( $self, $col, $constr_ref ) = @_;
     my $actions = $self->driver()->actions;
     die "Foreign key is not supported!", $/ unless $actions->{foreign_key};
-    my $table = '' . $col->{table};
+    my $table     = '' . $col->{table};
+    my $ref_table = $col->{foreign}->{reftable};
+    my $name      = $col->{name};
+    my $refcolumn = $col->{foreign}->{refcolumn};
+
     $table =~ s/"//g;
+    $ref_table =~ s/"//g;
+    $name =~ s/"//g;
+
     return _replace_spare(
         $actions->{foreign_key},
         [
-            $col->{name},
-            $col->{foreign}->{reftable},
+            $col->{name}, $ref_table,
             $col->{foreign}->{refcolumn},
-            'fkey_'
-              . $table . '_'
-              . $col->{foreign}->{refcolumn} . '_'
-              . $col->{name},
+            "fkey_$table" . "_$refcolumn" . "_$name"
         ]
     );
 }
@@ -127,8 +138,23 @@ sub _unique {
     return unless $actions->{unique};
     my $table = '' . $col->{table};
     $table =~ s/"//g;
+    my $name = ( defined $col->{name} ) ? $col->{name} : time();
     return _replace_spare( $actions->{unique},
-        [ qq~unique_$col->{name}~, join( ',', @{ $col->{unique} } ) ] );
+        [ qq~unique_$name~, join( ',', @{ $col->{unique} } ) ] );
+}
+
+=head2 _primary
+
+Private sub to to handle primary key with more than one column
+
+=cut
+
+sub _primary {
+    my ( $self, $col, $constr_ref ) = @_;
+    my $actions = $self->driver()->actions;
+    my $name = ( defined $col->{name} ) ? $col->{name} : time() . '_gen';
+    return _replace_spare( $actions->{primary},
+        [ qq~pkay_multi_$name~, join( ',', @{ $col->{primarykey} } ) ] );
 }
 
 no Moose;
@@ -162,7 +188,7 @@ by someone other than you, you are nevertheless required to ensure that
 your Modified Version complies with the requirements of this license.
 
 This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+mark, trade name, or logo of the Copyright Holder.
 
 This license includes the non-exclusive, worldwide, free-of-charge
 patent license to make, have made, use, offer to sell, sell, import and
@@ -175,7 +201,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR

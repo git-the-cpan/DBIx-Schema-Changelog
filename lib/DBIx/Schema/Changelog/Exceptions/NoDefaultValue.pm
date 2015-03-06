@@ -2,15 +2,15 @@ package DBIx::Schema::Changelog::Exceptions::NoDefaultValue;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Core::EceptionMessages - list of eception messages
+DBIx::Schema::Changelog::Core::exceptionMessages - list of exception messages
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =cut
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.6.0';
 
 =head1 DESCRIPTION
 
@@ -75,7 +75,7 @@ by someone other than you, you are nevertheless required to ensure that
 your Modified Version complies with the requirements of this license.
 
 This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+mark, trade name, or logo of the Copyright Holder.
 
 This license includes the non-exclusive, worldwide, free-of-charge
 patent license to make, have made, use, offer to sell, sell, import and
@@ -88,7 +88,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR

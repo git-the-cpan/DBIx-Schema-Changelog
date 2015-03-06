@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =cut
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.6.0';
 
 use strict;
 use warnings;
@@ -38,6 +38,7 @@ has actions => (
 q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE {3} START {4} CACHE {5}~,
             nextval_sequence => q~DEFAULT nextval('{0}'::regclass)~,
             unique           => q~CONSTRAINT {0} UNIQUE ({1})~,
+            primary          => q~CONSTRAINT {0} PRIMARY KEY ({1})~,
             foreign_key =>
 q~CONSTRAINT {3} FOREIGN KEY ({0}) REFERENCES {1} ({2}) MATCH SIMPLE ON DELETE NO ACTION ON UPDATE NO ACTION~,
         };
@@ -190,7 +191,7 @@ by someone other than you, you are nevertheless required to ensure that
 your Modified Version complies with the requirements of this license.
 
 This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+mark, trade name, or logo of the Copyright Holder.
 
 This license includes the non-exclusive, worldwide, free-of-charge
 patent license to make, have made, use, offer to sell, sell, import and
@@ -203,7 +204,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR

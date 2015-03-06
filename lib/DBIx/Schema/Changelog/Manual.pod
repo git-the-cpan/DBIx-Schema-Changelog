@@ -1,7 +1,7 @@
 
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$DBIx::Schema::Changelog::Manual::VERSION = '0.5.0';
+$DBIx::Schema::Changelog::Manual::VERSION = '0.6.0';
 __END__
 
 =pod
@@ -12,7 +12,7 @@ DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changel
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =head1 DESCRIPTION
 
@@ -38,17 +38,17 @@ DBIx::Schema::Changelog and prereqs into C<~/perl5>.)
 
 =head1 MAIN CHANGELOG
 
-=head2 Implemnt Subchangelog files
+=head2 Implement sub changelog files
 
 There are two type of changelog files.
-The main changelog which must be called changlog and the specific file end
+The main changelog which must be called changelog and the specific file end
 
 	...
 	changelog.yml
 	changelog.json
 	...
 
-The subchangelog files are in the same directory as the main changelog file.
+The sub changelog files are in the same directory as the main changelog file.
 The difference is that the sub changelog files are defined by postfix.
 
 In the changelog file:
@@ -57,14 +57,14 @@ In the changelog file:
   - "01"
   - "..."
 
-The subchanglog is:
+The sub changelog is:
 
 	changelog-01.yml
 	changelog-....yml
 
 =head2 Define Template
 
-=head1 SUBCHANGELOG ACTIONS
+=head1 sub changelog ACTIONS
 
 As long the specific drivers is it supporting the following actions are possible.
 
@@ -96,7 +96,7 @@ To run a sql statement add following entry:
       as:  'SELECT * FROM "user"'
 
 
-=head1 SUBCHANGELOG COMMANDS
+=head1 sub changelog COMMANDS
 
 =head2 Changeset
 
@@ -143,7 +143,7 @@ by someone other than you, you are nevertheless required to ensure that
 your Modified Version complies with the requirements of this license.
 
 This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+mark, trade name, or logo of the Copyright Holder.
 
 This license includes the non-exclusive, worldwide, free-of-charge
 patent license to make, have made, use, offer to sell, sell, import and
@@ -156,7 +156,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR

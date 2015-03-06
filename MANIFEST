@@ -66,6 +66,7 @@ t/999-delete.t
 t/boilerplate.t
 t/manifest.t
 t/pod-coverage.t
+t/pod-spelling.t
 t/pod.t
 t/data/changelog/changelog-01.yml
 t/data/changelog/changelog.yml

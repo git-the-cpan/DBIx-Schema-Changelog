@@ -2,15 +2,15 @@ package DBIx::Schema::Changelog::Command;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Command - Commandline Modul for DBIx::Schema::Changelog
+DBIx::Schema::Changelog::Command - Command Line module for DBIx::Schema::Changelog
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =cut
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.6.0';
 
 use strict;
 use warnings;
@@ -39,6 +39,7 @@ use DBIx::Schema::Changelog::Command::Changeset;
             'mf|makefile'   => \$config{makefile},
             'h|help|?'      => \$config{help},
             'c|changeset'   => \$config{changeset},
+            'v|version'     => \$config{version},
 
             # with params
             's|start=s'       => \$config{start},
@@ -56,7 +57,8 @@ use DBIx::Schema::Changelog::Command::Changeset;
 
     sub _start {
         my ( $self, $config ) = @_;
-        $config->{driver} = ( defined $config->{driver} ) ? $config->{driver} : 'SQLite';
+        $config->{driver} =
+          ( defined $config->{driver} ) ? $config->{driver} : 'SQLite';
         $config->{dir} = $config->{start};
         my $dbi = "dbi:$config->{driver}:database=$config->{db}";
         my $dbh =
@@ -68,7 +70,8 @@ use DBIx::Schema::Changelog::Command::Changeset;
             db_driver => $config->{driver}
         };
         $insert->{file_type} = $config->{type} if ( defined $config->{type} );
-        my $creator = DBIx::Schema::Changelog->new($insert)->read( $config->{dir} );
+        my $creator =
+          DBIx::Schema::Changelog->new($insert)->read( $config->{dir} );
         $dbh->disconnect();
     }
 }    ############# End of encapsulated class data.      ########################
@@ -86,7 +89,9 @@ sub run {
     if ( $config{makedriver} ) {
         DBIx::Schema::Changelog::Command::Driver->new()->make( \%config );
     }
-    elsif ( $config{makefile} ) { DBIx::Schema::Changelog::Command::File->new()->make( \%config ); }
+    elsif ( $config{makefile} ) {
+        DBIx::Schema::Changelog::Command::File->new()->make( \%config );
+    }
     elsif ( $config{changeset} ) {
 
         my $insert = { dir => $config{dir} || '.' };
@@ -94,6 +99,7 @@ sub run {
         DBIx::Schema::Changelog::Command::Changeset->new($insert)->make();
     }
     elsif ( defined $config{start} ) { $self->_start( \%config ); }
+    elsif ( $config{version} ) { print __PACKAGE__,' Verion: ', $VERSION, $/; }
     elsif ( $config{help} ) { pod2usage( { -verbose => 1 } ); }
     else                    { pod2usage( { -verbose => 1 } ); }
 }
@@ -132,6 +138,7 @@ __END__
     -md --makedriver  : Will create a module for a new driver
     -mf --makefile    : Will create a module for a new file parser
     -c, --changeset   : Will create a new changeset project
+    -v, --version     : Print the current version of this module
     -h, --help, -?    : print what you are currently reading
     (If no command is set print what you are currently reading.)
 
@@ -152,7 +159,7 @@ __END__
 
 =over 4
 
-=item L<Module::Starter>   The package from which the idea originated.
+=item L<module::Starter>   The package from which the idea originated.
 
 =back
 
@@ -186,7 +193,7 @@ by someone other than you, you are nevertheless required to ensure that
 your Modified Version complies with the requirements of this license.
 
 This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+mark, trade name, or logo of the Copyright Holder.
 
 This license includes the non-exclusive, worldwide, free-of-charge
 patent license to make, have made, use, offer to sell, sell, import and
@@ -199,7 +206,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR

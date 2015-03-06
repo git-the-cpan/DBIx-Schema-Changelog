@@ -1,7 +1,27 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
-# Version 0.5.0  Date: 2015/03/4 (Mario Zieschang)
+# Version 0.6.0  Date: 2015/03/06 (Mario Zieschang)
+#========================================================================
+
+== DOCUMENTATION:
+
+	* add spellcheck for PODs 
+
+== BUG FIXES:
+
+	* SKIP block for Pg tests
+
+== ENHANCEMENT:
+
+	* add indices while create table
+	* constraints while creating table
+	* running constraint tests
+	* die if add column action is not supported
+	* print version number in command line tool
+
+#========================================================================
+# Version 0.5.0  Date: 2015/03/04 (Mario Zieschang)
 #========================================================================
 
 == DOCUMENTATION:
@@ -16,7 +36,7 @@ Revision history for DBIx-Schema-Changelog
 	* add constraint for single entry 
 
 #========================================================================
-# Version 0.4.0  Date: 2015/03/3 (Mario Zieschang)
+# Version 0.4.0  Date: 2015/03/03 (Mario Zieschang)
 #========================================================================
 
 == DOCUMENTATION:

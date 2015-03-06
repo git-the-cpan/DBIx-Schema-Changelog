@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-changelog-run - Commandline Modul for DBIx::Schema::Changelog
+changelog-run - Command Line module for DBIx::Schema::Changelog
 
 =cut
 
@@ -39,6 +39,7 @@ DBIx::Schema::Changelog::Command->run;
 	-md --makedriver  : Will create a module for a new driver
 	-mf --makefile    : Will create a module for a new file parser
 	-c, --changeset   : Will create a new changeset project
+	-v, --version     : Print the current version of this module
 	-h, --help, -?    : print what you are currently reading
 	(If no command is set print what you are currently reading.)
 
@@ -102,7 +103,7 @@ to you shall terminate on the date that such litigation is filed.
 
 Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
 AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+THE IMPLIED WARRANTIES OF MERCHANT ABILITY, FITNESS FOR A PARTICULAR
 PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
 YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
