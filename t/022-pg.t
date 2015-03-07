@@ -9,7 +9,7 @@ use Test::More;
 use Test::Exception;
 use DBIx::Schema::Changelog;
 
-plan tests => 9;
+plan tests => 8;
 
 require_ok('DBIx::Schema::Changelog::Driver::Pg');
 use_ok 'DBIx::Schema::Changelog::Driver::Pg';
@@ -24,9 +24,9 @@ is( $driver->check_version('9.4'), 1, 'min version check' );
 SKIP: {
     eval { require Test::PostgreSQL };
 
-    skip "Test::PostgreSQL not installed", 3 if $@;
+    my $pg  = Test::PostgreSQL->new();
+    skip "Test::PostgreSQL not installed", 2 unless $pg;
 
-    my $pg  = new_ok('Test::PostgreSQL');
     my $dbh = DBI->connect(
         $pg->dsn( dbname => 'test' ),
         '', '', { AutoCommit => 1, RaiseError => 1, },

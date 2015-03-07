@@ -10,7 +10,7 @@ use Test::PostgreSQL;
 use Test::More;
 use Test::Exception;
 
-plan tests => 10;
+plan tests => 9;
 
 require_ok('DBIx::Schema::Changelog::Driver::Pg');
 use_ok 'DBIx::Schema::Changelog::Driver::Pg';
@@ -31,9 +31,8 @@ isa_ok( $object, 'DBIx::Schema::Changelog::Action::Sequence' );
 SKIP: {
 	eval { require Test::PostgreSQL };
  
-    skip "Test::PostgreSQL not installed", 2 if $@;
-
-    my $pg = new_ok('Test::PostgreSQL');
+    my $pg  = Test::PostgreSQL->new();
+    skip "Test::PostgreSQL not installed", 2 unless $pg;
 
     my $dbh = DBI->connect(
         $pg->dsn( dbname => 'test' ),

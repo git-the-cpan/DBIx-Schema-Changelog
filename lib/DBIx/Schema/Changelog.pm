@@ -6,11 +6,11 @@ DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.6.0
+Version 0.6.1
 
 =cut
 
-our $VERSION = '0.6.0';
+our $VERSION = '0.6.1';
 
 =head1 DESCRIPTION
 
@@ -110,13 +110,14 @@ sub _parse_log {
     my ( $self, $file ) = @_;
     foreach ( @{ $self->loader()->load($file) } ) {
         die "No id for changeset found" unless $_->{id};
-        next if ( $self->_check_key( $_->{id}, sum_hash($_) ) );
+        my $hash = sum_hash($_);
+        next if ( $self->_check_key( $_->{id}, $hash ) );
         print STDOUT __PACKAGE__, " Handle changeset: $_->{id}\n";
         my $handle_time = time();
         $self->changeset()->handle( $_->{entries} )
           if ( defined $_->{entries} );
         $self->insert_dblog()
-          ->execute( $_->{id}, $_->{author}, $file, sum_hash($_), $VERSION )
+          ->execute( $_->{id}, $_->{author}, $file, $hash, $VERSION )
           or die $self->dbh()->errstr;
         print STDOUT __PACKAGE__,
           " Changeset: $_->{id} author: $_->{author}  executed.  "
@@ -174,14 +175,16 @@ sub read {
 
     #first load templates
     $self->table_action()->load_templates( $main->{templates} );
-    $self->table_action()
-      ->prefix( ( defined $main->{prefix} && $main->{prefix} ne '' )
+    $self->table_action()->prefix(
+        ( defined $main->{prefix} && $main->{prefix} ne '' )
         ? $main->{prefix} . '_'
-        : '' );
-    $self->table_action()
-      ->postfix( ( defined $main->{postfix} && $main->{postfix} ne '' )
+        : ''
+    );
+    $self->table_action()->postfix(
+        ( defined $main->{postfix} && $main->{postfix} ne '' )
         ? '_' . $main->{postfix}
-        : '' );
+        : ''
+    );
 
     # now load changelogs
     $self->_parse_log( File::Spec->catfile( $folder, "changelog-$_" ) )

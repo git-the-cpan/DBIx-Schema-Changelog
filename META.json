@@ -4,7 +4,7 @@
       "Mario Zieschang <mziescha@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.142060",
+   "generated_by" : "ExtUtils::MakeMaker version 7.04, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "artistic_2"
    ],
@@ -99,5 +99,5 @@
          "web" : "https://github.com/mziescha/DBIx-Schema-Changelog"
       }
    },
-   "version" : "v0.6.0"
+   "version" : "v0.6.1"
 }
