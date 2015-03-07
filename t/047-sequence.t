@@ -32,7 +32,7 @@ SKIP: {
 	eval { require Test::PostgreSQL };
  
     my $pg  = Test::PostgreSQL->new();
-    skip "Test::PostgreSQL not installed", 2 unless $pg;
+    skip "Test::PostgreSQL not installed", 1 unless $pg;
 
     my $dbh = DBI->connect(
         $pg->dsn( dbname => 'test' ),

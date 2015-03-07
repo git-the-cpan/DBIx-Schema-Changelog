@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.6.1
+Version 0.6.2
 
 =cut
 
-our $VERSION = '0.6.1';
+our $VERSION = '0.6.2';
 
 use strict;
 use warnings FATAL => 'all';
