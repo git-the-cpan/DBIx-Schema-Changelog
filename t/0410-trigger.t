@@ -33,7 +33,7 @@ isa_ok( $object, 'DBIx::Schema::Changelog::Action::Trigger' );
 SKIP: {
     eval { require Test::PostgreSQL };
     my $pg = Test::PostgreSQL->new();
-    skip "Test::PostgreSQL not installed", 1 unless $pg;
+    skip "Test::PostgreSQL not installed", 0 unless $pg;
 
     my $dbh = DBI->connect(
         $pg->dsn( dbname => 'test' ),

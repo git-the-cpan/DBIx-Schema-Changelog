@@ -6,11 +6,11 @@ DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.7.0
+Version 0.7.1
 
 =cut
 
-our $VERSION = '0.7.0';
+our $VERSION = '0.7.1';
 
 =head1 DESCRIPTION
 

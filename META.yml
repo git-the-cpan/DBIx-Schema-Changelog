@@ -78,4 +78,4 @@ requires:
   perl: '5.010000'
 resources:
   repository: https://github.com/mziescha/DBIx-Schema-Changelog.git
-version: v0.7.0
+version: v0.7.1

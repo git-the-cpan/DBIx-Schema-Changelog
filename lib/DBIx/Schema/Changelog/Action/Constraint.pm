@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.7.0
+Version 0.7.1
 
 =cut
 
-our $VERSION = '0.7.0';
+our $VERSION = '0.7.1';
 
 use strict;
 use warnings;

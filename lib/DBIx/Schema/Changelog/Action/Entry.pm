@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Sql - Action to insert change or delete entries
 
 =head1 VERSION
 
-Version 0.7.0
+Version 0.7.1
 
 =cut
 
-our $VERSION = '0.7.0';
+our $VERSION = '0.7.1';
 
 use strict;
 use warnings;

@@ -1,5 +1,5 @@
 package DBIx::Schema::Changelog::Cookbook;
-$DBIx::Schema::Changelog::Cookbook::VERSION = '0.7.0';
+$DBIx::Schema::Changelog::Cookbook::VERSION = '0.7.1';
 __END__
 
 =pod
@@ -10,7 +10,7 @@ DBIx::Schema::Changelog::Cookbook - A gentle introduction to DBIx::Schema::Chang
 
 =head1 VERSION
 
-Version 0.7.0
+Version 0.7.1
 
 =head1 DESCRIPTION
 
