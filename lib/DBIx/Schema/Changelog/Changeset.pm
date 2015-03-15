@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Changeset - Handles action types.
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings;
@@ -18,6 +18,9 @@ use Moose;
 use Method::Signatures::Simple;
 use MooseX::HasDefaults::RO;
 use DBIx::Schema::Changelog::Action::Sql;
+use DBIx::Schema::Changelog::Action::Function;
+use DBIx::Schema::Changelog::Action::Entry;
+use Data::Dumper;
 
 has driver       => ();
 has dbh          => ();
@@ -28,6 +31,18 @@ has sql_action => (
     does    => 'DBIx::Schema::Changelog::Action',
     default => method {
         DBIx::Schema::Changelog::Action::Sql->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
+          )
+    },
+);
+
+has seq_action => (
+    is      => 'rw',
+    lazy    => 1,
+    does    => 'DBIx::Schema::Changelog::Action',
+    default => method {
+        DBIx::Schema::Changelog::Action::Sequence->new(
             driver => $self->driver(),
             dbh    => $self->dbh()
           )
@@ -56,6 +71,39 @@ has view_action => (
     },
 );
 
+has trigger_action => (
+    lazy    => 1,
+    does    => 'DBIx::Schema::Changelog::Action',
+    default => method {
+        DBIx::Schema::Changelog::Action::Trigger->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
+          )
+    },
+);
+
+has funct_action => (
+    lazy    => 1,
+    does    => 'DBIx::Schema::Changelog::Action',
+    default => method {
+        DBIx::Schema::Changelog::Action::Function->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
+          )
+    },
+);
+
+has entry_action => (
+    lazy    => 1,
+    does    => 'DBIx::Schema::Changelog::Action',
+    default => method {
+        DBIx::Schema::Changelog::Action::Entry->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh()
+          )
+    },
+);
+
 =head1 SUBROUTINES/METHODS
 
 =over 4
@@ -69,6 +117,7 @@ has view_action => (
 sub handle {
     my ( $self, $entries ) = @_;
     foreach (@$entries) {
+        die "No type set for changeset" . Dumper($_) unless $_->{type};
 
         # table actions
         $self->table_action()->add($_)   if ( $_->{type} eq 'createtable' );
@@ -85,8 +134,28 @@ sub handle {
         $self->view_action()->alter($_) if ( $_->{type} eq 'alterview' );
         $self->view_action()->drop($_)  if ( $_->{type} eq 'dropview' );
 
+        # sequence actions
+        $self->seq_action()->add($_)   if ( $_->{type} eq 'createsequence' );
+        $self->seq_action()->alter($_) if ( $_->{type} eq 'altersequence' );
+        $self->seq_action()->drop($_)  if ( $_->{type} eq 'dropsequence' );
+
+        # function actions
+        $self->funct_action()->add($_)   if ( $_->{type} eq 'createfunction' );
+        $self->funct_action()->alter($_) if ( $_->{type} eq 'alterfunction' );
+        $self->funct_action()->drop($_)  if ( $_->{type} eq 'dropfunction' );
+
+        # function actions
+        $self->trigger_action()->add($_)   if ( $_->{type} eq 'createtrigger' );
+        $self->trigger_action()->alter($_) if ( $_->{type} eq 'altertrigger' );
+        $self->trigger_action()->drop($_)  if ( $_->{type} eq 'droptrigger' );
+
         # manually called sql statement
         $self->sql_action()->add($_) if ( $_->{type} eq 'sql' );
+
+        # entry statements
+        $self->entry_action()->add($_) if ( $_->{type} eq 'insert' );
+        $self->entry_action()->add($_) if ( $_->{type} eq 'set' );
+        $self->entry_action()->add($_) if ( $_->{type} eq 'delete' );
     }
 }
 

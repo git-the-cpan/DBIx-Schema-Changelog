@@ -1,22 +1,69 @@
-package DBIx::Schema::Changelog::Cookbook::File;
-$DBIx::Schema::Changelog::Cookbook::File::VERSION = '0.7.0';
-__END__
-
-=pod
+package DBIx::Schema::Changelog::Action::Trigger;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Cookbook::File - A gentle introduction to DBIx::Schema::Changelog::Cookbook::File
+DBIx::Schema::Changelog::Action::Function - Action for triggers
 
 =head1 VERSION
 
 Version 0.7.0
 
-=head1 DESCRIPTION
+=cut
 
-	
+our $VERSION = '0.7.0';
 
-=encoding utf8
+use strict;
+use warnings;
+use Moose;
+
+with 'DBIx::Schema::Changelog::Action';
+
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item add
+
+	Execute sql statements can lead very likely to incompatibilities.
+
+=cut
+
+sub add {
+    my ( $self, $params, $return_sql ) = @_;
+
+}
+
+=item alter
+
+    Not needed!
+
+=cut
+
+sub alter {
+    my ( $self, $params, $return_sql ) = @_;
+    my $drop = $self->drop( $params, $return_sql );
+    my $add = $self->add( $params, $return_sql );
+    return { drop => $drop, add => $add };
+}
+
+=item drop
+
+    Not needed!
+
+=cut
+
+sub drop {
+    my ( $self, $params, $return_sql ) = @_;
+}
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+
+=back
 
 =head1 AUTHOR
 
@@ -61,6 +108,5 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 =cut

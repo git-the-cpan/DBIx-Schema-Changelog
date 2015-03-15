@@ -1,22 +1,95 @@
-package DBIx::Schema::Changelog::Cookbook::File;
-$DBIx::Schema::Changelog::Cookbook::File::VERSION = '0.7.0';
-__END__
-
-=pod
+package DBIx::Schema::Changelog::Action::Function;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Cookbook::File - A gentle introduction to DBIx::Schema::Changelog::Cookbook::File
+DBIx::Schema::Changelog::Action::Function - Action for functions
 
 =head1 VERSION
 
 Version 0.7.0
 
-=head1 DESCRIPTION
+=cut
 
-	
+our $VERSION = '0.7.0';
 
-=encoding utf8
+use strict;
+use warnings;
+use Moose;
+use Data::Dumper;
+
+with 'DBIx::Schema::Changelog::Action';
+
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item add
+
+    Execute sql statements can lead very likely to incompatibilities.
+
+=cut
+
+sub add {
+    my ( $self, $params, $return_sql ) = @_;
+    my $functions = $self->driver()->functions;
+    die "Used driver does not support functions!" unless $functions;
+    die "No function name defined!" unless $params->{name};
+    my $insert_params =
+      ( defined $params->{params} && ref $params->{params} eq 'ARRAY' )
+      ? join( ',', @{ $params->{params} } )
+      : '';
+    my $cost = ( defined $params->{cost} ) ? $params->{cost} . '' : '100';
+    my $lang = ( defined $params->{lang} ) ? $params->{lang}      : 'sql';
+    my $sql  = _replace_spare(
+        $functions->{add},
+        [
+            $params->{name}, $insert_params, $params->{return},
+            $params->{as},   $lang,          $cost
+        ]
+    );
+    return ($return_sql) ? $sql : $self->_do($sql);
+}
+
+=item alter
+
+    Not needed!
+
+=cut
+
+sub alter {
+    my ( $self, $params, $return_sql ) = @_;
+    my $drop = $self->drop( $params, $return_sql );
+    my $add = $self->add( $params, $return_sql );
+    return { drop => $drop, add => $add };
+}
+
+=item drop
+
+    Not needed!
+
+=cut
+
+sub drop {
+    my ( $self, $params, $return_sql ) = @_;
+    my $functions = $self->driver()->functions;
+    die "Used driver does not support functions!" unless $functions;
+    my $insert_params =
+      ( defined $params->{params} && ref $params->{params} eq 'ARRAY' )
+      ? join( ',', @{ $params->{params} } )
+      : '';
+    my $sql =
+      _replace_spare( $functions->{drop}, [ $params->{name}, $insert_params ],
+        1 );
+    return ($return_sql) ? $sql : $self->_do($sql);
+}
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+
+=back
 
 =head1 AUTHOR
 
@@ -61,6 +134,5 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 =cut

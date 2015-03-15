@@ -42,6 +42,7 @@ WriteMakefile(
         'Test::Pod::Coverage'          => 0,
         'Test::Requires'               => 0,
         'Test::Spelling'               => 0,
+        'SQL::Abstract'                => 1.81,
 
     },
     PREREQ_PM => {
@@ -73,6 +74,7 @@ WriteMakefile(
         'Test::Pod::Coverage'          => 0,
         'Test::Requires'               => 0,
         'Test::Spelling'               => 0,
+        'SQL::Abstract'                => 1.81,
     },
     META_MERGE => {
         'meta-spec' => { version => 2 },

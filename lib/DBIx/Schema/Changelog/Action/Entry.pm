@@ -1,22 +1,87 @@
-package DBIx::Schema::Changelog::Cookbook::File;
-$DBIx::Schema::Changelog::Cookbook::File::VERSION = '0.7.0';
-__END__
-
-=pod
+package DBIx::Schema::Changelog::Action::Entry;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Cookbook::File - A gentle introduction to DBIx::Schema::Changelog::Cookbook::File
+DBIx::Schema::Changelog::Action::Sql - Action to insert change or delete entries from tables
 
 =head1 VERSION
 
 Version 0.7.0
 
-=head1 DESCRIPTION
+=cut
 
-	
+our $VERSION = '0.7.0';
 
-=encoding utf8
+use strict;
+use warnings;
+use Moose;
+use SQL::Abstract;
+use Data::Dumper;
+
+with 'DBIx::Schema::Changelog::Action';
+
+has sql_abstract => (
+    is      => 'ro',
+    lazy    => 1,
+    isa     => 'SQL::Abstract',
+    default => sub { SQL::Abstract->new( array_datatypes => 1 ) },
+);
+
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item add
+
+Insert entry into table
+
+=cut
+
+sub add {
+    my ( $self, $params ) = @_;
+
+    #'add' => [
+    #  [ 'Euro',       'cent',   3, 'EUR', '€' ],
+    #  [ 'Dollar',     'Cent',   3, 'USD', '$' ],
+    #  [ 'Swiss fran', 'Rappen', 2, 'CHF', 'CHF' ]
+    #]
+    my %data = map { $_ => 1 } @{ $params->{cols} };
+    my ( $stmt, @bind ) =
+      $self->sql_abstract()->insert( $params->{name}, \%data );
+    my $pp = $self->dbh()->prepare($stmt);
+    $pp->execute(@$_) foreach @{ $params->{add} }
+}
+
+=item alter
+
+Change values from entry in table
+
+=cut
+
+sub alter {
+    my ( $self, $params ) = @_;
+    print Dumper($params);
+}
+
+=item drop
+
+Delete entry from table
+
+=cut
+
+sub drop {
+    my ( $self, $params ) = @_;
+    print Dumper($params);
+}
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+
+=back
 
 =head1 AUTHOR
 
@@ -61,6 +126,5 @@ YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
 CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 =cut

@@ -30,7 +30,6 @@ isa_ok( $object, 'DBIx::Schema::Changelog::Action::Sequence' );
 
 SKIP: {
 	eval { require Test::PostgreSQL };
- 
     my $pg  = Test::PostgreSQL->new();
     skip "Test::PostgreSQL not installed", 1 unless $pg;
 

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Table - Action handler for tables
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings;
@@ -34,8 +34,9 @@ Stored parsed templates from main changelog file.
 =cut
 
 has templates => (
-    is  => 'rw',
-    isa => 'HashRef',
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => method { {} },
 );
 
 =item constraint_action
@@ -127,6 +128,7 @@ sub add {
     my $actions  = $self->driver()->actions;
     my $defaults = $self->driver()->defaults;
     my $types    = $self->driver()->types;
+    my $debug    = ( $params->{debug} ) ? 1 : 0;
 
     my @columns     = ();
     my $constraints = [];
@@ -134,21 +136,26 @@ sub add {
         unless ( $col->{tpl} ) {
             $col->{table}        = $params->{name};
             $col->{create_table} = 1;
-            my $const = $self->constraint_action()->add( $col, $constraints );
-            push( @columns, $self->column_action()->add( $col, $const ) );
+            my $const =
+              $self->constraint_action()->add( $col, $constraints, $debug );
+            push( @columns,
+                $self->column_action()->add( $col, $const, $debug ) );
             next;
         }
+        die "Called template $col->{tpl} is not defined"
+          unless $self->templates()->{ $col->{tpl} };
         foreach ( @{ $self->templates()->{ $col->{tpl} } } ) {
             $_->{table}        = $params->{name};
             $_->{create_table} = 1;
-            my $const = $self->constraint_action()->add( $_, $constraints );
-            push( @columns, $self->column_action()->add( $_, $const ) );
+            my $const =
+              $self->constraint_action()->add( $_, $constraints, $debug );
+            push( @columns, $self->column_action()->add( $_, $const, $debug ) );
         }
     }
 
-    $self->index_action()->add( $_, $constraints )
+    $self->index_action()->add( $_, $constraints, $debug )
       foreach @{ $params->{indices} };
-    $self->constraint_action()->add( $_, $constraints )
+    $self->constraint_action()->add( $_, $constraints, $debug )
       foreach @{ $params->{constraints} };
     push( @columns, @$constraints );
     my $sql = _replace_spare(
@@ -237,14 +244,19 @@ load pre defined column templates
 
 sub load_templates {
     my ( $self, $templates ) = @_;
-    foreach my $key ( sort { $a cmp $b } keys %$templates ) {
-        my $tmpTemplate = [];
-        push( @$tmpTemplate,
-            ( ( defined $_->{tpl} ) ? @{ $templates->{ $_->{tpl} } } : $_ ) )
-          foreach ( @{ $templates->{$key} } );
-        $templates->{$key} = $tmpTemplate;
+    foreach (@$templates) {
+        my $tmp = [];
+        foreach my $tpl ( @{ $_->{columns} } ) {
+            if ( defined $tpl->{tpl} ) {
+                die "Called template: '$tpl->{tpl}' is not defined"
+                  unless $self->templates()->{ $tpl->{tpl} };
+                push( @$tmp, @{ $self->templates()->{ $tpl->{tpl} } } );
+                next;
+            }
+            push( @$tmp, $tpl );
+        }
+        $self->templates()->{ $_->{name} } = $tmp;
     }
-    $self->templates($templates);
 }
 
 no Moose;

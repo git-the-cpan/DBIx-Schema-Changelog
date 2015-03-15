@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::File::JSON - module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -24,7 +24,8 @@ has tpl_main => (
 	is => 'ro',
 	default => q~{
   "templates": {
-    "tpl_std": [
+  	"name": "tpl_std",
+    "columns": [
       { "name": "id", "type": "integer", "notnull": 1, "primarykey": 1, "default": "inc" },
       { "name": "name", "type": "varchar", "notnull": 1, "default": "current" },
       { "name": "active", "type": "bool", "default": 1 },

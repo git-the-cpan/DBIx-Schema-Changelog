@@ -23,7 +23,6 @@ is( $driver->check_version('9.4'), 1, 'min version check' );
 
 SKIP: {
     eval { require Test::PostgreSQL };
-
     my $pg  = Test::PostgreSQL->new();
     skip "Test::PostgreSQL not installed", 2 unless $pg;
 

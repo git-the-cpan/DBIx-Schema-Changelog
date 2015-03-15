@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::File - Create a new file reader module from te
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings FATAL => 'all';

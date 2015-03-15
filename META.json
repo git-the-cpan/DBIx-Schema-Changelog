@@ -38,6 +38,7 @@
             "Path::Class" : "0.3",
             "Pod::Coverage::TrustPod" : "0",
             "Pod::Usage" : "0",
+            "SQL::Abstract" : "1.81",
             "Storable" : "2.49",
             "Test::CheckManifest" : "0",
             "Test::Cmd" : "0",
@@ -75,6 +76,7 @@
             "Path::Class" : "0.3",
             "Pod::Coverage::TrustPod" : "0",
             "Pod::Usage" : "0",
+            "SQL::Abstract" : "1.81",
             "Storable" : "2.49",
             "Test::CheckManifest" : "0",
             "Test::Cmd" : "0",
@@ -99,5 +101,5 @@
          "web" : "https://github.com/mziescha/DBIx-Schema-Changelog"
       }
    },
-   "version" : "v0.6.2"
+   "version" : "v0.7.0"
 }

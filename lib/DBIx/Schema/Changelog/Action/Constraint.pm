@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Constraint - Action handler for constraint
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings;
@@ -40,7 +40,9 @@ has default => (
 =cut
 
 sub add {
-    my ( $self, $col, $constr_ref ) = @_;
+    my ( $self, $col, $constr_ref, $debug ) = @_;
+    print __PACKAGE__, ' (', __LINE__, ') ', $/, Dumper( $col, $constr_ref )
+      if ($debug);
     my $consts = $self->driver()->constraints;
     if ( defined $col->{primarykey} && ref $col->{primarykey} eq 'ARRAY' ) {
         push( @$constr_ref, $self->_primary($col) );
@@ -61,7 +63,7 @@ sub add {
     my $not_null = ( $col->{notnull} ) ? $consts->{not_null} : '';
     my $primarykey =
       ( defined $col->{primarykey} ) ? $consts->{primary_key} : '';
-    my $default = $self->default()->add($col);
+    my $default = $self->default()->add( $col, $debug );
     return qq~$not_null $primarykey $default~;
 }
 
@@ -136,7 +138,7 @@ sub _unique {
     my ( $self, $col, $constr_ref ) = @_;
     my $actions = $self->driver()->actions;
     return unless $actions->{unique};
-    my $table = '' . $col->{table};
+    my $table = ( defined $col->{table} ) ? $col->{table} . '' : '';
     $table =~ s/"//g;
     my $name = ( defined $col->{name} ) ? $col->{name} : time();
     return _replace_spare( $actions->{unique},

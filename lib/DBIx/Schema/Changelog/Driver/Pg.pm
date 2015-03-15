@@ -6,18 +6,17 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings;
 use Moose;
 use MooseX::HasDefaults::RO;
 use MooseX::Types::PerlVersion qw( PerlVersion );
-use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Driver';
 
@@ -41,6 +40,17 @@ q~CREATE SEQUENCE {0} INCREMENT {1} MINVALUE {2} MAXVALUE {3} START {4} CACHE {5
             primary          => q~CONSTRAINT {0} PRIMARY KEY ({1})~,
             foreign_key =>
 q~CONSTRAINT {3} FOREIGN KEY ({0}) REFERENCES {1} ({2}) MATCH SIMPLE ON DELETE NO ACTION ON UPDATE NO ACTION~,
+        };
+    }
+);
+
+has functions => (
+    isa     => 'HashRef[Str]',
+    default => sub {
+        return {
+            add =>
+q~CREATE FUNCTION {0}({1}) RETURNS {2} AS '{3}' LANGUAGE {4} VOLATILE COST {5}~,
+            drop => q~DROP FUNCTION {0} ({1})~,
         };
     }
 );
@@ -95,6 +105,7 @@ has types => (
             circle           => 'circle',
             date             => 'date',
             daterange        => 'daterange',
+            decimal          => 'decimal',
             double_precision => 'double precision',
             gtsvector        => 'gtsvector',
             inet             => 'inet',

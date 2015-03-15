@@ -6,17 +6,18 @@ DBIx::Schema::Changelog::Driver - Abstract driver class.
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose::Role;
 use MooseX::Types::PerlVersion qw( PerlVersion );
 use MooseX::Types::Moose qw( Maybe Undef );
+use Data::Dumper;
 
 has min_version => (
     is      => 'ro',
@@ -107,34 +108,34 @@ has origin_types => (
             'bigint', 'bigserial', 'bit', 'varbit', 'blob', 'bool', 'box',
             'bytea',                 #B
             'char', 'character', 'varchar', 'cid', 'cidr', 'circle',    #C
-            'date', 'daterange', 'double', 'double_precision',          #D
-                                                                        #E
-                                                                        #F
-            'gtsvector',                                                #G
-                                                                        #H
+            'date', 'daterange', 'double', 'double_precision', 'decimal',    #D
+                                                                             #E
+                                                                             #F
+            'gtsvector',                                                     #G
+                                                                             #H
             'inet', 'int2vector', 'int4range', 'int8range', 'integer',
-            'interval',                                                 #I
-            'json',                                                     #J
-                                                                        #K
-            'line',    'lseg',                                          #L
-            'macaddr', 'money',                                         #M
-            'name',    'numeric', 'numrange',                           #N
-            'oid',     'oidvector',                                     #O
-            'path',    'pg_node_tree', 'point', 'polygon',              #P
-                                                                        #Q
+            'interval',                                                      #I
+            'json',                                                          #J
+                                                                             #K
+            'line',    'lseg',                                               #L
+            'macaddr', 'money',                                              #M
+            'name',    'numeric', 'numrange',                                #N
+            'oid',     'oidvector',                                          #O
+            'path',    'pg_node_tree', 'point', 'polygon',                   #P
+                                                                             #Q
             'real', 'refcursor', 'regclass', 'regconfig', 'regdictionary',
             'regoper', 'regoperator', 'regproc', 'regprocedure', 'regtype',
-            'reltime',                                                  #R
-            'serial', 'smallint', 'smallserial', 'smgr',                #S
+            'reltime',                                                       #R
+            'serial', 'smallint', 'smallserial', 'smgr',                     #S
             'text', 'tid', 'timestamp', 'timestamp_tz', 'time', 'time_tz',
             'tinterval', 'tsquery', 'tsrange', 'tstzrange', 'tsvector',
-            'txid_snapshot',                                            #T
-            'uuid',                                                     #U
-                                                                        #V
-                                                                        #W
-            'xid',                                                      #X
-                                                                        #Y
-                                                                        #Z
+            'txid_snapshot',                                                 #T
+            'uuid',                                                          #U
+                                                                             #V
+                                                                             #W
+            'xid',                                                           #X
+                                                                             #Y
+                                                                             #Z
         ];
     }
 );
@@ -175,11 +176,8 @@ sub type {
       ? $self->types()->{ $col->{type} }
       : undef;
     die "Type: $col->{type} not found.\n" unless $ret;
-    $ret .= ( $col->{strict} ) ? '(strict)' : '';
-    $ret .=
-      ( defined $col->{lenght} && $col->{lenght} > 0 )
-      ? "($col->{lenght})"
-      : '';
+    $ret .= ( $col->{strict} )         ? '(strict)'         : '';
+    $ret .= ( defined $col->{lenght} ) ? "($col->{lenght})" : '';
     return $ret;
 }
 

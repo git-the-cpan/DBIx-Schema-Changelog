@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Exceptions - Abstract exceptions class.
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 use strict;
 use Data::Dumper;

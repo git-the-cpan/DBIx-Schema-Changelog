@@ -1,12 +1,29 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
-# Version 0.6.2  Date: 2015/03/07 (Mario Zieschang)
+# Version 0.7.0  Date: 2015/03/15 (Mario Zieschang)
+#========================================================================
+
+== BUG FIXES:
+
+	* bugfix default 0 ne NULL
+
+== ENHANCEMENT:
+
+	* add entries into db table
+	* debuging for create table
+	* if driver supports add funtcions
+	* dies if template name is unknown
+	* add, alter and drop functions is implemented
+
+#========================================================================
+# Version 0.6.2 Date: 2015/03/07 (Mario Zieschang)
 #========================================================================
 
 == BUG FIXES:
 
 	* sequence tests planned 9
+	
 
 #========================================================================
 # Version 0.6.1  Date: 2015/03/07 (Mario Zieschang)

@@ -8,7 +8,7 @@
     - type: createtable
       name: 'company'
       columns:
-          - tpl: 'tpl_client_ref'
+          - tpl: 'tpl_std_client_ref'
 
 - id: 001.02-maz
   author: "Mario Zieschang"
@@ -16,7 +16,7 @@
     - type: createtable
       name: '"user"'
       columns:
-          - tpl: 'tpl_client_ref'
+          - tpl: 'tpl_std_client_ref'
           - name: mail
             type: varchar
             lenght: 255
@@ -40,7 +40,7 @@
     - type: createtable
       name: 'player'
       columns:
-          - tpl: 'tpl_company_ref'
+          - tpl: 'tpl_std_company_ref'
           - name: surname
             type: varchar
             lenght: 255
@@ -49,7 +49,7 @@
     - type: createtable
       name: 'team'
       columns:
-        - tpl: 'tpl_company_ref'
+        - tpl: 'tpl_std_company_ref'
         - name: player1
           type: integer
           notnull: 1
@@ -65,7 +65,7 @@
     - type: createtable
       name: 'match_player'
       columns:
-          - tpl: 'tpl_company_ref'
+          - tpl: 'tpl_std_company_ref'
           - name: player1
             type: integer
             notnull: 1
@@ -95,7 +95,7 @@
     - type: createtable
       name: 'match_team'
       columns:
-          - tpl: 'tpl_company_ref'
+          - tpl: 'tpl_std_company_ref'
           - name: team1
             type: integer
             notnull: 1
@@ -163,7 +163,7 @@
     - type: createtable
       name: 'dop_table_test'
       columns:
-          - tpl: 'tpl_client_ref'
+          - tpl: 'tpl_std_client_ref'
     - type: droptable
       name: 'dop_table_test'
 
@@ -173,7 +173,7 @@
     - type: createtable
       name: 'add_foreign_test'
       columns:
-          - tpl: 'tpl_client_ref'
+          - tpl: 'tpl_std_client_ref'
           - name: player1
             type: integer
 
@@ -201,7 +201,7 @@
     - type: createtable
       name: 'add_unique_test'
       columns:
-          - tpl: 'tpl_client_ref'
+          - tpl: 'tpl_std_client_ref'
           - name: player1
             type: integer
 

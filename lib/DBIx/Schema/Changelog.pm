@@ -6,11 +6,11 @@ DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 =head1 DESCRIPTION
 
@@ -30,7 +30,7 @@ use DBIx::Schema::Changelog::Action::Table;
 use DBIx::Schema::Changelog::Action::View;
 use DBIx::Schema::Changelog::Action::Index;
 use DBIx::Schema::Changelog::Action::Constraint;
-
+use Data::Dumper;
 use Moose;
 use MooseX::HasDefaults::RO;
 use MooseX::Types::Moose qw(ArrayRef Str Defined);
