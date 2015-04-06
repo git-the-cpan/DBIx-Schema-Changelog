@@ -221,3 +221,22 @@
   entries:
     - type: droptable
       name: 'add_unique_test'
+
+- author: Mario Zieschang
+  entries:
+  - columns:
+    - {tpl: tpl_std}
+    - {lenght: 50, name: cent_name, type: varchar}
+    - {name: decimal_places, notnull: 1, type: integer}
+    - {lenght: 10, name: currency_key, type: varchar}
+    - {lenght: 10, name: symbol, type: varchar}
+    name: currencies
+    type: createtable
+  - add:
+    - [Euro, cent, 3, EUR, "€"]
+    - [Dollar, Cent, 3, USD, $]
+    - [Swiss fran, Rappen, 2, CHF, CHF]
+    cols: [name, cent_name, decimal_places, currency_key, symbol]
+    name: currencies
+    type: insert
+  id: 001.13-maz

@@ -169,3 +169,22 @@
     name: user_has_user_role
     type: createtable
   id: 001.core-maz
+
+- author: Mario Zieschang
+  entries:
+  - columns:
+    - {tpl: tpl_std}
+    - {lenght: 50, name: cent_name, type: varchar}
+    - {name: decimal_places, notnull: 1, type: integer}
+    - {lenght: 10, name: currency_key, type: varchar}
+    - {lenght: 10, name: symbol, type: varchar}
+    name: currencies
+    type: createtable
+  - add:
+    - [Euro, cent, 3, EUR, "€"]
+    - [Dollar, Cent, 3, USD, $]
+    - [Swiss fran, Rappen, 2, CHF, CHF]
+    cols: [name, currency_key, decimal_places, cent_name, symbol]
+    name: currencies
+    type: insert
+  id: 002.core-maz

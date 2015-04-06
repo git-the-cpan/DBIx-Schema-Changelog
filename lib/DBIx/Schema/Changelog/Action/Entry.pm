@@ -6,12 +6,13 @@ DBIx::Schema::Changelog::Action::Sql - Action to insert change or delete entries
 
 =head1 VERSION
 
-Version 0.7.1
+Version 0.7.2
 
 =cut
 
-our $VERSION = '0.7.1';
+our $VERSION = '0.7.2';
 
+use utf8;
 use strict;
 use warnings;
 use Moose;
@@ -39,17 +40,17 @@ Insert entry into table
 
 sub add {
     my ( $self, $params ) = @_;
-
-    #'add' => [
-    #  [ 'Euro',       'cent',   3, 'EUR', '€' ],
-    #  [ 'Dollar',     'Cent',   3, 'USD', '$' ],
-    #  [ 'Swiss fran', 'Rappen', 2, 'CHF', 'CHF' ]
-    #]
-    my %data = map { $_ => 1 } @{ $params->{cols} };
-    my ( $stmt, @bind ) =
-      $self->sql_abstract()->insert( $params->{name}, \%data );
+    my $qmarks = [];
+    push( @$qmarks, '?' ) foreach ( @{ $params->{cols} } );
+    my $stmt =
+        'INSERT INTO '
+      . $params->{name} . ' ( '
+      . join( ',', @{ $params->{cols} } )
+      . ') VALUES ('
+      . join( ',', @$qmarks ) . ')';
     my $pp = $self->dbh()->prepare($stmt);
-    $pp->execute(@$_) foreach @{ $params->{add} }
+    $pp->execute(@$_) foreach ( @{ $params->{add} } );
+    return $stmt;
 }
 
 =item alter
@@ -60,7 +61,13 @@ Change values from entry in table
 
 sub alter {
     my ( $self, $params ) = @_;
-    print Dumper($params);
+    my %data = map { $_ => 1 } @{ $params->{cols} };
+    my ( $stmt, @bind ) =
+      $self->sql_abstract()
+      ->update( $params->{name}, \%data, $params->{where} );
+    my $pp = $self->dbh()->prepare($stmt);
+    $pp->execute(@$_) foreach @{ $params->{alter} };
+    return $stmt;
 }
 
 =item drop
@@ -71,7 +78,11 @@ Delete entry from table
 
 sub drop {
     my ( $self, $params ) = @_;
-    print Dumper($params);
+    my ( $stmt, @bind ) =
+      $self->sql_abstract()->delete( $params->{name}, $params->{where} );
+    my $pp = $self->dbh()->prepare($stmt);
+    $pp->execute(@$_) foreach @{ $params->{delete} };
+    return $stmt;
 }
 
 no Moose;

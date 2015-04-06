@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Action::Table - Action handler for tables
 
 =head1 VERSION
 
-Version 0.7.1
+Version 0.7.2
 
 =cut
 
-our $VERSION = '0.7.1';
+our $VERSION = '0.7.2';
 
 use strict;
 use warnings;

@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Core::exceptionMessages - list of exception messages
 
 =head1 VERSION
 
-Version 0.7.1
+Version 0.7.2
 
 =cut
 
-our $VERSION = '0.7.1';
+our $VERSION = '0.7.2';
 
 =head1 DESCRIPTION
 
