@@ -59,6 +59,7 @@ t/0407-sequence.t
 t/0408-default.t
 t/0409-function.t
 t/0410-trigger.t
+t/0411-entry.t
 t/050-command.t
 t/051-base.t
 t/052-driver.t

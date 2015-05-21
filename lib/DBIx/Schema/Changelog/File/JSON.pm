@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::File::JSON - module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.8.0';
 
 use strict;
 use warnings FATAL => 'all';

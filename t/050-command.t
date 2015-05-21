@@ -17,16 +17,16 @@ ok( $cmd->run( args => '-h' ),     'changelog-run help ok' );
 ok( $cmd->run( args => '--help' ), 'changelog-run help ok' );
 ok( $cmd->run( args => '-?' ),     'changelog-run help ok' );
 
-ok( $cmd->run( args => '--version' ), 'changelog-run current verion' );
-ok( $cmd->run( args => '-v' ),        'changelog-run current verion' );
+ok( !$cmd->run( args => '--version' ), 'changelog-run current verion' );
+ok( !$cmd->run( args => '-v' ),        'changelog-run current verion' );
 
 my $chglgs = File::Spec->catfile( $FindBin::Bin, 'data', 'changelog' );
-ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
+ok( !$cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
     'changelog-run run ok' );
-ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
+ok( !$cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
     'changelog-run run ok' );
-ok( $cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
+ok( !$cmd->run( args => '-db=.tmp.cmdtest.sqlite -s=' . $chglgs ),
     'changelog-run run ok' );
 
-#my $file = File::Spec->catfile( $FindBin::Bin, '..', '.tmp.cmdtest.sqlite' );
-#unlink $file or warn "Could not unlink $file: $!";
+my $file = File::Spec->catfile( $FindBin::Bin, '..', '.tmp.cmdtest.sqlite' );
+unlink $file or warn "Could not unlink $file: $!";

@@ -222,7 +222,8 @@
     - type: droptable
       name: 'add_unique_test'
 
-- author: Mario Zieschang
+- id: 001.13-maz
+  author: Mario Zieschang
   entries:
   - columns:
     - {tpl: tpl_std}
@@ -236,7 +237,6 @@
     - [Euro, cent, 3, EUR, "€"]
     - [Dollar, Cent, 3, USD, $]
     - [Swiss fran, Rappen, 2, CHF, CHF]
-    cols: [name, cent_name, decimal_places, currency_key, symbol]
+    cols: [name, currency_key, decimal_places, cent_name, symbol]
     name: currencies
     type: insert
-  id: 001.13-maz

@@ -6,12 +6,12 @@ DBIx::Schema::Changelog::Action::Table - Action handler for tables
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
-
+our $VERSION = '0.8.0';
+use utf8;
 use strict;
 use warnings;
 use Data::Dumper;
@@ -36,7 +36,7 @@ Stored parsed templates from main changelog file.
 has templates => (
     is      => 'ro',
     isa     => 'HashRef',
-    default => method { {} },
+    default => sub { {} },
 );
 
 =item constraint_action

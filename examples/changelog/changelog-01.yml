@@ -169,7 +169,6 @@
     name: user_has_user_role
     type: createtable
   id: 001.core-maz
-
 - author: Mario Zieschang
   entries:
   - columns:

@@ -1,12 +1,16 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
-# Version 0.7.2  Date: 2015/04/06 (Mario Zieschang)
+# Version 0.8.0  Date: 2015/03/15 (Mario Zieschang)
 #========================================================================
 
 == BUG FIXES:
 
-	* insert entry bugfix
+	* Entry.pm random cols fixed
+
+== ENHANCEMENT:
+
+	* add EXE_FILES to Makefile.PL
 
 #========================================================================
 # Version 0.7.1  Date: 2015/03/15 (Mario Zieschang)

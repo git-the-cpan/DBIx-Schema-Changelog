@@ -6,11 +6,11 @@ DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.8.0';
 
 =head1 DESCRIPTION
 
@@ -21,6 +21,7 @@ A package which allows a continuous development with an application that hold th
 
 =cut
 
+use utf8;
 use strict;
 use warnings;
 use DBI;
@@ -51,7 +52,7 @@ has table_action => (
         DBIx::Schema::Changelog::Action::Table->new(
             driver => $self->driver(),
             dbh    => $self->dbh(),
-          )
+            )
     },
 );
 
@@ -63,7 +64,7 @@ has changeset => (
             driver       => $self->driver(),
             dbh          => $self->dbh(),
             table_action => $self->table_action(),
-          )
+            )
     },
 );
 
@@ -72,38 +73,39 @@ has insert_dblog => (
     lazy    => 1,
     default => method {
         $self->dbh()
-          ->prepare( "INSERT INTO "
-              . $self->db_changelog_table()
-              . "(id, author, filename, md5sum, changelog) VALUES (?,?,?,?,?)" )
+            ->prepare( "INSERT INTO "
+                . $self->db_changelog_table()
+                . "(id, author, filename, md5sum, changelog) VALUES (?,?,?,?,?)"
+            )
     },
 );
 
 has loader_class => (
     isa     => LoadableClass,
     lazy    => 1,
-    default => method {
-        'DBIx::Schema::Changelog::File::' . $self->file_type()
+    default => sub {
+        'DBIx::Schema::Changelog::File::' . shift->file_type();
     }
 );
 
 has loader => (
     does    => 'DBIx::Schema::Changelog::File',
     lazy    => 1,
-    default => method { $self->loader_class()->new(); }
+    default => sub { shift->loader_class()->new(); }
 );
 
 has driver_class => (
     isa     => LoadableClass,
     lazy    => 1,
-    default => method {
-        'DBIx::Schema::Changelog::Driver::' . $self->db_driver()
+    default => sub {
+        'DBIx::Schema::Changelog::Driver::' . shift->db_driver();
     }
 );
 
 has driver => (
     lazy    => 1,
     does    => 'DBIx::Schema::Changelog::Driver',
-    default => method { $self->driver_class()->new(); }
+    default => sub { shift->driver_class()->new(); }
 );
 
 sub _parse_log {
@@ -115,26 +117,26 @@ sub _parse_log {
         print STDOUT __PACKAGE__, " Handle changeset: $_->{id}\n";
         my $handle_time = time();
         $self->changeset()->handle( $_->{entries} )
-          if ( defined $_->{entries} );
+            if ( defined $_->{entries} );
         $self->insert_dblog()
-          ->execute( $_->{id}, $_->{author}, $file, $hash, $VERSION )
-          or die $self->dbh()->errstr;
+            ->execute( $_->{id}, $_->{author}, $file, $hash, $VERSION )
+            or die $self->dbh()->errstr;
         print STDOUT __PACKAGE__,
-          " Changeset: $_->{id} author: $_->{author}  executed.  "
-          . ( time() - $handle_time ) . " \n";
+            " Changeset: $_->{id} author: $_->{author}  executed.  "
+            . ( time() - $handle_time ) . " \n";
     }
 }
 
 sub _check_key {
     my ( $self, $id, $value ) = @_;
-    my @resp =
-      $self->dbh()
-      ->selectrow_array( "select md5sum, changelog from "
-          . $self->db_changelog_table()
-          . " where id = '$id'" )
-      or return 0;
+    my @resp
+        = $self->dbh()
+        ->selectrow_array( "select md5sum, changelog from "
+            . $self->db_changelog_table()
+            . " where id = '$id'" )
+        or return 0;
     die "MD5 hash changed for changeset: $id expect $value got $resp[0]"
-      if ( $resp[0] ne $value );
+        if ( $resp[0] ne $value );
     return ( @resp >= 1 );
 }
 
@@ -155,10 +157,11 @@ sub BUILD {
 
     $self->driver()->check_version( $self->dbh()->get_info(18) );
 
-    $self->table_action()
-      ->add( $self->driver()
-          ->create_changelog_table( $self->dbh(), $self->db_changelog_table() )
-      );
+    $self->table_action()->add(
+        $self->driver()->create_changelog_table(
+            $self->dbh(), $self->db_changelog_table()
+        )
+    );
 }
 
 =head2 read
@@ -170,8 +173,8 @@ Read main changelog file and sub changelog files
 sub read {
     my ( $self, $folder ) = @_;
 
-    my $main =
-      $self->loader()->load( File::Spec->catfile( $folder, 'changelog' ) );
+    my $main = $self->loader()
+        ->load( File::Spec->catfile( $folder, 'changelog' ) );
 
     #first load templates
     $self->table_action()->load_templates( $main->{templates} );
@@ -188,7 +191,7 @@ sub read {
 
     # now load changelogs
     $self->_parse_log( File::Spec->catfile( $folder, "changelog-$_" ) )
-      foreach @{ $main->{changelogs} };
+        foreach @{ $main->{changelogs} };
 }
 
 no Moose;

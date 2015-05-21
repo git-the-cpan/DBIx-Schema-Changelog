@@ -10,10 +10,9 @@ WriteMakefile(
     LICENSE            => 'artistic_2',
     PL_FILES           => {},
     MIN_PERL_VERSION   => 5.10.0,
-    CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => 0,
-    },
-    BUILD_REQUIRES => {
+    EXE_FILES          => ['bin/changelog-run'],
+    CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 0, },
+    BUILD_REQUIRES     => {
         'MooseX::Types::Path::Class'   => 0.06,
         'JSON::Parse'                  => 0.31,
         'Pod::Usage'                   => 0,
@@ -81,8 +80,9 @@ WriteMakefile(
         resources   => {
             repository => {
                 type => 'git',
-                url  => 'https://github.com/mziescha/DBIx-Schema-Changelog.git',
-                web  => 'https://github.com/mziescha/DBIx-Schema-Changelog',
+                url =>
+                    'https://github.com/mziescha/DBIx-Schema-Changelog.git',
+                web => 'https://github.com/mziescha/DBIx-Schema-Changelog',
             },
         }
     },

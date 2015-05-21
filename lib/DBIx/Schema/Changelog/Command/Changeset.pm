@@ -6,11 +6,11 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.8.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -19,7 +19,6 @@ use File::Path qw( mkpath );
 use MooseX::Types::Moose qw(Str);
 use MooseX::HasDefaults::RO;
 use MooseX::Types::LoadableClass qw(LoadableClass);
-use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Command::Base';
 
@@ -36,16 +35,14 @@ has file_type => (
 has loader_class => (
     isa     => LoadableClass,
     lazy    => 1,
-    default => method {
-        'DBIx::Schema::Changelog::File::' . $self->file_type()
-    }
+    default => sub { 'DBIx::Schema::Changelog::File::' . shift->file_type(); }
 );
 
 has loader => (
     is      => 'ro',
     does    => 'DBIx::Schema::Changelog::File',
     lazy    => 1,
-    default => method { $self->loader_class()->new(); }
+    default => sub { shift->loader_class()->new(); }
 );
 
 =head1 SUBROUTINES/METHODS
@@ -59,12 +56,12 @@ sub make {
     mkpath( File::Spec->catfile( $self->dir(), 'changelog' ), 0755 );
     _write_file(
         File::Spec->catfile( $self->dir(), 'changelog', 'changelog' )
-          . $self->loader()->ending(),
+            . $self->loader()->ending(),
         _replace_spare( $self->loader()->tpl_main(), [] )
     );
     _write_file(
         File::Spec->catfile( $self->dir(), 'changelog', 'changelog-01' )
-          . $self->loader()->ending(),
+            . $self->loader()->ending(),
         _replace_spare( $self->loader()->tpl_sub(), [] )
     );
 }

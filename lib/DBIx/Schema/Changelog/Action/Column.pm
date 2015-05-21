@@ -6,17 +6,17 @@ DBIx::Schema::Changelog::Action::Column - Action handler for table columns
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.8.0';
 
+use utf8;
 use strict;
 use warnings;
 use Text::Trim;
 use Moose;
-use Method::Signatures::Simple;
 use DBIx::Schema::Changelog::Action::Constraint;
 use Data::Dumper;
 

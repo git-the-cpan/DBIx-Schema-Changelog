@@ -6,18 +6,17 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.8.0
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.8.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose;
 use MooseX::HasDefaults::RO;
 use MooseX::Types::PerlVersion qw( PerlVersion );
-use Method::Signatures::Simple;
 
 with 'DBIx::Schema::Changelog::Driver';
 
