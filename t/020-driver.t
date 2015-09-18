@@ -9,8 +9,8 @@ use warnings;
 use DBI;
 use DBIx::Schema::Changelog::Driver::SQLite;
 
-require_ok('DBIx::Schema::Changelog::Driver');
-use_ok 'DBIx::Schema::Changelog::Driver';
+require_ok('DBIx::Schema::Changelog::Role::Driver');
+use_ok 'DBIx::Schema::Changelog::Role::Driver';
 
 require_ok('DBIx::Schema::Changelog::Driver::SQLite');
 use_ok 'DBIx::Schema::Changelog::Driver::SQLite';

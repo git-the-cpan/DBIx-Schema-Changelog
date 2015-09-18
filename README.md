@@ -1,8 +1,5 @@
 DBIx-Schema-Changelog - Continuous Database Migration 
 
-[![Build Status](https://travis-ci.org/mziescha/DBIx-Schema-Changelog.svg?branch=master)](https://travis-ci.org/mziescha/DBIx-Schema-Changelog)
-[![Coverage Status](https://coveralls.io/repos/mziescha/DBIx-Schema-Changelog/badge.svg)](https://coveralls.io/r/mziescha/DBIx-Schema-Changelog)
-
 A package which allows a continuous development with an application that hold the appropriate database system synchronously.
 
 MOTIVATION

@@ -13,25 +13,25 @@ my $driver = new_ok('DBIx::Schema::Changelog::Driver::SQLite')
 require_ok('DBI');
 use_ok 'DBI';
 
-require_ok('DBIx::Schema::Changelog::Action::Column');
-use_ok 'DBIx::Schema::Changelog::Action::Column';
+require_ok('DBIx::Schema::Changelog::Action::Columns');
+use_ok 'DBIx::Schema::Changelog::Action::Columns';
 
 my $dbh = DBI->connect("dbi:SQLite:database=.tmp.sqlite")
   or plan skip_all => $DBI::errstr;
-my $object = DBIx::Schema::Changelog::Action::Column->new(
+my $object = DBIx::Schema::Changelog::Action::Columns->new(
     driver => $driver,
     dbh    => $dbh
 );
 
-can_ok( 'DBIx::Schema::Changelog::Action::Column',
+can_ok( 'DBIx::Schema::Changelog::Action::Columns',
     @{ [ 'add', 'alter', 'drop' ] } );
-isa_ok( $object, 'DBIx::Schema::Changelog::Action::Column' );
+isa_ok( $object, 'DBIx::Schema::Changelog::Action::Columns' );
 
 is(
     $object->add(
         { table => '"user"', name => 'drop_test', type => 'integer' }, ''
     ),
-    'ADD COLUMN drop_test INTEGER ',
+    'ADD COLUMN drop_test INTEGER  ',
     'Add column test.'
 );
 is(

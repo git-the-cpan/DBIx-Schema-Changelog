@@ -2,22 +2,23 @@ package DBIx::Schema::Changelog::Action::Trigger;
 
 =head1 NAME
 
-DBIx::Schema::Changelog::Action::Function - Action for triggers
+DBIx::Schema::Changelog::Action::Trigger - Action for triggers
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use utf8;
 use strict;
 use warnings;
 use Moose;
 
-with 'DBIx::Schema::Changelog::Action';
+with 'DBIx::Schema::Changelog::Role::Action';
 
 =head1 SUBROUTINES/METHODS
 
@@ -42,9 +43,6 @@ sub add {
 
 sub alter {
     my ( $self, $params, $return_sql ) = @_;
-    my $drop = $self->drop( $params, $return_sql );
-    my $add = $self->add( $params, $return_sql );
-    return { drop => $drop, add => $add };
 }
 
 =item drop
@@ -57,7 +55,32 @@ sub drop {
     my ( $self, $params, $return_sql ) = @_;
 }
 
+=item list_from_schema 
+    
+Not needed!
+
+=cut
+
+sub list_from_schema {
+    my ( $self, $schema ) = @_;
+    my $trigger = [];
+    foreach ( @{ $self->do( $self->driver->actions->{list_triggers}, [] ) } ) {
+        push(
+            @$trigger,
+            {
+                type    => 'createindex',
+                name    => $_->{index_name},
+                taple   => $_->{table_name},
+                using   => $_->{index_type},
+                columns => $_->{index_keys}
+            }
+        );
+    }
+    return $trigger;
+}
+
 no Moose;
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -68,7 +91,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -6,5 +6,5 @@ use strict;
 use warnings;
 
 
-require_ok( 'DBIx::Schema::Changelog::File' );
-use_ok 'DBIx::Schema::Changelog::File';
+require_ok( 'DBIx::Schema::Changelog::Role::File' );
+use_ok 'DBIx::Schema::Changelog::Role::File';

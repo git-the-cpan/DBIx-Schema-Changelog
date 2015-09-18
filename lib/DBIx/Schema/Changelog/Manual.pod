@@ -1,7 +1,7 @@
 
 # ABSTRACT: A gentle introduction to DBIx::Schema::Changelog
 package DBIx::Schema::Changelog::Manual;
-$DBIx::Schema::Changelog::Manual::VERSION = '0.8.0';
+$DBIx::Schema::Changelog::Manual::VERSION = '0.9.0';
 __END__
 
 =pod
@@ -12,7 +12,8 @@ DBIx::Schema::Changelog::Manual - A gentle introduction to DBIx::Schema::Changel
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =head1 DESCRIPTION
 
@@ -121,7 +122,7 @@ By calling:
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

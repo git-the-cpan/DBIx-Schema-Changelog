@@ -6,11 +6,12 @@ DBIx::Schema::Changelog::Command::Changeset - Create a new changeset project fro
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -40,7 +41,7 @@ has loader_class => (
 
 has loader => (
     is      => 'ro',
-    does    => 'DBIx::Schema::Changelog::File',
+    does    => 'DBIx::Schema::Changelog::Role::File',
     lazy    => 1,
     default => sub { shift->loader_class()->new(); }
 );
@@ -75,7 +76,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

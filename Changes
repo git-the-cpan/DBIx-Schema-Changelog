@@ -1,7 +1,29 @@
 Revision history for DBIx-Schema-Changelog
 
 #========================================================================
-# Version 0.8.0  Date: 2015/03/15 (Mario Zieschang)
+# Version 0.9.0
+  Date: 2015/09/15 (Mario Zieschang)
+#========================================================================
+
+== BUG FIXES:
+
+	* changed lib requirements
+	* some fixes
+
+== ENHANCEMENT:
+
+	* writing changeset from db to file
+
+== TODO:
+
+	* more tests
+	* add trigger
+	* add functions
+	* add stored procedures
+
+#========================================================================
+# Version 0.0.8
+  Date: 2015/03/15 (Mario Zieschang)
 #========================================================================
 
 == BUG FIXES:
@@ -18,7 +40,7 @@ Revision history for DBIx-Schema-Changelog
 
 == BUG FIXES:
 
-	* test faied
+	* test failed
 
 #========================================================================
 # Version 0.7.0  Date: 2015/03/15 (Mario Zieschang)

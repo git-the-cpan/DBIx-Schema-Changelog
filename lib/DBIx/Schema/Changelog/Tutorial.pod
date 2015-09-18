@@ -1,6 +1,6 @@
 
 package DBIx::Schema::Changelog::Tutorial;
-$DBIx::Schema::Changelog::Tutorial::VERSION = '0.8.0';
+$DBIx::Schema::Changelog::Tutorial::VERSION = '0.9.0';
 __END__
 
 =pod
@@ -11,7 +11,8 @@ __END__
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =head1 What is DBIx::Schema::Changelog?
 
@@ -22,7 +23,7 @@ Version 0.8.0
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

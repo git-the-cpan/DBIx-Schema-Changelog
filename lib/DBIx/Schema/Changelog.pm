@@ -6,11 +6,12 @@ DBIx::Schema::Changelog - Continuous Database Migration
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 =head1 DESCRIPTION
 
@@ -24,74 +25,30 @@ A package which allows a continuous development with an application that hold th
 use utf8;
 use strict;
 use warnings;
-use DBI;
-use File::Spec;
-use DBIx::Schema::Changelog::Changeset;
-use DBIx::Schema::Changelog::Action::Table;
-use DBIx::Schema::Changelog::Action::View;
-use DBIx::Schema::Changelog::Action::Index;
-use DBIx::Schema::Changelog::Action::Constraint;
-use Data::Dumper;
+
 use Moose;
 use MooseX::HasDefaults::RO;
 use MooseX::Types::Moose qw(ArrayRef Str Defined);
 use MooseX::Types::LoadableClass qw(LoadableClass);
-use Method::Signatures::Simple;
 
-use Hash::MD5 qw(sum_hash);
+use DBIx::Schema::Changelog::Actions;
+use DBIx::Schema::Changelog::Read;
+use DBIx::Schema::Changelog::Write;
 
 has db_changelog_table => ( isa => Str, default => 'databasechangelog' );
 has db_driver          => ( isa => Str, default => 'SQLite' );
 has file_type          => ( isa => Str, default => 'Yaml' );
 has dbh => ( isa => 'DBI::db', required => 1, );
 
-has table_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Table->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh(),
-            )
-    },
-);
-
-has changeset => (
-    lazy    => 1,
-    isa     => 'DBIx::Schema::Changelog::Changeset',
-    default => method {
-        DBIx::Schema::Changelog::Changeset->new(
-            driver       => $self->driver(),
-            dbh          => $self->dbh(),
-            table_action => $self->table_action(),
-            )
-    },
-);
-
-has insert_dblog => (
-    isa     => 'DBI::st',
-    lazy    => 1,
-    default => method {
-        $self->dbh()
-            ->prepare( "INSERT INTO "
-                . $self->db_changelog_table()
-                . "(id, author, filename, md5sum, changelog) VALUES (?,?,?,?,?)"
-            )
-    },
-);
-
-has loader_class => (
-    isa     => LoadableClass,
+has actions => (
     lazy    => 1,
     default => sub {
-        'DBIx::Schema::Changelog::File::' . shift->file_type();
-    }
-);
-
-has loader => (
-    does    => 'DBIx::Schema::Changelog::File',
-    lazy    => 1,
-    default => sub { shift->loader_class()->new(); }
+        my $self = shift;
+        DBIx::Schema::Changelog::Actions->new(
+            driver => $self->driver(),
+            dbh    => $self->dbh(),
+        );
+    },
 );
 
 has driver_class => (
@@ -104,41 +61,35 @@ has driver_class => (
 
 has driver => (
     lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Driver',
+    does    => 'DBIx::Schema::Changelog::Role::Driver',
     default => sub { shift->driver_class()->new(); }
 );
 
-sub _parse_log {
-    my ( $self, $file ) = @_;
-    foreach ( @{ $self->loader()->load($file) } ) {
-        die "No id for changeset found" unless $_->{id};
-        my $hash = sum_hash($_);
-        next if ( $self->_check_key( $_->{id}, $hash ) );
-        print STDOUT __PACKAGE__, " Handle changeset: $_->{id}\n";
-        my $handle_time = time();
-        $self->changeset()->handle( $_->{entries} )
-            if ( defined $_->{entries} );
-        $self->insert_dblog()
-            ->execute( $_->{id}, $_->{author}, $file, $hash, $VERSION )
-            or die $self->dbh()->errstr;
-        print STDOUT __PACKAGE__,
-            " Changeset: $_->{id} author: $_->{author}  executed.  "
-            . ( time() - $handle_time ) . " \n";
+has reader => (
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        DBIx::Schema::Changelog::Read->new(
+            driver             => $self->driver,
+            dbh                => $self->dbh,
+            file_type          => $self->file_type,
+            db_changelog_table => $self->db_changelog_table,
+        );
     }
-}
+);
 
-sub _check_key {
-    my ( $self, $id, $value ) = @_;
-    my @resp
-        = $self->dbh()
-        ->selectrow_array( "select md5sum, changelog from "
-            . $self->db_changelog_table()
-            . " where id = '$id'" )
-        or return 0;
-    die "MD5 hash changed for changeset: $id expect $value got $resp[0]"
-        if ( $resp[0] ne $value );
-    return ( @resp >= 1 );
-}
+has writer => (
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        DBIx::Schema::Changelog::Write->new(
+            driver             => $self->driver,
+            dbh                => $self->dbh,
+            file_type          => $self->file_type,
+            db_changelog_table => $self->db_changelog_table,
+        );
+    }
+);
 
 =head1 SUBROUTINES/METHODS
 
@@ -154,14 +105,7 @@ sub BUILD {
     my $self   = shift;
     my $vendor = uc $self->dbh()->get_info(17);
     print STDOUT __PACKAGE__, ". Db vendor $vendor. \n";
-
     $self->driver()->check_version( $self->dbh()->get_info(18) );
-
-    $self->table_action()->add(
-        $self->driver()->create_changelog_table(
-            $self->dbh(), $self->db_changelog_table()
-        )
-    );
 }
 
 =head2 read
@@ -171,30 +115,26 @@ Read main changelog file and sub changelog files
 =cut
 
 sub read {
-    my ( $self, $folder ) = @_;
+    my ( $self, $dir ) = @_;
+    my $handle_time = time();
+    $self->actions->tables->add( $self->driver()->create_changelog_table( $self->dbh(), $self->db_changelog_table() ) );
+    $self->reader->run($dir);
+    print STDOUT __PACKAGE__, " Reading: completedin " . ( time() - $handle_time ) . "s.\n";
+}
 
-    my $main = $self->loader()
-        ->load( File::Spec->catfile( $folder, 'changelog' ) );
+=head2 write
 
-    #first load templates
-    $self->table_action()->load_templates( $main->{templates} );
-    $self->table_action()->prefix(
-        ( defined $main->{prefix} && $main->{prefix} ne '' )
-        ? $main->{prefix} . '_'
-        : ''
-    );
-    $self->table_action()->postfix(
-        ( defined $main->{postfix} && $main->{postfix} ne '' )
-        ? '_' . $main->{postfix}
-        : ''
-    );
+Write main changelog file and sub changelog files
 
-    # now load changelogs
-    $self->_parse_log( File::Spec->catfile( $folder, "changelog-$_" ) )
-        foreach @{ $main->{changelogs} };
+=cut
+
+sub write {
+    my ( $self, $dir ) = @_;
+    $self->writer->run($dir);
 }
 
 no Moose;
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -268,7 +208,7 @@ The package from which the idea originated.
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

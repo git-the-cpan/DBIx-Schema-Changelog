@@ -22,17 +22,14 @@ require_ok('DBIx::Schema::Changelog::Driver::SQLite');
 use_ok 'DBIx::Schema::Changelog::Driver::SQLite';
 
 my $driver = DBIx::Schema::Changelog::Driver::SQLite->new();
-dies_ok { $driver->check_version('3.0') }
-'underneath min version expecting to die';
+dies_ok { $driver->check_version('3.0') } 'underneath min version expecting to die';
 is( $driver->check_version('3.7'), 1, 'min version check' );
 is( $driver->check_version('3.9'), 1, 'min version check' );
 
 my $dbh = DBI->connect("dbi:SQLite:database=.tmp.sqlite");
-my $obj =
-  new_ok( 'DBIx::Schema::Changelog' => [ dbh => $dbh ] )
-  or plan skip_all => "";
+my $obj = new_ok( 'DBIx::Schema::Changelog' => [ dbh => $dbh ] ) or plan skip_all => "";
 is( $obj->read( File::Spec->catfile( $FindBin::Bin, 'data', 'changelog' ) ),
-    '', "Running changelogs" )
+    1, "Running changelogs" )
   or plan skip_all => "";
 
 $dbh->disconnect();

@@ -1,4 +1,4 @@
-use Test::More tests => 31;
+use Test::More tests => 23;
 
 use FindBin;
 use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
@@ -10,9 +10,6 @@ use_ok 'DBIx::Schema::Changelog';
 
 require_ok( 'MooseX::Types::Path::Class' );
 use_ok 'MooseX::Types::Path::Class';
-
-require_ok( 'JSON::Parse' );
-use_ok 'JSON::Parse';
 
 require_ok( 'DBI' );
 use_ok 'DBI';
@@ -35,19 +32,10 @@ use_ok 'MooseX::HasDefaults::RO';
 require_ok( 'YAML' );
 use_ok 'YAML';
 
-require_ok( 'Storable' );
-use_ok 'Storable';
-
-require_ok( 'Method::Signatures::Simple' );
-use_ok 'Method::Signatures::Simple';
-
 require_ok( 'Getopt::Long' );
 use_ok 'Getopt::Long';
 
 require_ok( 'MooseX::Types::Moose' );
 use_ok 'MooseX::Types::Moose';
-
-require_ok( 'Path::Class' );
-use_ok 'Path::Class';
 
 use_ok 'DBIx::Schema::Changelog';

@@ -9,7 +9,6 @@
       name: 'company'
       columns:
           - tpl: 'tpl_std_client_ref'
-
 - id: 001.02-maz
   author: "Mario Zieschang"
   entries:

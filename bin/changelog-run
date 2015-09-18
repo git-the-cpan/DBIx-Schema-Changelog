@@ -11,48 +11,49 @@ use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 
 use strict;
 use warnings;
-use DBIx::Schema::Changelog::Command;
+use DBIx::Schema::Changelog::Commands;
 
-DBIx::Schema::Changelog::Command->run;
+DBIx::Schema::Changelog::Commands->run;
 
 =head1 SYNOPSIS
 
 	changelog-run  [commands] [options]
 	...
 	# start reading
-	changelog-run -db=db.sqlite -s=/path/to/changelog
+	changelog-run -db=db.sqlite -d=/path/to/changelog
 	...
 	# make new driver module
-	changelog-run -md --author='Mario Zieschang' -email='mziescha@cpan.org' -driver=MySQL -dir=/path/to/directory
+	changelog-run -cd --author='Mario Zieschang' -email='mziescha [at] cpan.org' -driver=MySQL -dir=/path/to/directory
 	...
 	# make new file read module
-	changelog-run -mf -a='Mario Zieschang' -@='mziescha@cpan.org' -t=XML -dir=/path/to/directory
+	changelog-run -cf -a='Mario Zieschang' -@='mziescha [at] cpan.org' -t=XML -dir=/path/to/directory
 	...
 	# create a new changeset project
-	changelog-run -c -dir=/path/to/directory
+	changelog-run -cc -dir=/path/to/directory
 
 =head1 OPTIONS
 
 =over 4
 
-	Commands:
-	-md --makedriver  : Will create a module for a new driver
-	-mf --makefile    : Will create a module for a new file parser
-	-c, --changeset   : Will create a new changeset project
-	-v, --version     : Print the current version of this module
-	-h, --help, -?    : print what you are currently reading
-	(If no command is set print what you are currently reading.)
+    Commands:
+    -cd --createdriver      : Will create a module for a new driver
+    -cf --createfile        : Will create a module for a new file parser
+    -cc, --createchangeset  : Will create a new changeset project
+    -w, --Write             : Write changeset files from existing database
+    -r, --read              : Read changelog files
+    -v, --version           : Print the current version of this module
+    -h, --help, -?          : print what you are currently reading
+    (If no command is set print what you are currently reading.)
 
-	Options:
-	-s, --start       : parameter ist changeset directory to read
-	-a, --author      : Author of new file or driver
-	-dir, --directory : Directory of new file or driver
-	-drv, --driver    : Driver to use by running changelog (default SQLite)
-	-t, --type        : File type for reading changesets (default Yaml)
-	-db, --database   : Database to use by running changelog (default SQLite)
-	-u, --user        : User to connect with remote db
-	-p, --pass        : Pass for user to connect with remote db
-	-e, --email, -@   : Email of author of new file or driver
+    Options:
+    -a, --author            : Author of new file or driver
+    -d, --dir               : Directory of new file or driver
+    -dr, --driver           : Driver to use by running changelog (default SQLite)
+    -t, --type              : File type for reading changesets (default Yaml)
+    -db, --database         : Database to use by running changelog (default SQLite)
+    -u, --user              : User to connect with remote db
+    -p, --pass              : Pass for user to connect with remote db
+    -e, --email, -@         : Email of author of new file or driver
 
 =back
 
@@ -68,7 +69,7 @@ The package from which the idea originated.
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

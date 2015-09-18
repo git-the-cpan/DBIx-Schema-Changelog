@@ -6,18 +6,19 @@ DBIx::Schema::Changelog::File::Yaml - module for DBIx::Schema::Changelog::File t
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use strict;
 use warnings FATAL => 'all';
 use Moose;
-use YAML::XS qw/LoadFile/;
+use YAML::XS qw/LoadFile DumpFile/;
 
-with 'DBIx::Schema::Changelog::File';
+with 'DBIx::Schema::Changelog::Role::File';
 
 has tpl_main => (
     isa     => 'Str',
@@ -77,7 +78,21 @@ sub load {
     return LoadFile($file);
 }
 
+=item write
+
+Called to write defined Yaml files
+
+=cut
+
+sub write {
+    my ( $self, $dir, $data ) = @_;
+    my $file = $dir . $self->ending;
+    print STDERR __PACKAGE__, ". Write changelog file '$file'. \n";
+    return DumpFile( $file, $data );
+}
+
 no Moose;
+
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::File
@@ -88,7 +103,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

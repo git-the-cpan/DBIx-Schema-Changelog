@@ -6,18 +6,19 @@ DBIx::Schema::Changelog::Action::Sql - Action for manually called sql
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use utf8;
 use strict;
 use warnings;
 use Moose;
 
-with 'DBIx::Schema::Changelog::Action';
+with 'DBIx::Schema::Changelog::Role::Action';
 
 =head1 SUBROUTINES/METHODS
 
@@ -51,7 +52,16 @@ sub alter { }
 
 sub drop  { }
 
+=item list_from_schema 
+    
+Not needed!
+
+=cut
+
+sub list_from_schema { }
+
 no Moose;
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -62,7 +72,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

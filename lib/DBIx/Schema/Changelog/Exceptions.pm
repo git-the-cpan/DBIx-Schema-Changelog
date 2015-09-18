@@ -6,14 +6,14 @@ DBIx::Schema::Changelog::Exceptions - Abstract exceptions class.
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use strict;
-use Data::Dumper;
 use warnings FATAL => 'all';
 
 1;    # End of DBIx::Schema::Changelog::Exceptions
@@ -22,7 +22,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

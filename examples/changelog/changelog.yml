@@ -1,20 +1,9 @@
-prefix: ''
-postfix: ''
 ---
-templates:
-  tpl_std:
-    - { name: id, type: uuid, notnull: 1, primarykey: 1, default: uuid }
-    - { name: active, type: bit, default: 1 }
-    - { name: flag, type: time, default: current, notnull: 1 }
-    - { name: name, type: varchar, lenght: 255, notnull: 1 }
-    - { name: number, type: integer }
-    - { name: description, type: text,  }
-  tpl_client_ref:
-    - tpl : 'tpl_std'
-    - foreign: {refcolumn: id, reftable: client}
-      name: client
-      notnull: 1
-      type: uuid
-
 changelogs:
-  - "01"
+- 001-sequences
+- 002-tables
+- 003-primaries
+- 004-uniques
+- 005-foreigns
+- 006-indiezes
+- 007-views

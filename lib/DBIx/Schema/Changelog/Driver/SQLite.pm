@@ -6,11 +6,12 @@ DBIx::Schema::Changelog::Driver::SQLite - The great new DBIx::Schema::Changelog:
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use strict;
 use warnings FATAL => 'all';
@@ -18,7 +19,7 @@ use Moose;
 use MooseX::HasDefaults::RO;
 use MooseX::Types::PerlVersion qw( PerlVersion );
 
-with 'DBIx::Schema::Changelog::Driver';
+with 'DBIx::Schema::Changelog::Role::Driver';
 
 has actions => (
     isa     => 'HashRef[Str]',
@@ -84,8 +85,22 @@ has select_changelog_table => (
     default => "SELECT * FROM sqlite_master WHERE type='table';",
 );
 
+=head1 SUBROUTINES/METHODS
+
+=head2 _min_version
+
+=cut
+
 sub _min_version { '3.7' }
 
+=head2 convert_defaults
+
+=cut
+
+sub convert_defaults {
+    my ( $self, $params ) = @_;
+    return $params->{default};
+}
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
@@ -131,7 +146,7 @@ L<http://search.cpan.org/dist/DBIx-Schema-Changelog-Driver-SQLite/>
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 
 =head1 LICENSE AND COPYRIGHT

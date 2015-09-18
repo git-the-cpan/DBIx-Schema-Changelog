@@ -5,6 +5,6 @@ use lib File::Spec->catfile( $FindBin::Bin, '..', 'lib' );
 use strict;
 use warnings;
 
-require_ok( 'DBIx::Schema::Changelog::Action::Table' );
-use_ok 'DBIx::Schema::Changelog::Action::Table';
+require_ok( 'DBIx::Schema::Changelog::Action::Tables' );
+use_ok 'DBIx::Schema::Changelog::Action::Tables';
 

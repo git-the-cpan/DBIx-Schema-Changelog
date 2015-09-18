@@ -6,102 +6,32 @@ DBIx::Schema::Changelog::Changeset - Handles action types.
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.9.0
+
 
 =cut
 
-our $VERSION = '0.8.0';
+our $VERSION = '0.9.0';
 
 use utf8;
 use strict;
 use warnings;
 use Moose;
-use Method::Signatures::Simple;
 use MooseX::HasDefaults::RO;
-use DBIx::Schema::Changelog::Action::Sql;
-use DBIx::Schema::Changelog::Action::Function;
-use DBIx::Schema::Changelog::Action::Entry;
-use Data::Dumper;
+use DBIx::Schema::Changelog::Action::Functions;
+use DBIx::Schema::Changelog::Action::Entries;
 
-has driver       => ();
-has dbh          => ();
-has table_action => ( isa => 'DBIx::Schema::Changelog::Action::Table', );
+has driver => ( required => 1 );
+has dbh    => ( required => 1 );
 
-has sql_action => (
+has actions => (
     lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Sql->new(
+    default => sub {
+        my $self = shift;
+        DBIx::Schema::Changelog::Actions->new(
             driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has seq_action => (
-    is      => 'rw',
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Sequence->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has index_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Index->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has view_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::View->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has trigger_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Trigger->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has funct_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Function->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
-    },
-);
-
-has entry_action => (
-    lazy    => 1,
-    does    => 'DBIx::Schema::Changelog::Action',
-    default => method {
-        DBIx::Schema::Changelog::Action::Entry->new(
-            driver => $self->driver(),
-            dbh    => $self->dbh()
-          )
+            dbh    => $self->dbh(),
+        );
     },
 );
 
@@ -111,56 +41,62 @@ has entry_action => (
 
 =item handle
 
-    Handles different changeset commands
+Handles different changeset commands
 
 =cut
 
 sub handle {
     my ( $self, $entries ) = @_;
+    my $actions = $self->actions;
     foreach (@$entries) {
-        die "No type set for changeset" . Dumper($_) unless $_->{type};
 
         # table actions
-        $self->table_action()->add($_)   if ( $_->{type} eq 'createtable' );
-        $self->table_action()->drop($_)  if ( $_->{type} eq 'droptable' );
-        $self->table_action()->alter($_) if ( $_->{type} eq 'altertable' );
+        $actions->tables->add($_)   if ( $_->{type} eq 'createtable' );
+        $actions->tables->drop($_)  if ( $_->{type} eq 'droptable' );
+        $actions->tables->alter($_) if ( $_->{type} eq 'altertable' );
 
         # index actions
-        $self->index_action()->add($_)   if ( $_->{type} eq 'createindex' );
-        $self->index_action()->alter($_) if ( $_->{type} eq 'alterindex' );
-        $self->index_action()->drop($_)  if ( $_->{type} eq 'dropindex' );
+        $actions->indices->add($_)   if ( $_->{type} eq 'createindex' );
+        $actions->indices->alter($_) if ( $_->{type} eq 'alterindex' );
+        $actions->indices->drop($_)  if ( $_->{type} eq 'dropindex' );
 
         # view actions
-        $self->view_action()->add($_)   if ( $_->{type} eq 'createview' );
-        $self->view_action()->alter($_) if ( $_->{type} eq 'alterview' );
-        $self->view_action()->drop($_)  if ( $_->{type} eq 'dropview' );
+        $actions->views->add($_)   if ( $_->{type} eq 'createview' );
+        $actions->views->alter($_) if ( $_->{type} eq 'alterview' );
+        $actions->views->drop($_)  if ( $_->{type} eq 'dropview' );
 
         # sequence actions
-        $self->seq_action()->add($_)   if ( $_->{type} eq 'createsequence' );
-        $self->seq_action()->alter($_) if ( $_->{type} eq 'altersequence' );
-        $self->seq_action()->drop($_)  if ( $_->{type} eq 'dropsequence' );
+        $actions->sequences->add($_)   if ( $_->{type} eq 'createsequence' );
+        $actions->sequences->alter($_) if ( $_->{type} eq 'altersequence' );
+        $actions->sequences->drop($_)  if ( $_->{type} eq 'dropsequence' );
 
         # function actions
-        $self->funct_action()->add($_)   if ( $_->{type} eq 'createfunction' );
-        $self->funct_action()->alter($_) if ( $_->{type} eq 'alterfunction' );
-        $self->funct_action()->drop($_)  if ( $_->{type} eq 'dropfunction' );
+        $actions->functions->add($_)   if ( $_->{type} eq 'createfunction' );
+        $actions->functions->alter($_) if ( $_->{type} eq 'alterfunction' );
+        $actions->functions->drop($_)  if ( $_->{type} eq 'dropfunction' );
 
         # function actions
-        $self->trigger_action()->add($_)   if ( $_->{type} eq 'createtrigger' );
-        $self->trigger_action()->alter($_) if ( $_->{type} eq 'altertrigger' );
-        $self->trigger_action()->drop($_)  if ( $_->{type} eq 'droptrigger' );
+        $actions->trigger->add($_)   if ( $_->{type} eq 'createtrigger' );
+        $actions->trigger->alter($_) if ( $_->{type} eq 'altertrigger' );
+        $actions->trigger->drop($_)  if ( $_->{type} eq 'droptrigger' );
+
+        # function actions
+        $actions->constraints->add($_)   if ( $_->{type} eq 'addconstraint' );
+        $actions->constraints->alter($_) if ( $_->{type} eq 'alterconstraint' );
+        $actions->constraints->drop($_)  if ( $_->{type} eq 'dropconstraint' );
 
         # manually called sql statement
-        $self->sql_action()->add($_) if ( $_->{type} eq 'sql' );
+        $actions->sql->add($_) if ( $_->{type} eq 'sql' );
 
         # entry statements
-        $self->entry_action()->add($_) if ( $_->{type} eq 'insert' );
-        $self->entry_action()->add($_) if ( $_->{type} eq 'set' );
-        $self->entry_action()->add($_) if ( $_->{type} eq 'delete' );
+        $actions->entries->add($_) if ( $_->{type} eq 'insert' );
+        $actions->entries->add($_) if ( $_->{type} eq 'set' );
+        $actions->entries->add($_) if ( $_->{type} eq 'delete' );
     }
 }
 
 no Moose;
+
 __PACKAGE__->meta->make_immutable;
 
 1;    # End of DBIx::Schema::Changelog::Changeset
@@ -171,7 +107,7 @@ __END__
 
 =head1 AUTHOR
 
-Mario Zieschang, C<< <mario.zieschang at combase.de> >>
+Mario Zieschang, C<< <mziescha at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
